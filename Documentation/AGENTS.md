@@ -131,23 +131,115 @@ If Xcode MCP is configured, prefer its tools:
 
 ---
 
+## Installed Skills Reference
+
+58 skills are installed for this project. Invoke them with the Skill tool.
+The table below maps each skill to its trigger conditions. Call the skill
+BEFORE writing code for that domain — not after.
+
+### SwiftUI
+| Skill | Invoke when… |
+|---|---|
+| `swiftui-pro` | Writing any View, ViewModifier, or SwiftUI component |
+| `swiftui-ui-patterns` | Complex layouts, List, ScrollView, sheet, NavigationStack |
+| `swiftui-view-refactor` | Reviewing or simplifying existing View code |
+| `swiftui-design-principles` | Making UI design decisions, layout hierarchy |
+| `swiftui-liquid-glass` | Any new UI surface using iOS 26 Liquid Glass material |
+| `swiftui-performance-audit` | Profiling rendering, reducing unnecessary redraws |
+
+### SwiftData
+| Skill | Invoke when… |
+|---|---|
+| `swiftdata-pro` | Writing @Model, ModelContainer, migration plans, PersistenceService |
+| `swiftdata-expert-skill` | Complex queries, CloudKit prep, schema migration edge cases |
+
+### Swift Concurrency
+| Skill | Invoke when… |
+|---|---|
+| `swift-concurrency-pro` | Writing async services, actors, TaskGroup, .task view modifier |
+| `swift-concurrency` | Reviewing concurrency patterns or actor isolation |
+| `swift-concurrency-expert` | Sendable conformance, data race prevention, complex actor graphs |
+
+### Swift Testing
+| Skill | Invoke when… |
+|---|---|
+| `swift-testing-pro` | Writing any test file (Swift Testing framework, not XCTest) |
+| `swift-testing` | Reviewing test quality, test strategy |
+| `swift-testing-expert` | Parameterised tests, test organisation, corpus-driven tests |
+
+### Swift Language
+| Skill | Invoke when… |
+|---|---|
+| `swift-api-design-guidelines-skill` | Designing any public API, enum, struct, protocol, or function signature |
+| `swift-format-style` | Formatting numbers, dates, or measurements for display (FormatStyle) |
+
+### Architecture
+| Skill | Invoke when… |
+|---|---|
+| `swift-architecture-skill` | Before writing new services, major structural changes, or dependency decisions |
+
+### Accessibility
+| Skill | Invoke when… |
+|---|---|
+| `ios-accessibility` | Reviewing any View for accessibility compliance |
+| `swift-accessibility-skill` | Adding accessibility modifiers, labels, hints, traits |
+| `swiftui-accessibility-auditor` | Full accessibility audit of a complete screen or component |
+| `uikit-accessibility-auditor` | If any UIViewRepresentable is used (e.g. AVCaptureSession wrapper) |
+
+### Security
+| Skill | Invoke when… |
+|---|---|
+| `swift-security-expert` | Handling API keys (Keychain), any network request, sensitive data boundaries |
+
+### Tools & Debug
+| Skill | Invoke when… |
+|---|---|
+| `ios-simulator-skill` | Running, debugging, or taking screenshots on the simulator |
+| `ios-code-audit` | Before committing any service or model code |
+| `ios-debugger-agent` | Debugging crashes, unexpected behaviour, or SwiftData issues |
+| `bug-hunt-swarm` | Systematic bug hunting across multiple files |
+| `review-swarm` | Comprehensive pre-PR code review |
+| `review-and-simplify-changes` | After a feature is complete — simplify and remove dead code |
+| `orchestrate-batch-refactor` | Large-scale renames or structural refactors across many files |
+
+### App Store & CI
+| Skill | Invoke when… |
+|---|---|
+| `asc-xcode-build` | Configuring build settings, schemes, or compiler flags |
+| `asc-signing-setup` | Signing, provisioning profiles, entitlements |
+| `asc-testflight-orchestration` | Distributing TestFlight builds |
+| `asc-release-flow` | Preparing App Store releases |
+| `asc-submission-health` | Pre-submission readiness check |
+| `asc-crash-triage` | Triaging App Store or TestFlight crash reports |
+| `asc-build-lifecycle` | CI/CD build pipeline management |
+| `asc-workflow` | General App Store Connect workflow |
+| `asc-app-create-ui` | Creating or updating app records in ASC |
+| `app-store-changelog` | Writing App Store "What's New" release notes |
+| `app-store-aso` | App Store Optimisation (title, subtitle, keywords, description) |
+| `appstore-review` | Preparing for App Store Review, resolving rejections |
+
+### UI Writing & Design
+| Skill | Invoke when… |
+|---|---|
+| `writing-for-interfaces` | Writing any user-facing string, button label, error message, or disclaimer |
+| `figma-to-swiftui` | Converting Figma designs to SwiftUI |
+
+---
+
 ## Document Index
 
-Full specifications live in /docs/:
+Full specifications live in /Documentation/:
 - MASTER.md — project overview and session instructions
 - ARCHITECTURE.md — MVVM + service layer design
 - CONCURRENCY.md — async/await and actor design
 - SWIFTDATA.md — persistence design and schema versioning
 - UI_SPEC.md — screen-by-screen HIG mapping
 - PRD.md — features and user flows
-- CONSTRAINTS.md — hard decisions and regulatory boundaries
 - NFR.md — non-functional requirements
-- DATA_SCHEMA.md — Swift type definitions and JSON schemas
-- TEST_SPEC.md — unit test specifications
-- AI_ANTIPATTERNS.md — known AI mistakes checklist
+- DATA_SCHEMA.md — Swift type definitions and JSON schemas ← START HERE for model work
 - PARSER_SPEC.md — OCR parser rules and unit conversion table
 - ERROR_STATES.md — error handling per service
 - PROJECT_STRUCTURE.md — Xcode folder and target layout
 - LOCALISATION.md — xcstrings strategy
 - TEST_CORPUS.md — test fixture structure and corpus guide
-- MCP_TOOLING.md — MCP servers and agent skills
+- BUG_REGISTER.md — known failure modes — generate tests from this

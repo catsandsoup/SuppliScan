@@ -1,4 +1,7 @@
 # NutriScan — Localisation Strategy
+# Skills for this document: `writing-for-interfaces`, `swift-format-style`
+# Invoke `writing-for-interfaces` when adding any new user-facing string key.
+# Invoke `swift-format-style` when formatting dates, numbers, or measurements for display.
 
 ## v1 Decision
 

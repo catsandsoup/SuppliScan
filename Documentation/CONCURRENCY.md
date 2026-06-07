@@ -1,4 +1,7 @@
 # NutriScan — Concurrency & Threading Design
+# Skills for this document: `swift-concurrency-pro`, `swift-concurrency`, `swift-concurrency-expert`
+# Invoke `swift-concurrency-pro` before writing any async service, actor, or TaskGroup.
+# Invoke `swift-concurrency-expert` for Sendable conformance, data race analysis, or actor graph design.
 
 ## Model
 

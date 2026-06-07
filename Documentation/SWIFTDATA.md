@@ -1,4 +1,7 @@
 # NutriScan — SwiftData Design
+# Skills for this document: `swiftdata-pro`, `swiftdata-expert-skill`
+# Invoke `swiftdata-pro` before writing any @Model, ModelContainer, or PersistenceService code.
+# Invoke `swiftdata-expert-skill` for migration plans, CloudKit compatibility, complex predicates.
 
 ## Decision Record
 

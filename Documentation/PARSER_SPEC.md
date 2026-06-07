@@ -1,5 +1,8 @@
 # NutriScan — Parser Specification
-# ParserService: Raw OCR text → [NutrientEntry]
+# ParserService: Raw OCR text → [LabelEntry]
+# Skills for this document: `swift-api-design-guidelines-skill`, `ios-code-audit`, `swift-testing-pro`
+# Invoke `ios-code-audit` after writing ParserService or UnitConversionService.
+# Invoke `swift-testing-pro` when writing parser tests — this is the highest-risk service.
 
 ## Overview
 

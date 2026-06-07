@@ -1,4 +1,7 @@
 # NutriScan — Error States Specification
+# Skills for this document: `writing-for-interfaces`, `swift-api-design-guidelines-skill`
+# Invoke `writing-for-interfaces` when writing any user-facing error message string.
+# Invoke `swift-api-design-guidelines-skill` when adding new AppError cases.
 
 ## Design Principle
 

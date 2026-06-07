@@ -1,4 +1,7 @@
 # NutriScan — Project Structure
+# Skills for this document: `asc-xcode-build`, `swift-architecture-skill`
+# Invoke `asc-xcode-build` when changing build settings, targets, or schemes.
+# Invoke `swift-architecture-skill` before adding new feature folders or services.
 
 ## Xcode Project Layout
 

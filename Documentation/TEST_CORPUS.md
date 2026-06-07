@@ -1,4 +1,7 @@
 # NutriScan — Test Corpus Guide
+# Skills for this document: `swift-testing-pro`, `swift-testing-expert`
+# Invoke `swift-testing-pro` when writing any new test suite.
+# Invoke `swift-testing-expert` for parameterised corpus-driven tests.
 
 ## What This Is
 

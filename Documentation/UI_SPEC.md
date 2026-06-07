@@ -1,5 +1,9 @@
 # NutriScan — UI Specification
 # Mapped to Apple HIG (iOS) and SwiftUI Best Practices
+# Skills for this document: `swiftui-pro`, `swiftui-ui-patterns`, `swiftui-design-principles`,
+#   `swiftui-liquid-glass`, `swiftui-accessibility-auditor`, `writing-for-interfaces`
+# Invoke `swiftui-pro` before writing any screen. Invoke `swiftui-liquid-glass` for iOS 26 surfaces.
+# Invoke `swiftui-accessibility-auditor` after completing each screen.
 
 ## Design Language
 

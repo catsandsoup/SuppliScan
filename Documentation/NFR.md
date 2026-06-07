@@ -1,4 +1,7 @@
 # NutriScan — Non-Functional Requirements
+# Skills for this document: `swiftui-performance-audit`, `ios-code-audit`, `swift-security-expert`
+# Invoke `swiftui-performance-audit` for rendering performance reviews.
+# Invoke `swift-security-expert` for any data boundary or privacy requirement.
 
 ## Performance
 
