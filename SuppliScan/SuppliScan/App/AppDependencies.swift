@@ -17,11 +17,15 @@ import Foundation
 @MainActor
 final class AppDependencies {
     let persistence: PersistenceService
+    let ocrService: OCRService
+    let parserService: ParserService
 
     // Services are instantiated here and injected where needed.
     // ViewModels receive services via their initialiser.
 
     init(container: ModelContainer) {
         self.persistence = PersistenceService(container: container)
+        self.ocrService = OCRService()
+        self.parserService = (try? ParserService.makeDefault()) ?? ParserService()
     }
 }
