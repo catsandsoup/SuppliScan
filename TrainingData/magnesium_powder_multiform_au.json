@@ -1,0 +1,114 @@
+{
+  "source_image": "magnesium_powder_multiform_cabot_au.jpeg",
+  "original_file": "IMG_1131.jpeg",
+  "label_type": "powder_multi_nutrient",
+  "label_format": "AU_TGA",
+  "product_name": "Magnesium Powder (multi-form with Taurine and Zinc)",
+  "manufacturer": "Health Direction Pty Ltd (Cabot Health)",
+  "country": "AU",
+  "form_factor": "powder",
+  "serving_size": "5g (1 level metric teaspoon)",
+  "corpus_notes": "Highest complexity label in corpus. Multiple training values: (1) Powder format — serving size in grams/teaspoon rather than capsule. (2) Multiple magnesium forms contributing to elemental total — parser must sum correctly and not double-count. (3) Parenthetical providing elemental within compound (common AU format). (4) Total elemental highlighted separately. (5) Taurine — no NRV. (6) Zinc as amino acid chelate — form quality tier 1. Tests: compound_elemental_pattern, elemental_total_line, powder_serving_size.",
+  "parser_rules_exercised": [
+    "P4_elemental_qualifier",
+    "P_compound_elemental",
+    "P_elemental_total",
+    "powder_serving_format",
+    "U1_unit_mg"
+  ],
+  "expected_entries": [
+    {
+      "name": "Taurine",
+      "canonical_name": "Taurine",
+      "form": null,
+      "amount": 1000,
+      "unit": "mg",
+      "review_flags": [],
+      "has_nrv": false,
+      "expected_report_behaviour": "No RDI% — no established NRV for taurine"
+    },
+    {
+      "name": "Magnesium amino acid chelate",
+      "canonical_name": "Magnesium",
+      "form": "amino acid chelate",
+      "compound_amount": 1750,
+      "compound_unit": "mg",
+      "elemental_amount": 350,
+      "elemental_unit": "mg",
+      "amount": 350,
+      "unit": "mg",
+      "use_elemental_for_calculation": true,
+      "review_flags": [],
+      "form_tier": 1
+    },
+    {
+      "name": "Magnesium ascorbate",
+      "canonical_name": "Magnesium",
+      "form": "ascorbate",
+      "compound_amount": 210,
+      "compound_unit": "mg",
+      "elemental_amount": 13,
+      "elemental_unit": "mg",
+      "amount": 13,
+      "unit": "mg",
+      "use_elemental_for_calculation": true,
+      "review_flags": [],
+      "form_tier": 2
+    },
+    {
+      "name": "Magnesium glycinate dihydrate",
+      "canonical_name": "Magnesium",
+      "form": "glycinate",
+      "compound_amount": 104,
+      "compound_unit": "mg",
+      "elemental_amount": 12.2,
+      "elemental_unit": "mg",
+      "amount": 12.2,
+      "unit": "mg",
+      "use_elemental_for_calculation": true,
+      "review_flags": [],
+      "form_tier": 1
+    },
+    {
+      "name": "Magnesium phosphate pentahydrate",
+      "canonical_name": "Magnesium",
+      "form": "phosphate",
+      "compound_amount": 120,
+      "compound_unit": "mg",
+      "elemental_amount": 24.8,
+      "elemental_unit": "mg",
+      "amount": 24.8,
+      "unit": "mg",
+      "use_elemental_for_calculation": true,
+      "review_flags": [],
+      "form_tier": 2
+    },
+    {
+      "name": "Zinc",
+      "canonical_name": "Zinc",
+      "form": "amino acid chelate",
+      "amount": 5,
+      "unit": "mg",
+      "review_flags": [],
+      "has_nrv": true,
+      "form_tier": 1
+    }
+  ],
+  "elemental_total_line": {
+    "label_text": "total elemental magnesium 400mg",
+    "parser_behaviour": "Recognised as total/summary line — do NOT create separate NutrientEntry. Use to validate sum of elemental values (350 + 13 + 12.2 + 24.8 = 400).",
+    "expected_rdi_calculation_input_mg": 400
+  },
+  "expected_unresolved": [],
+  "clinical_notes": {
+    "magnesium_total_elemental_mg": 400,
+    "au_rdi_mg_adult_male": 420,
+    "rdi_percent": 95.2,
+    "au_ul_mg_supplemental": 350,
+    "ul_note": "AU UL of 350mg applies to supplemental magnesium only. This product at 400mg elemental exceeds supplemental UL — flag in report.",
+    "ul_percent": 114.3,
+    "zinc_au_rdi_mg_adult_male": 14,
+    "zinc_rdi_percent": 35.7,
+    "drug_interactions_flag": "High dose magnesium may affect absorption of certain antibiotics (tetracyclines, quinolones) and bisphosphonates — take 2 hours apart."
+  }
+}

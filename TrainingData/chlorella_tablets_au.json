@@ -1,0 +1,92 @@
+{
+  "source_image": "chlorella_tablets_green_nutritionals_au.jpeg",
+  "original_file": "IMG_1135.jpeg",
+  "label_type": "food_nutrition_panel",
+  "label_format": "AU_FSANZ_NUTRITION_PANEL",
+  "product_name": "Yaeyama Chlorella Tablets",
+  "manufacturer": "Green Nutritionals (MicrOrganics)",
+  "country": "AU",
+  "form_factor": "tablet",
+  "expiry": "SEP 2028",
+  "serving_size_tablets": 6,
+  "serving_size_g": 3,
+  "servings_per_package": 83,
+  "corpus_notes": "CRITICAL EDGE CASE: This is a food nutrition panel, NOT a supplement facts panel. Uses AU FSANZ format with per-serving AND per-100g columns. Completely different format from TGA supplement labels. Tests: (1) Recognition of food nutrition panel format, (2) Energy (kJ) row — not a nutrient entry, (3) Calories row — not a nutrient entry, (4) Per-100g column — ignore for analysis (use per-serving), (5) %RDI column present on label itself — parser must extract raw amounts, not trust label's own RDI%. (6) CGF (Chlorella Growth Factor) — no NRV, not a standard nutrient. (7) DNA/RNA content — no NRV. Serving-size-dependent analysis — unusual for supplement.",
+  "parser_rules_exercised": [
+    "P_food_nutrition_panel_detection",
+    "P8_header_skip_energy_row",
+    "P_per_serving_column_only",
+    "P_ignore_label_rdi_column",
+    "P_non_standard_nutrients"
+  ],
+  "label_type_classification": "food_supplement_nutrition_panel",
+  "expected_entries_per_serving": [
+    {
+      "name": "Protein",
+      "canonical_name": "Protein",
+      "amount": 2.1,
+      "unit": "g",
+      "has_nrv": false,
+      "note": "Macronutrient — no NRV for protein in supplement context"
+    },
+    {
+      "name": "Fat - Total",
+      "canonical_name": "Total Fat",
+      "amount": 0.34,
+      "unit": "g",
+      "has_nrv": false
+    },
+    {
+      "name": "Carbohydrate",
+      "canonical_name": "Carbohydrate",
+      "amount": 0.06,
+      "unit": "g",
+      "has_nrv": false
+    },
+    {
+      "name": "Chlorophyll",
+      "canonical_name": "Chlorophyll",
+      "amount": 0.005,
+      "unit": "g",
+      "converted_amount": 5,
+      "converted_unit": "mg",
+      "has_nrv": false
+    },
+    {
+      "name": "CGF (Chlorella Growth Factor)",
+      "canonical_name": "Chlorella Growth Factor",
+      "amount": 104,
+      "unit": "mg",
+      "has_nrv": false
+    },
+    {
+      "name": "Vit D",
+      "canonical_name": "Vitamin D",
+      "amount_mcg": 1.13,
+      "amount_rdi_percent_label": 204,
+      "unit": "mcg",
+      "has_nrv": true,
+      "note": "Label shows 34mcg at 204% RDI — but per-serving is 1.13mcg. Reconcile: 34mcg appears to be per-100g value accidentally placed in per-serving column. Use 1.13mcg per serving."
+    },
+    {
+      "name": "Vit K",
+      "canonical_name": "Vitamin K",
+      "amount_mcg": 1.11,
+      "unit": "mcg",
+      "has_nrv": true
+    }
+  ],
+  "skip_rows": [
+    "Energy 51kJ",
+    "Calories 12",
+    "Servings Per Package — 83"
+  ],
+  "per_100g_column_note": "Ignore per-100g column for analysis. Use per-serving column only.",
+  "clinical_notes": {
+    "vitamin_d_per_serving_mcg": 1.13,
+    "vitamin_k_per_serving_mcg": 1.11,
+    "food_source_note": "Chlorella is a food supplement — vitamin content is naturally occurring, not added. Bioavailability may differ from synthetic forms.",
+    "serving_size_note": "6 tablets = 1 serve. Users often take fewer tablets. Report should note per-tablet values when serving adjustment is made.",
+    "drug_interactions_flag": "Vitamin K content (even at 1.11mcg/serve) — advise patients on warfarin to maintain consistent chlorella intake as K affects INR."
+  }
+}
