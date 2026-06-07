@@ -15,8 +15,8 @@ import SwiftData
 import Foundation
 
 enum SuppliScanSchemaV1: VersionedSchema {
-    static var versionIdentifier = Schema.Version(1, 0, 0)
-    static var models: [any PersistentModel.Type] { [ScanRecord.self] }
+    nonisolated static let versionIdentifier = Schema.Version(1, 0, 0)
+    nonisolated static let models: [any PersistentModel.Type] = [ScanRecord.self]
 
     @Model
     final class ScanRecord {
@@ -55,8 +55,6 @@ typealias ScanRecord = SuppliScanSchemaV1.ScanRecord
 // MARK: - Migration Plan
 
 struct SuppliScanMigrationPlan: SchemaMigrationPlan {
-    static var schemas: [any VersionedSchema.Type] {
-        [SuppliScanSchemaV1.self]
-    }
-    static var stages: [MigrationStage] { [] }
+    nonisolated static let schemas: [any VersionedSchema.Type] = [SuppliScanSchemaV1.self]
+    nonisolated static let stages: [MigrationStage] = []
 }

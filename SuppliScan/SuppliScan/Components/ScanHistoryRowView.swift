@@ -1,13 +1,14 @@
 // ScanHistoryRowView.swift
 // SuppliScan
 //
-// Reusable row for displaying a ScanRecord in HomeView and HistoryView.
+// Reusable row for displaying a saved scan in HomeView and HistoryView.
 // Tapping calls the onTap closure — navigation owned by the parent view.
 
 import SwiftUI
 
 struct ScanHistoryRowView: View {
-    let record: ScanRecord
+    let record: ScanRecordSummary
+    var isLoading = false
     let onTap: () -> Void
 
     var body: some View {
@@ -27,13 +28,21 @@ struct ScanHistoryRowView: View {
                     }
                 }
                 Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.subheadline)
-                    .foregroundStyle(.tertiary)
+                if isLoading {
+                    ProgressView()
+                        .controlSize(.small)
+                } else {
+                    Image(systemName: "chevron.right")
+                        .font(.subheadline)
+                        .foregroundStyle(.tertiary)
+                        .accessibilityHidden(true)
+                }
             }
             .padding(.vertical, 4)
             .contentShape(.rect)
         }
         .buttonStyle(.plain)
+        .disabled(isLoading)
+        .accessibilityHint("Opens the saved clinical report.")
     }
 }

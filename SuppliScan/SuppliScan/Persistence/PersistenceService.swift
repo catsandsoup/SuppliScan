@@ -48,19 +48,21 @@ actor PersistenceService {
 
     // MARK: - Fetch
 
-    func fetchAll() throws -> [ScanRecord] {
+    func fetchAll() throws -> [ScanRecordSummary] {
         let descriptor = FetchDescriptor<ScanRecord>(
             sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
         )
-        return try modelContext.fetch(descriptor)
+        return try modelContext.fetch(descriptor).map(ScanRecordSummary.init)
     }
 
     func fetchAnalysis(id: UUID) throws -> LabelAnalysis? {
-        let descriptor = FetchDescriptor<ScanRecord>(
+        var descriptor = FetchDescriptor<ScanRecord>(
             predicate: #Predicate<ScanRecord> { record in
                 record.id == id
-            }
+            },
+            sortBy: [SortDescriptor(\.createdAt, order: .reverse)]
         )
+        descriptor.fetchLimit = 1
         guard let record = try modelContext.fetch(descriptor).first else { return nil }
         return try LabelAnalysis.decode(from: record.reportData)
     }

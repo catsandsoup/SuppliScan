@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct RDIReference: Codable, Hashable, Sendable {
+nonisolated struct RDIReference: Codable, Hashable, Sendable {
     let standard: ReferenceStandard
     let demographic: String      // group key, e.g. "adult_male_19_50"
     let value: Double

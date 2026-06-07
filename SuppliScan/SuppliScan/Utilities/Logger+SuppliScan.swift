@@ -9,7 +9,7 @@
 
 import OSLog
 
-extension Logger {
+nonisolated extension Logger {
     private static let subsystem = "montygiovenco.SuppliScan"
 
     static let suppliScan  = Logger(subsystem: subsystem, category: "general")

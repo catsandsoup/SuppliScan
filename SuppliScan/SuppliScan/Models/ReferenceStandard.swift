@@ -6,13 +6,13 @@
 
 import Foundation
 
-enum ReferenceStandard: String, Codable, Hashable, CaseIterable, Sendable {
+nonisolated enum ReferenceStandard: String, Codable, Hashable, CaseIterable, Sendable {
     case au = "AU"   // NHMRC Nutrient Reference Values for Australia and New Zealand
     case us = "US"   // NIH/FDA Dietary Reference Intakes
     case eu = "EU"   // EFSA Nutrient Reference Values
 }
 
-extension ReferenceStandard {
+nonisolated extension ReferenceStandard {
     var displayName: String {
         switch self {
         case .au: "AU (NHMRC)"

@@ -12,7 +12,7 @@
 
 import Foundation
 
-struct LabelAnalysis: Identifiable, Codable, Sendable {
+nonisolated struct LabelAnalysis: Identifiable, Codable, Sendable {
     let id: UUID
     let productName: String
     let referenceStandard: ReferenceStandard
@@ -30,7 +30,7 @@ struct LabelAnalysis: Identifiable, Codable, Sendable {
 
 // MARK: - Hashable (id-based for NavigationPath)
 
-extension LabelAnalysis: Hashable {
+nonisolated extension LabelAnalysis: Hashable {
     static func == (lhs: LabelAnalysis, rhs: LabelAnalysis) -> Bool {
         lhs.id == rhs.id
     }
@@ -41,7 +41,7 @@ extension LabelAnalysis: Hashable {
 
 // MARK: - Schema Versioning
 
-extension LabelAnalysis {
+nonisolated extension LabelAnalysis {
     nonisolated static let currentSchemaVersion = 1
 
     nonisolated static let disclaimer = """
@@ -65,7 +65,7 @@ extension LabelAnalysis {
 
 // MARK: - Convenience
 
-extension LabelAnalysis {
+nonisolated extension LabelAnalysis {
     var hasNutrients: Bool { !nutrientAnalyses.isEmpty }
     var hasHerbals: Bool { !herbalEntries.isEmpty }
     var hasProbiotics: Bool { !probioticEntries.isEmpty }

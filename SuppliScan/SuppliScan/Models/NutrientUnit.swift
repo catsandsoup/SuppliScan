@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum NutrientUnit: String, Codable, Hashable, CaseIterable, Sendable {
+nonisolated enum NutrientUnit: String, Codable, Hashable, CaseIterable, Sendable {
     case mg
     case mcg
     case g
@@ -16,7 +16,7 @@ enum NutrientUnit: String, Codable, Hashable, CaseIterable, Sendable {
     case unknown // OCR extracted an unrecognised unit string — preserved for review
 }
 
-extension NutrientUnit {
+nonisolated extension NutrientUnit {
     /// Units that CalculationService accepts. .iu must be converted first.
     static var calculationUnits: Set<NutrientUnit> { [.mg, .mcg, .g] }
 

@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum ReviewFlag: String, Codable, Hashable, CaseIterable, Sendable {
+nonisolated enum ReviewFlag: String, Codable, Hashable, CaseIterable, Sendable {
     case amountNotFound          // no numeric amount could be extracted
     case unitUnknown             // unit string not in NutrientUnit table
     case dualUnit                // both IU and metric present on label
@@ -25,7 +25,7 @@ enum ReviewFlag: String, Codable, Hashable, CaseIterable, Sendable {
     case canonicalNameInferred   // name matched via alias, not exact match
 }
 
-extension ReviewFlag {
+nonisolated extension ReviewFlag {
     /// Short user-facing label for the ReviewView badge.
     var shortLabel: String {
         switch self {

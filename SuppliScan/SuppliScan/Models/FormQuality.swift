@@ -10,7 +10,7 @@
 
 import Foundation
 
-struct FormQuality: Codable, Hashable, Sendable {
+nonisolated struct FormQuality: Codable, Hashable, Sendable {
     let tier: FormTier
     let rationale: String
     let isAIInferred: Bool      // MUST default to false — only AIService sets true
@@ -20,7 +20,7 @@ struct FormQuality: Codable, Hashable, Sendable {
 
 // MARK: - FormTier
 
-enum FormTier: Int, Codable, Hashable, CaseIterable, Comparable, Sendable {
+nonisolated enum FormTier: Int, Codable, Hashable, CaseIterable, Comparable, Sendable {
     case tier1 = 1   // High bioavailability, well-evidenced
     case tier2 = 2   // Moderate bioavailability, commonly used
     case tier3 = 3   // Low bioavailability, cheap filler forms
@@ -31,7 +31,7 @@ enum FormTier: Int, Codable, Hashable, CaseIterable, Comparable, Sendable {
     }
 }
 
-extension FormTier {
+nonisolated extension FormTier {
     var displayLabel: String {
         switch self {
         case .tier1: "T1"

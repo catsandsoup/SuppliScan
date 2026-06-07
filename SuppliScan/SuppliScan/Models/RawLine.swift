@@ -10,7 +10,7 @@
 
 import Foundation
 
-struct RawLine: Identifiable, Codable, Hashable, Sendable {
+nonisolated struct RawLine: Identifiable, Codable, Hashable, Sendable {
     let id: UUID
     let text: String            // exact OCR text — never modified
     let lineNumber: Int         // position in OCR output for ordering
@@ -31,7 +31,7 @@ struct RawLine: Identifiable, Codable, Hashable, Sendable {
 
 // MARK: - UserResolution
 
-enum UserResolution: Codable, Hashable, Sendable {
+nonisolated enum UserResolution: Codable, Hashable, Sendable {
     case convertedToNutrient(NutrientEntry)
     case convertedToHerbal(HerbalEntry)
     case convertedToProbiotic(ProbioticEntry)

@@ -6,7 +6,7 @@
 
 import Foundation
 
-extension Bundle {
+nonisolated extension Bundle {
     /// Load and decode a bundled JSON file from Resources/ReferenceData/.
     func referenceData<T: Decodable>(named name: String, as type: T.Type) throws -> T {
         guard let url = self.url(forResource: name, withExtension: "json") else {

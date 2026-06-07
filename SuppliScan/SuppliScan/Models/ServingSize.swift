@@ -10,7 +10,7 @@
 
 import Foundation
 
-struct ServingSize: Codable, Hashable, Sendable {
+nonisolated struct ServingSize: Codable, Hashable, Sendable {
     var quantity: Double           // label's stated serving, e.g. 1, 2, 5
     var unit: ServingUnit
     var quantityOptions: [Double]  // available options, e.g. [1, 2, 3] for variable dosing
@@ -37,7 +37,7 @@ struct ServingSize: Codable, Hashable, Sendable {
 
 // MARK: - ServingUnit
 
-enum ServingUnit: String, Codable, Hashable, CaseIterable, Sendable {
+nonisolated enum ServingUnit: String, Codable, Hashable, CaseIterable, Sendable {
     case capsule
     case tablet
     case teaspoon

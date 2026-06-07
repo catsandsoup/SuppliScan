@@ -7,14 +7,14 @@
 
 import Foundation
 
-enum LoadingState<T: Sendable>: Sendable {
+nonisolated enum LoadingState<T: Sendable>: Sendable {
     case idle
     case loading
     case loaded(T)
     case failed(AppError)
 }
 
-extension LoadingState {
+nonisolated extension LoadingState {
     var isLoading: Bool {
         if case .loading = self { return true }
         return false

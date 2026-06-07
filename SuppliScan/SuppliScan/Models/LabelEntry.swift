@@ -10,7 +10,7 @@
 
 import Foundation
 
-enum LabelEntry: Identifiable, Codable, Sendable {
+nonisolated enum LabelEntry: Identifiable, Codable, Sendable {
     case nutrient(NutrientEntry)
     case herbal(HerbalEntry)
     case probiotic(ProbioticEntry)
@@ -28,7 +28,7 @@ enum LabelEntry: Identifiable, Codable, Sendable {
 
 // MARK: - Hashable (id-based for NavigationPath performance)
 
-extension LabelEntry: Hashable {
+nonisolated extension LabelEntry: Hashable {
     static func == (lhs: LabelEntry, rhs: LabelEntry) -> Bool {
         lhs.id == rhs.id
     }
@@ -39,7 +39,7 @@ extension LabelEntry: Hashable {
 
 // MARK: - Convenience accessors
 
-extension LabelEntry {
+nonisolated extension LabelEntry {
     var asNutrient: NutrientEntry? {
         if case .nutrient(let e) = self { return e }
         return nil

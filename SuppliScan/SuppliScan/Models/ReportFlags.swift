@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ReportFlags: Codable, Sendable {
+nonisolated struct ReportFlags: Codable, Sendable {
     let nutrientsAboveUL: [NutrientAnalysis]       // UL% > 100
     let nutrientsAtUL: [NutrientAnalysis]          // UL% 90–100 (within 10% of UL)
     let lowBioavailabilityForms: [NutrientAnalysis] // tier3 or tier4
@@ -16,7 +16,7 @@ struct ReportFlags: Codable, Sendable {
     let servingSizeAdjusted: Bool                  // true if multiplier != 1.0
 }
 
-extension ReportFlags {
+nonisolated extension ReportFlags {
     static let empty = ReportFlags(
         nutrientsAboveUL: [],
         nutrientsAtUL: [],

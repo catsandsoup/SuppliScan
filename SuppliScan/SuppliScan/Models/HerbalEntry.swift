@@ -10,7 +10,7 @@
 
 import Foundation
 
-struct HerbalEntry: Identifiable, Codable, Hashable, Sendable {
+nonisolated struct HerbalEntry: Identifiable, Codable, Hashable, Sendable {
     let id: UUID
     var latinName: String              // e.g. "Silybum marianum"
     var commonName: String?            // e.g. "St Mary's Thistle"
@@ -55,7 +55,7 @@ struct HerbalEntry: Identifiable, Codable, Hashable, Sendable {
 
 // MARK: - HerbalStandardisation
 
-struct HerbalStandardisation: Codable, Hashable, Sendable {
+nonisolated struct HerbalStandardisation: Codable, Hashable, Sendable {
     var compound: String     // e.g. "flavanolignans", "fatty acids", "silicon"
     var calculatedAs: String? // e.g. "silybin"
     var amount: Double
@@ -64,7 +64,7 @@ struct HerbalStandardisation: Codable, Hashable, Sendable {
 
 // MARK: - ExtractType
 
-enum ExtractType: String, Codable, Hashable, CaseIterable, Sendable {
+nonisolated enum ExtractType: String, Codable, Hashable, CaseIterable, Sendable {
     case dryConcExtract   // AU TGA standard dry concentrate
     case softConcentrate  // lipid-based soft extract (e.g. saw palmetto)
     case driedHerb        // whole dried herb powder

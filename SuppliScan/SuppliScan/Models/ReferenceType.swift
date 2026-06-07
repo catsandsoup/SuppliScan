@@ -7,13 +7,13 @@
 
 import Foundation
 
-enum ReferenceType: String, Codable, Hashable, CaseIterable, Sendable {
+nonisolated enum ReferenceType: String, Codable, Hashable, CaseIterable, Sendable {
     case rdi  // Recommended Dietary Intake — the primary reference value
     case ear  // Estimated Average Requirement — used when RDI not established
     case ai   // Adequate Intake — used when insufficient evidence for RDI or EAR
 }
 
-extension ReferenceType {
+nonisolated extension ReferenceType {
     var abbreviation: String { rawValue.uppercased() }
 
     var displayName: String {

@@ -13,7 +13,7 @@
 
 import Foundation
 
-struct NutrientEntry: Identifiable, Codable, Hashable, Sendable {
+nonisolated struct NutrientEntry: Identifiable, Codable, Hashable, Sendable {
     let id: UUID
     var canonicalName: String        // matched via alias table, e.g. "Vitamin D"
     var displayName: String          // as it appeared on label, e.g. "Cholecalciferol"

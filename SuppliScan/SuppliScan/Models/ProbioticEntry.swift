@@ -10,7 +10,7 @@
 
 import Foundation
 
-struct ProbioticEntry: Identifiable, Codable, Hashable, Sendable {
+nonisolated struct ProbioticEntry: Identifiable, Codable, Hashable, Sendable {
     let id: UUID
     var genus: String        // e.g. "Lactobacillus"
     var species: String      // e.g. "rhamnosus"

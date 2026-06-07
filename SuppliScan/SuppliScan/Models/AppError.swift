@@ -10,7 +10,7 @@
 
 import Foundation
 
-enum AppError: LocalizedError, Sendable {
+nonisolated enum AppError: LocalizedError, Sendable {
     // MARK: OCR
     case ocrNoTextFound
     case ocrLowConfidence(recognisedText: String)
@@ -49,7 +49,7 @@ enum AppError: LocalizedError, Sendable {
     case unknown(description: String)
 }
 
-extension AppError {
+nonisolated extension AppError {
     var errorDescription: String? {
         switch self {
         case .ocrNoTextFound:

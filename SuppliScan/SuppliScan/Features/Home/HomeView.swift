@@ -10,7 +10,6 @@
 
 import SwiftUI
 import SwiftData
-import OSLog
 
 struct HomeView: View {
     @Environment(NavigationRouter.self) private var router
@@ -18,20 +17,32 @@ struct HomeView: View {
     @Query(sort: \ScanRecord.createdAt, order: .reverse)
     private var recentRecords: [ScanRecord]
 
+    @State private var viewModel = HomeViewModel()
     @State private var showSettings = false
-
-    private var recentThree: [ScanRecord] {
-        Array(recentRecords.prefix(3))
-    }
 
     var body: some View {
         @Bindable var router = router
+        @Bindable var viewModel = viewModel
+
         NavigationStack(path: $router.path) {
             ScrollView {
+                let recentSummaries = viewModel.recentRecords(from: recentRecords)
+
                 VStack(spacing: 24) {
-                    scanButton
-                    if !recentThree.isEmpty {
-                        recentScansSection
+                    HomeScanActionsView(
+                        scan: startScan,
+                        enterManually: enterManually
+                    )
+
+                    if recentSummaries.isEmpty {
+                        HomeEmptyStateView()
+                    } else {
+                        HomeRecentScansSectionView(
+                            records: recentSummaries,
+                            loadingRecordID: viewModel.loadingRecordID,
+                            open: viewModel.openRecord(id:),
+                            seeAll: showHistory
+                        )
                     }
                 }
                 .padding(.horizontal, 16)
@@ -47,80 +58,43 @@ struct HomeView: View {
                 }
             }
             .navigationDestination(for: AppDestination.self) { destination in
-                destinationView(for: destination)
+                AppDestinationView(destination: destination)
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView()
             }
-        }
-    }
-
-    // MARK: - Scan Button
-
-    private var scanButton: some View {
-        VStack(spacing: 12) {
-            Button("Scan Label", systemImage: "camera.viewfinder") {
-                router.navigate(to: .scan)
+            .alert(
+                "Couldn’t Load Report",
+                isPresented: $viewModel.isShowingLoadError
+            ) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("The saved scan could not be opened.")
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            .frame(maxWidth: .infinity)
-
-            Button("Enter Manually") {
-                router.navigate(to: .review(entries: [], serving: nil))
-            }
-            .buttonStyle(.borderless)
-        }
-    }
-
-    // MARK: - Recent Scans
-
-    private var recentScansSection: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Recent Scans")
-                    .font(.headline)
-                Spacer()
-                Button("See All") {
-                    router.navigate(to: .history)
-                }
-                .font(.subheadline)
-            }
-            ForEach(recentThree) { record in
-                ScanHistoryRowView(record: record) {
-                    loadAndNavigate(record: record)
+            .onAppear {
+                viewModel.configure { [dependencies] id in
+                    try await dependencies.persistence.fetchAnalysis(id: id)
                 }
             }
-        }
-    }
-
-    // MARK: - Navigation Destinations
-
-    @ViewBuilder
-    private func destinationView(for destination: AppDestination) -> some View {
-        switch destination {
-        case .scan:
-            ScanView()
-        case .review(let entries, let serving):
-            ReviewView(entries: entries, extractedServing: serving)
-        case .report(let analysis):
-            ReportView(analysis: analysis)
-        case .history:
-            HistoryView()
+            .onChange(of: viewModel.pendingDestination) {
+                guard let destination = viewModel.consumePendingDestination() else { return }
+                router.navigate(to: destination)
+            }
         }
     }
 
     // MARK: - Actions
 
-    private func loadAndNavigate(record: ScanRecord) {
-        Task {
-            do {
-                let analysis = try await dependencies.persistence.fetchAnalysis(id: record.id)
-                guard let analysis else { return }
-                router.navigate(to: .report(analysis))
-            } catch {
-                Logger.navigation.error("Failed to load report: \(error.localizedDescription)")
-            }
-        }
+    private func startScan() {
+        router.navigate(to: .scan)
     }
+
+    private func enterManually() {
+        router.navigate(to: .review(entries: [], serving: nil))
+    }
+
+    private func showHistory() {
+        router.navigate(to: .history)
+    }
+
 }

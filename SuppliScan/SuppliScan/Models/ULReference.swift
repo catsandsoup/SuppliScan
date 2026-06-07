@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ULReference: Codable, Hashable, Sendable {
+nonisolated struct ULReference: Codable, Hashable, Sendable {
     let standard: ReferenceStandard
     let demographic: String   // group key, e.g. "adult_male_19_50"
     let value: Double

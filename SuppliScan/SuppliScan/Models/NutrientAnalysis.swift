@@ -10,7 +10,7 @@
 
 import Foundation
 
-struct NutrientAnalysis: Identifiable, Codable, Sendable {
+nonisolated struct NutrientAnalysis: Identifiable, Codable, Sendable {
     let id: UUID
     let entry: NutrientEntry
     let rdiPercent: Double?          // nil if no RDI established for this nutrient
@@ -46,7 +46,7 @@ struct NutrientAnalysis: Identifiable, Codable, Sendable {
 
 // MARK: - Hashable (id-based)
 
-extension NutrientAnalysis: Hashable {
+nonisolated extension NutrientAnalysis: Hashable {
     static func == (lhs: NutrientAnalysis, rhs: NutrientAnalysis) -> Bool {
         lhs.id == rhs.id
     }
