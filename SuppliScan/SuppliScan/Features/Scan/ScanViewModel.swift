@@ -48,6 +48,10 @@ final class ScanViewModel {
                     ? .ocrLowConfidence(recognisedText: result.rawText)
                     : nil
                 self?.loadingState = .loaded(result)
+
+                // Brief pause so the "Label detected" badge renders before navigating
+                try await Task.sleep(for: .milliseconds(700))
+                self?.navigateToReview()
             } catch is CancellationError {
                 self?.loadingState = .idle
             } catch let error as AppError {

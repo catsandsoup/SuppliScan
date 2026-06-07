@@ -9,13 +9,21 @@ final class SuppliScanUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    func testHomeScreenLaunchesWithPrimaryActions() throws {
+    func testTabBarLaunchesWithAllTabs() throws {
         let app = XCUIApplication()
         app.launch()
 
-        XCTAssertTrue(app.staticTexts["SuppliScan"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["Scan Label"].exists)
-        XCTAssertTrue(app.buttons["Enter Manually"].exists)
-        XCTAssertTrue(app.buttons["Settings"].exists)
+        XCTAssertTrue(app.tabBars.buttons["Scan"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.tabBars.buttons["Analysis"].exists)
+        XCTAssertTrue(app.tabBars.buttons["History"].exists)
+        XCTAssertTrue(app.tabBars.buttons["Settings"].exists)
+    }
+
+    func testScanTabShowsImportButton() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        app.tabBars.buttons["Scan"].tap()
+        XCTAssertTrue(app.buttons["Import Label Photo"].waitForExistence(timeout: 5))
     }
 }

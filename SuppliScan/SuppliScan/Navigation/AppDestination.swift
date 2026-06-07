@@ -13,6 +13,8 @@ import Foundation
 enum AppDestination: Hashable, Sendable {
     case scan
     case review(entries: [LabelEntry], serving: ServingSize?)
-    case report(LabelAnalysis)
+    case analysis(LabelAnalysis)
+    case nutrientDetail(NutrientAnalysis)
+    case formsAndPotency([NutrientAnalysis])
     case history
 }

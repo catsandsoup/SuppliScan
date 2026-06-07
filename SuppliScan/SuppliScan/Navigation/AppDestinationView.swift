@@ -12,8 +12,12 @@ struct AppDestinationView: View {
             ScanView()
         case .review(let entries, let serving):
             ReviewView(entries: entries, extractedServing: serving)
-        case .report(let analysis):
-            ReportView(analysis: analysis)
+        case .analysis(let analysis):
+            AnalysisView(analysis: analysis)
+        case .nutrientDetail(let analysis):
+            NutrientDetailView(analysis: analysis)
+        case .formsAndPotency(let analyses):
+            FormsAndPotencyView(analyses: analyses)
         case .history:
             HistoryView()
         }

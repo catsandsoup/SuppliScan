@@ -42,7 +42,7 @@ final class HistoryViewModel {
                 try Task.checkCancellation()
 
                 if let analysis {
-                    pendingDestination = .report(analysis)
+                    pendingDestination = .analysis(analysis)
                 } else {
                     isShowingLoadError = true
                 }

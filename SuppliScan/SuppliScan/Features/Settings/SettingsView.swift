@@ -1,31 +1,53 @@
 // SettingsView.swift
-// SuppliScan — STUB (full implementation in Views layer)
-// Skills to invoke when implementing: swiftui-pro, writing-for-interfaces
+// SuppliScan
 
 import SwiftUI
 
 struct SettingsView: View {
-    @AppStorage("defaultStandard") private var defaultStandard: String = ReferenceStandard.au.rawValue
+    @AppStorage("defaultStandard") private var defaultStandard: ReferenceStandard = .au
     @AppStorage("defaultDemographicKey") private var defaultDemographicKey: String = Demographic.defaultAdult.key
+    @Environment(AppDependencies.self) private var dependencies
+
+    @State private var showDeleteConfirm = false
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("Default Reference Standard") {
-                    Picker("Standard", selection: $defaultStandard) {
-                        ForEach(ReferenceStandard.allCases, id: \.rawValue) { standard in
-                            Text(standard.displayName).tag(standard.rawValue)
+        Form {
+            Section("Default Reference Standard") {
+                StandardPickerView(selection: $defaultStandard)
+            }
+
+            Section("Default Profile") {
+                DemographicPickerView(selectedKey: $defaultDemographicKey)
+            }
+
+            Section("Data") {
+                Button("Delete All Scans", role: .destructive) {
+                    showDeleteConfirm = true
+                }
+                .confirmationDialog(
+                    "Delete all saved scans?",
+                    isPresented: $showDeleteConfirm,
+                    titleVisibility: .visible
+                ) {
+                    Button("Delete All", role: .destructive) {
+                        Task {
+                            try? await dependencies.persistence.deleteAll()
                         }
                     }
-                    .pickerStyle(.segmented)
-                }
-                Section("About") {
-                    LabeledContent("Version", value: Bundle.main.appVersionString)
+                    Button("Cancel", role: .cancel) { }
                 }
             }
-            .navigationTitle("Settings")
-            .navigationBarTitleDisplayMode(.inline)
+
+            Section("About") {
+                LabeledContent("Version", value: Bundle.main.appVersionString)
+                LabeledContent("Reference Data", value: "NHMRC 2023 · NIH/FDA · EFSA")
+                Text(LabelAnalysis.disclaimer)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
+        .navigationTitle("Settings")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

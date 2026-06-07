@@ -19,8 +19,6 @@ struct SuppliScanApp: App {
     private let container: ModelContainer
     private let dependencies: AppDependencies
 
-    @State private var router = NavigationRouter()
-
     init() {
         let built = Self.makeContainer()
         self.container = built
@@ -35,8 +33,7 @@ struct SuppliScanApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView()
-                .environment(router)
+            RootTabView()
                 .environment(dependencies)
         }
         // Inject for @Query reads in Views (HistoryView, HomeView)

@@ -18,8 +18,8 @@ struct HomeViewModelTests {
         viewModel.openRecord(id: expectedID)
         await Task.yield()
 
-        guard case .report(let analysis)? = viewModel.consumePendingDestination() else {
-            Issue.record("Expected report destination")
+        guard case .analysis(let analysis)? = viewModel.consumePendingDestination() else {
+            Issue.record("Expected analysis destination")
             return
         }
 

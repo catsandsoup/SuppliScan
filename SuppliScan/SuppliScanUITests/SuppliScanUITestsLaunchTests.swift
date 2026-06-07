@@ -22,7 +22,7 @@ final class SuppliScanUITestsLaunchTests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
 
-        XCTAssertTrue(app.staticTexts["SuppliScan"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.tabBars.buttons["Scan"].waitForExistence(timeout: 5))
 
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = "Launch Screen"

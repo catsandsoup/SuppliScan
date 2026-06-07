@@ -2,6 +2,152 @@
 
 Last updated: 2026-06-07
 
+---
+
+## Product Vision
+
+**The hero moment:** Point the camera at a supplement bottle. Within 3 seconds see a plain-English verdict and traffic-light score — "Good form, adequate dose, no concerns" or "⚠ Selenium 133% of UL." Tap for the full clinical breakdown. No "Import Photo," no "Analyse" button, no empty pending screens.
+
+This is a **label-analysis app**, not a supplement-tracking app. There is no daily stack log, no "taken today" count, no reminder schedule, no dose-logging. Features from the Apple Award brief that assume a tracking model (daily widget showing "3 of 7 taken," Siri "log my supplements," Watch tap-to-log, Dynamic Island reminder pill) belong to a different product. Do not build them until the data model supports a tracked stack concept. The features that do transfer: live camera scan as the hero, HealthKit nutrient write after analysis, exportable PDF to share with a GP.
+
+**Apple Award target:** The path to a Design Award is: live scan that works better than anything else on the App Store, real clinical data that catches overlaps users can't see (the selenium-across-two-products example), and craft that makes every interaction feel considered. That is v2+. V1 must simply work.
+
+---
+
+## User Archetypes (from Journey Map — nutriscan_user_journey_map.svg)
+
+Four archetypes. The current app serves none of them fully.
+
+| Archetype | Core job | Minimum viable | Current |
+|---|---|---|---|
+| Overwhelmed Beginner | "Is this magnesium good?" | Plain-English verdict in ≤5s | ❌ "Pending" |
+| Stack Builder | "Am I over on selenium across my stack?" | Cross-product total vs UL | ❌ No stack |
+| Safety-Checker | "Is this safe while pregnant?" | UL check + exportable report | ❌ No UL data |
+| Value Seeker | At-shelf, two bottles in hand | Live scan + form quality in 10s | ❌ No camera |
+
+**Key design tension (from journey map):** Clinician wants raw data, no friction. Users need plain English + context. Answer: dual-layer UI — verdict + traffic light as the default, clinical detail on tap.
+
+---
+
+## Screenshot Audit — Critical Bugs (2026-06-07)
+
+Screenshots taken on device. Five "why" problems observed.
+
+### Why is there no live scan?
+The Scan tab is a static grey box with "Import a supplement label photo." There is no live camera feed. Every use case that happens in real time — standing in a shop comparing two bottles — is blocked. The app cannot be used as described.
+**Root cause:** `ScanView` only implements photo library import. No `AVCaptureSession` or live `VNRecognizeTextRequest`.
+**Fix:** Replace the grey box with a live camera preview. Keep photo import as secondary. See revised Phase 2.
+
+### Why do I have to click Analyse?
+ReviewView has an "Analyse" button that users must deliberately tap. For most users the review step adds no value — they just want the result.
+**Root cause:** The Review step was designed as a clinical correction gate. For most users it should be transparent. The Analyse button exists because ReportService isn't wired — it's a developer placeholder that leaked into the product.
+**Fix:** Auto-analyse on appearance of ReviewView. Show a brief loading state. Surface the edit option for users who want to correct entries before the result is shown.
+
+### Why do pages automatically change?
+After tapping Analyse, the app silently switches to the Analysis tab. Users have no idea why they're on a different screen.
+**Root cause:** `AnalysisStore.currentAnalysis` triggers `selectedTab = .analysis` in RootTabView. This is the cross-tab mechanism from the previous session — it was an architectural placeholder, not a validated UX decision.
+**Fix proposal (decide before implementing):** Option A — push AnalysisView within the Scan tab's NavigationStack (Scan → Review → Analysis stays in the Scan stack, no tab switch). Option B — keep the tab switch but add an explicit transition (animate the tab bar, show a brief "Analysis ready" banner). Option A is simpler for the user. The current approach is the worst of both worlds.
+
+### Why is there a Pending page?
+The Analysis screen shows "Nutrient Analysis Pending — Analysis will appear here once the report service is connected." This is a developer note shown to users.
+**Root cause:** Phase 1 (reference data) and Phase 4 (ReportService) are not built. The placeholder passes through to the UI.
+**Fix:** Phases 1 + 4 must be completed. The "Pending" content unavailable view must never appear in a release build — gate the whole flow behind a feature flag or simply don't ship until it works.
+
+### Why is the OCR output garbage?
+The Review screen on a real Cabot Health magnesium label shows:
+- "Taurine" → Needs review (separate row from "1000mg" → Needs review)
+- "element", "manies", "tot" → Needs review (OCR word fragments)
+- "Also contains malic acid, acacia, stevia..." → Needs review (allergen fine-print)
+- "(providing Magnesium" → parsed as an ingredient rather than a sub-entry line
+
+The label actually reads (two-column format):
+```
+Taurine                              1000mg
+Magnesium amino acid chelate         1750mg
+  (providing elemental magnesium 350mg)
+Magnesium ascorbate                   210mg
+  (providing elemental magnesium  13mg)
+Zinc (as amino acid chelate)            5mg
+```
+
+**Root cause diagnosis (from screenshots, verify against actual OCR output):** The parser is marked "done and tested" but fails on every real label. The likely explanation is that the test fixtures were hand-crafted strings, not actual Vision framework output. Real Vision output for a two-column label returns the name token and the amount token as separate observations with X-position data — left-column tokens (nutrient names) and right-column tokens (amounts) are not on the same line in the raw Vision output. A text-line heuristic that expects "Taurine 1000mg" on one line will never see that string.
+
+Additionally:
+- Serving size description line ("Each level metric teaspoon (5g dose) contains:") is being parsed as an ingredient
+- Fine-print / allergen disclaimer text at the bottom of the label is being OCR'd and surfaced as unresolved entries
+- "1400-5" (product code from label background) is being captured
+
+**Fix:** Phase 3 parser overhaul — see revised Phase 3 requirements. The fix likely requires using Vision bounding-box geometry to reconstruct the two-column table structure, not purely text heuristics. The next session must inspect actual `VNRecognizedTextObservation` output from a real label before deciding the fix approach.
+
+---
+
+## Redesigned Interaction Model (Proposal)
+
+This is a proposed flow, not a final decision. Validate before implementing.
+
+**Target experience:**
+```
+Open app → live camera already running (like a QR scanner)
+Point at label → corners pulse green when structured text detected
+Tap shutter button (or auto-capture after 1.5s stable)
+  ↓ [1-3 second analysis]
+Result screen (within Scan stack — no tab switch):
+
+  ┌─────────────────────────────────┐
+  │ Magnesium Complex · Cabot Health│
+  │ ●●●○  Good quality blend        │
+  │ 400mg elemental · 57% of RDI   │
+  │ [View Full Analysis]            │
+  └─────────────────────────────────┘
+  Scroll ↓ for full clinical detail
+```
+
+**Changes from current flow:**
+- Grey import box → live camera viewfinder (always on in Scan tab)
+- "Review Required" title → parsed product name or editable placeholder
+- Mandatory Review + Analyse button → auto-analyse; Edit available but not required
+- Auto-tab-switch to Analysis → push result screen within Scan stack
+- "Nutrient Analysis Pending" → only shows real data or an honest "scanning..." loading state
+
+**Dual-layer result screen:**
+- Layer 1 (default): traffic-light score + one-sentence verdict + primary metric (e.g. "57% of RDI for Magnesium")
+- Layer 2 (tap "Full Analysis"): the current AnalysisView with Summary/Nutrients/Details tabs
+
+---
+
+## Apple Platform Integrations — Post-v1 Roadmap
+
+These are **not v1**. Do not build until the core analysis loop is correct and tested on real labels.
+
+| Integration | Relevance to this app | Target |
+|---|---|---|
+| HealthKit nutrient write | Write Magnesium, Vitamin D, Zinc, etc. to Apple Health after scan | v2 |
+| WidgetKit | "Last scan: Magnesium Complex — Good" glanceable widget | v2 |
+| Spotlight Search | Find any saved scan by product name | v2 |
+| PDF export to GP | Share full clinical report via share sheet | v2 (Phase 6) |
+| Siri Shortcuts | "Scan this label" intent | v3 |
+| Live Activities | Scan-in-progress on Dynamic Island | v3 |
+| Apple Watch | View last scan result on wrist | v3 |
+
+**Not applicable to this app (tracking model required):**
+- "3 of 7 supplements taken today" widget — requires daily dose log, not in data model
+- "Hey Siri, log my morning supplements" — requires regimen, not in scope
+- Reminder/notification for missed doses — different product category
+
+---
+
+## Apple Design Award Pillars — v1 Target vs Current
+
+| Pillar | v1 minimum needed | Current state |
+|---|---|---|
+| Originality | Live scan that outperforms competitors, real NRV verdict | ❌ Photo import + Pending |
+| Inclusivity | Full VoiceOver, all Dynamic Type sizes, Reduce Motion respected | ⚠️ Unverified |
+| Delight | Every tap has intentional haptic, progress bars animate, scan feels magical | ❌ Barebones |
+| Innovation | Catches what users can't see (selenium overlap example) | ❌ Nothing computed |
+| Impact | User can share a real report with their GP | ❌ No data, no export |
+
+---
+
 ## Current Truth
 
 - Persistence API is SwiftData. No direct Core Data stack or `.xcdatamodeld` exists.
@@ -68,22 +214,27 @@ Acceptance criteria:
 
 ## Phase 2 — OCR Pipeline
 
-Desired outcome: the app captures supplement labels and produces reliable raw text with reviewable confidence failures.
+Desired outcome: the app captures supplement labels via live camera and produces reliable raw text with reviewable confidence failures.
+
+### Critical issue (from screenshots)
+The current ScanView is a static grey box with photo-library import only. There is no live camera. This blocks the primary use case ("point at a label in a shop") and is the first thing a user notices.
 
 Steps:
 
-1. Build camera/photo input behind a native SwiftUI screen.
-2. Use Vision for OCR text recognition; use VisionKit only where it adds capture UX.
-3. Add camera permission copy that explains label scanning, not health tracking.
-4. Downsample images to max 2000 px before OCR.
-5. Support multi-line ingredient panels, supplement facts panels, and labels split across photo frames.
-6. Return raw text plus confidence metadata.
-7. Throw or surface `.ocrNoTextFound` and `.ocrLowConfidence(recognisedText:)`.
-8. Add a review path for users to correct OCR before calculation.
+1. **Replace the grey import box with a live camera viewfinder.** Use `AVCaptureSession` with a `AVCaptureVideoPreviewLayer` embedded in a SwiftUI view. This should be the default state of the Scan tab — always on, like a QR scanner. Photo library import stays as a secondary option (small button below the viewfinder).
+2. Add animated corners (pulse green when a rectangular region with dense text is detected) to signal "label detected."
+3. On shutter tap (or 1.5-second stable-detection auto-capture), freeze frame and run `VNRecognizeTextRequest` on the captured `CVPixelBuffer`.
+4. **Return raw `VNRecognizedTextObservation` array, not just strings.** The bounding-box geometry (`boundingBox`) is critical for the Phase 3 parser to reconstruct the two-column table structure. Do not reduce observations to strings before handing to the parser.
+5. Use Vision for OCR text recognition; use VisionKit only where it adds capture UX.
+6. Add camera permission copy that explains label scanning, not health tracking.
+7. Downsample still images to max 2000 px before OCR; live preview can run at native resolution.
+8. Support multi-line ingredient panels, supplement facts panels, and labels split across photo frames.
+9. Throw or surface `.ocrNoTextFound` and `.ocrLowConfidence(recognisedText:)`.
 
 Acceptance criteria:
 
-- Simulator or device flow reaches scan screen without placeholder UI.
+- Scan tab opens directly to live camera preview (not a grey box or import button).
+- OCR service returns `[VNRecognizedTextObservation]` with bounding-box data preserved, not just `[String]`.
 - OCR service has deterministic unit tests for low-confidence, no-text, and multiline joining.
 - Real label fixture tests cover the corpus in `Documentation/TEST_CORPUS.md`.
 - OCR output never goes straight to calculation without review when confidence is low.
@@ -92,18 +243,48 @@ Acceptance criteria:
 
 Desired outcome: raw OCR text becomes typed entries without silent guesses.
 
+### Critical issue (from screenshots) — real-label parsing is completely broken
+The parser is marked "done and tested" but fails on every real label tested. The test fixtures are apparently hand-crafted strings, not actual Vision output. On a Cabot Health magnesium label:
+- "Taurine" and "1000mg" appear as separate unresolved rows instead of one paired entry
+- "Magnesium amino acid chelate" and "1750mg" — same failure
+- "(providing Magnesium" appears as an ingredient row
+- "element", "manies", "tot" appear as unresolved (OCR fragments of "elemental", possibly "companies", "total")
+- "Also contains malic acid, acacia, stevia..." and full allergen disclaimer text appear as unresolved rows
+
+**Root cause to investigate before fixing:** Real supplement labels use a two-column format (ingredient name left, amount right). Vision's `VNRecognizeTextRequest` may return the name and amount as separate `VNRecognizedTextObservation` instances with distinct x-positions, not as one string "Taurine 1000mg". The parser likely assumes joined-string input. **Before rewriting the parser: print the raw `VNRecognizedTextObservation` array from a real label and determine whether name+amount arrive on the same line or as spatially-separated tokens. The fix approach depends on this.**
+
+If name and amount are on the same line (one observation): the regex pairing logic is wrong.
+If name and amount are separate observations (two-column): the parser needs geometry-based column reconstruction — group observations by Y-position band, then match left-column (name) to right-column (amount) on the same row.
+
+Additional fixes needed regardless:
+- **Serving size line detection:** The line "Each level metric teaspoon (5g dose) contains:" must be recognized as the serving descriptor and not passed to entry parsing. Add heuristics: contains "contains:", follows a standalone weight "Xg", or is the first dense-text line.
+- **Parenthetical providing-lines:** "(providing elemental magnesium 350mg)" should be tagged as a `.subEntry(of: parentNutrient)`, not a standalone entry.
+- **Fine-print / allergen disclaimer filtering:** Text blocks starting with "Also contains", "Contains no", "Free of", "Does not contain" are ingredient lists or allergen statements. Strip or tag as non-nutrient before entry parsing.
+- **Short-fragment filtering:** Single words or fragments under ~4 characters that don't match any known nutrient name should be dropped or aggregated, not surfaced as unresolved entries.
+- **Product code / label artifact filtering:** Alphanumeric strings like "1400-5" that match a product-code pattern (digits-digits) should be suppressed.
+
 Steps:
 
-1. Complete `ParserService` against every rule in `Documentation/PARSER_SPEC.md`.
-2. Add support for herbal entries, probiotic entries, raw unresolved lines, total lines, continuation lines, and sub-entry handling.
-3. Keep IU conversion inside parser/unit conversion boundaries.
-4. Ensure `CalculationService` receives no `.iu` values and applies serving multiplier exactly once.
-5. Build `FormQualityService` from curated form data before adding any AI fallback.
-6. Add AI fallback only for form-quality gaps, sending only nutrient name and form string.
-7. Preserve `isAIInferred` through Codable round trips and reports.
+1. **Inspect real Vision output first.** Add a debug dump that prints `VNRecognizedTextObservation` bounding boxes from a real label before any parsing. Record in `Documentation/TEST_CORPUS.md`.
+2. Fix ingredient/amount pairing based on findings from step 1.
+3. Add serving-size line detection (filter before entry parsing).
+4. Add parenthetical providing-line recognition → `.subEntry`.
+5. Add fine-print / disclaimer filtering.
+6. Add short-fragment and product-code suppression.
+7. Complete `ParserService` against every rule in `Documentation/PARSER_SPEC.md`.
+8. Add support for herbal entries, probiotic entries, raw unresolved lines, total lines, continuation lines, and sub-entry handling.
+9. Keep IU conversion inside parser/unit conversion boundaries.
+10. Ensure `CalculationService` receives no `.iu` values and applies serving multiplier exactly once.
+11. Build `FormQualityService` from curated form data before adding any AI fallback.
+12. Add AI fallback only for form-quality gaps, sending only nutrient name and form string.
+13. Preserve `isAIInferred` through Codable round trips and reports.
 
 Acceptance criteria:
 
+- Parser is tested against actual Vision output captured from a real label (not hand-crafted strings).
+- The Cabot Health magnesium label produces correct paired entries (Taurine 1000mg, Magnesium amino acid chelate 1750mg, Zinc 5mg) with no unresolved rows for those nutrients.
+- Allergen / fine-print text does not appear in the unresolved entries list.
+- OCR fragments under the minimum name length threshold do not appear as unresolved entries.
 - Parser corpus tests cover nutrients, herbs, probiotics, blends, totals, ranges, trace, sub-one, decimal comma, unknown units, and unresolved raw lines.
 - Calculation tests cover RDI%, UL%, nil reference data, missing amount, unsupported unit, and serving multipliers.
 - No AI path can alter RDI/UL, amount, serving, unit, or official reference values.
@@ -133,14 +314,53 @@ Acceptance criteria:
 
 Desired outcome: the app feels like a finished iOS 26 clinical utility, not a stub collection.
 
-Screens to finish:
+### Status: UI shell complete. Services not yet wired.
 
-- Home: themed empty state, recent scans, settings access, scan/manual entry.
-- Scan: camera/photo import, permission states, OCR progress, retry.
-- Review: editable parsed entries, serving-size editor, unresolved-line resolution, region/demographic picker.
-- Report: clinical summary, RDI/UL sections, form-quality section, flags, disclaimer, export/share.
-- History: search/filter, saved report open, delete with confirmation.
-- Settings: reference standard, demographic, privacy, disclaimer, source versions.
+**Architecture changes (done):**
+- `AppDestination` — renamed `.report` → `.analysis`, added `.nutrientDetail(NutrientAnalysis)`, `.formsAndPotency([NutrientAnalysis])`
+- `RootTabView` — 4-tab root (Scan · Analysis · History · Settings). Each tab owns its own `NavigationRouter` instance. `AnalysisStore` drives automatic tab switch after analyse.
+- `SuppliScanApp` — uses `RootTabView()` as root. No global `NavigationRouter`.
+- `AnalysisStore` — `@Observable @MainActor` holding `currentAnalysis: LabelAnalysis?`. Written by ReviewView; watched by RootTabView.
+
+**New model files (done):**
+- `LabelAnalysis+Placeholder.swift` — `LabelAnalysis.placeholder(entries:serving:standard:)` factory
+- `NutrientCategory.swift` — `all | vitamins | minerals | other` with `matches(_ analysis:)` predicate
+- `NutrientAnalysis+Display.swift` — `rdiColor`, `rdiPercentString`, `ulPercentString`, `doseString`, `rdiReferenceString`, `ulReferenceString`
+
+**Screens (done):**
+- `ReviewView` + `ReviewViewModel` — full implementation: SupplementFactsCard, serving selector, standard/demographic pickers, Analyse button
+- `AnalysisView` — 3 internal tabs (Summary · Nutrients · Details) using FilterChip + paged TabView
+- `NutrientDetailView` — RDI KPI, stats table, form quality section
+- `FormsAndPotencyView` — List of nutrients with form quality, tap to NutrientDetail
+- `HistoryView` — search, swipe-delete, EditButton, empty state
+- `SettingsView` — default standard/demographic, delete-all with confirmation, about/disclaimer
+
+**Components (done — all in `Components/`):**
+FilterChip · TierBadgeView · AIInferredBadgeView · FlagBannerView · ReportSummaryCardView · ReportSectionHeader · NutrientAnalysisRowView · NutrientFilterBar · ReviewEntryRowView · LabelRecognisedBannerView · SupplementFactsCardView · ServingSizeSelectorView · StandardPickerView · DemographicPickerView · HerbalRowView · ProbioticRowView · UnresolvedLineView · DisclaimerView · NutrientStatTable · FormPotencyRowView
+
+**Remaining items before Phase 5 acceptance criteria pass:**
+
+**Interaction design fixes (do these first — they address the "why" questions from user testing):**
+
+1. **Remove auto-tab-switch to Analysis** — `AnalysisStore.currentAnalysis` triggers `selectedTab = .analysis` in `RootTabView`. This is jarring and confusing. Decision required: push `AnalysisView` within the Scan tab's `NavigationStack` (Option A, preferred) OR keep tab switch but add an animated transition with a "Analysis ready" banner (Option B). Current behaviour (silent switch) is neither. Implement Option A unless deliberately choosing B.
+2. **Remove manual "Analyse" button friction** — `ReviewView` should auto-trigger analysis on appear (with a loading state) rather than requiring a button tap. The Analyse button becomes an "Edit entries first" gate only for users who actively want to review. Most users scan → get result, no button required.
+3. **Remove "Nutrient Analysis Pending" exposed developer state** — the `ContentUnavailableView` that shows "Analysis will appear here once the report service is connected" must never be visible in a release build. Gate behind an `#if DEBUG` flag or remove the view entirely until Phase 4 is wired. The empty summary card is acceptable as a loading state; the developer note is not.
+4. **Replace "Review Required" product name** — `LabelAnalysis.placeholder` uses "Review Required" as the product name. Parser should attempt to extract a product name from the label (first prominent text block above the ingredient panel). If extraction fails, use "Unnamed Product" and allow inline tap-to-edit.
+5. **AppStorage defaults wiring** — `ReviewViewModel.selectedStandard` and `.selectedDemographicKey` start hardcoded (shows "US" even when Settings is set to AU). Add `.onAppear` that reads `@AppStorage("defaultStandard")` and `@AppStorage("defaultDemographicKey")` and applies them.
+
+**Functionality fixes:**
+
+6. **SupplementFactsCardView edit-mode delete** — `.onDelete` on ForEach inside VStack doesn't work (SwiftUI requires List). Replace with per-row destructive Button shown when `isEditing = true`. Keep card styling.
+7. **Wire ReportService** (Phase 4 prerequisite) — `ReviewViewModel.requestAnalysis()` creates a placeholder with empty `nutrientAnalyses`. Expected until Phase 4 is done. This is the single largest functional gap — the entire app feels broken until real analysis data flows.
+8. **Wire PersistenceService.save** — completed analyses are not yet saved to SwiftData. Add `dependencies.persistence.save(...)` call after analysis is generated.
+9. **Dead code cleanup** — `Features/Report/ReportView.swift` is unreferenced (replaced by AnalysisView). `Features/Home/` files compile but are no longer root. Remove when confident.
+
+**Polish (do last, after functionality works):**
+
+10. **Accessibility pass** — add missing `accessibilityLabel` / `accessibilityHint` on interactive controls. Run VoiceOver.
+11. **Haptics pass** — verify all generators call `.prepare()` in `onAppear` and are stored as `@State`.
+12. **Animation reduce-motion** — verify `ReviewEntryRowView` and `NutrientAnalysisRowView` stagger respect `@Environment(\.accessibilityReduceMotion)`.
+13. **Dual-layer result screen** — once real analysis data flows, add a hero verdict card at the top of `AnalysisView`: traffic-light score + one-sentence summary + primary metric. Full clinical detail remains below the fold. This is the "plain English first, clinical detail on tap" pattern from the journey map.
 
 Design direction:
 

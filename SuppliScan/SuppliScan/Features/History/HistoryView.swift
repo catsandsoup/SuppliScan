@@ -1,6 +1,6 @@
 // HistoryView.swift
-// SuppliScan — STUB (full implementation in Views layer)
-// Skills to invoke when implementing: swiftui-pro, swiftui-ui-patterns, ios-accessibility
+// SuppliScan
+// Searchable list of past scans with swipe-to-delete.
 
 import SwiftUI
 import SwiftData
@@ -13,6 +13,13 @@ struct HistoryView: View {
     @Environment(AppDependencies.self) private var dependencies
 
     @State private var viewModel = HistoryViewModel()
+    @State private var searchText = ""
+    @State private var impactGenerator = UIImpactFeedbackGenerator(style: .medium)
+
+    private var filteredRecords: [ScanRecord] {
+        searchText.isEmpty ? records
+            : records.filter { $0.productName.localizedCaseInsensitiveContains(searchText) }
+    }
 
     var body: some View {
         @Bindable var viewModel = viewModel
@@ -21,24 +28,44 @@ struct HistoryView: View {
             if records.isEmpty {
                 ContentUnavailableView(
                     "No Scans Yet",
-                    systemImage: "clock.arrow.circlepath",
-                    description: Text("Scans you save will appear here.")
+                    systemImage: "camera.viewfinder",
+                    description: Text("Scan a supplement label to get started.")
                 )
+            } else if filteredRecords.isEmpty && !searchText.isEmpty {
+                ContentUnavailableView.search(text: searchText)
             } else {
-                List(viewModel.summaries(from: records)) { record in
-                    ScanHistoryRowView(
-                        record: record,
-                        isLoading: viewModel.loadingRecordID == record.id
-                    ) {
-                        viewModel.openRecord(id: record.id)
+                List {
+                    ForEach(filteredRecords) { record in
+                        ScanHistoryRowView(
+                            record: ScanRecordSummary(record: record),
+                            isLoading: viewModel.loadingRecordID == record.id
+                        ) {
+                            viewModel.openRecord(id: record.id)
+                        }
+                    }
+                    .onDelete { offsets in
+                        impactGenerator.impactOccurred()
+                        let idsToDelete = offsets.map { filteredRecords[$0].id }
+                        Task {
+                            for id in idsToDelete {
+                                try? await dependencies.persistence.delete(id: id)
+                            }
+                        }
                     }
                 }
+                .listStyle(.plain)
             }
         }
         .navigationTitle("History")
         .navigationBarTitleDisplayMode(.large)
+        .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if !records.isEmpty { EditButton() }
+            }
+        }
         .alert(
-            "Couldn’t Load Report",
+            "Couldn't Load Report",
             isPresented: $viewModel.isShowingLoadError
         ) {
             Button("OK", role: .cancel) { }
@@ -46,6 +73,7 @@ struct HistoryView: View {
             Text("The saved scan could not be opened.")
         }
         .onAppear {
+            impactGenerator.prepare()
             viewModel.configure { [dependencies] id in
                 try await dependencies.persistence.fetchAnalysis(id: id)
             }
