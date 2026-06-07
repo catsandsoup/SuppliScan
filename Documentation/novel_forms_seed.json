@@ -1,0 +1,96 @@
+{
+  "version": "1.0",
+  "description": "Novel form strings for AI inference testing — not present in form_quality.json",
+  "novel_forms": [
+    {
+      "nutrient": "Magnesium",
+      "form_string": "magnesium orotate",
+      "expected_tier": 1,
+      "rationale": "Orotate salt — good bioavailability, cardiac context usage"
+    },
+    {
+      "nutrient": "Zinc",
+      "form_string": "zinc acetate",
+      "expected_tier": 2,
+      "rationale": "Moderate bioavailability, less studied than glycinate or picolinate"
+    },
+    {
+      "nutrient": "Iron",
+      "form_string": "iron proteinate",
+      "expected_tier": 2,
+      "rationale": "Protein-chelated, moderate bioavailability, gentler than sulfate"
+    },
+    {
+      "nutrient": "Calcium",
+      "form_string": "calcium hydroxyapatite",
+      "expected_tier": 2,
+      "rationale": "Bone-derived microcrystalline form, moderate absorption"
+    },
+    {
+      "nutrient": "Vitamin B6",
+      "form_string": "pyridoxamine",
+      "expected_tier": 1,
+      "rationale": "Active B6 form, superior conversion vs pyridoxine HCl"
+    },
+    {
+      "nutrient": "Magnesium",
+      "form_string": "magnesium taurate",
+      "expected_tier": 1,
+      "rationale": "Taurine chelate, cardiovascular affinity, good bioavailability"
+    },
+    {
+      "nutrient": "Selenium",
+      "form_string": "selenium glycinate",
+      "expected_tier": 1,
+      "rationale": "Amino acid chelate form, good bioavailability"
+    },
+    {
+      "nutrient": "Chromium",
+      "form_string": "chromium nicotinate glycinate",
+      "expected_tier": 1,
+      "rationale": "Chelated form, better absorption than picolinate in some studies"
+    },
+    {
+      "nutrient": "Zinc",
+      "form_string": "zinc carnosine",
+      "expected_tier": 1,
+      "rationale": "Chelate with gastric mucosa affinity, well-evidenced for GI use"
+    },
+    {
+      "nutrient": "Iron",
+      "form_string": "carbonyl iron",
+      "expected_tier": 2,
+      "rationale": "Elemental iron, slow absorption, lower GI side effect profile"
+    },
+    {
+      "nutrient": "Calcium",
+      "form_string": "calcium lactate gluconate",
+      "expected_tier": 2,
+      "rationale": "Soluble salt form, good for effervescent — moderate overall"
+    },
+    {
+      "nutrient": "Magnesium",
+      "form_string": "magnesium aspartate",
+      "expected_tier": 2,
+      "rationale": "Amino acid chelate, moderate bioavailability, older research"
+    },
+    {
+      "nutrient": "Copper",
+      "form_string": "copper lysinate",
+      "expected_tier": 1,
+      "rationale": "Amino acid chelate, better absorption than sulfate"
+    },
+    {
+      "nutrient": "Manganese",
+      "form_string": "manganese bisglycinate",
+      "expected_tier": 1,
+      "rationale": "Chelated form, superior to sulfate or oxide"
+    },
+    {
+      "nutrient": "Iodine",
+      "form_string": "potassium iodate",
+      "expected_tier": 2,
+      "rationale": "Stable iodine salt, commonly used in fortification"
+    }
+  ]
+}

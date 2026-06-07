@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xcodebuild test *)",
+      "Bash(xcodebuild build *)",
+      "Bash(xcrun xcresulttool *)",
+      "Bash(security find-identity *)",
+      "Bash(claude mcp *)"
+    ]
+  }
+}
