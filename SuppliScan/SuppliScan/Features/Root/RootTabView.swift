@@ -12,34 +12,32 @@ import SwiftUI
 struct RootTabView: View {
     @Environment(AppDependencies.self) private var dependencies
 
-    @State private var selectedTab: Tab = .scan
+    @State private var selectedTab: AppTab = .scan
     @State private var scanRouter = NavigationRouter()
     @State private var analysisRouter = NavigationRouter()
     @State private var historyRouter = NavigationRouter()
     @State private var analysisStore = AnalysisStore()
 
-    enum Tab {
+    enum AppTab {
         case scan, analysis, history, settings
     }
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            scanTab
-                .tabItem { Label("Scan", systemImage: "camera.viewfinder") }
-                .tag(Tab.scan)
-
-            analysisTab
-                .tabItem { Label("Analysis", systemImage: "chart.bar.doc.horizontal") }
-                .tag(Tab.analysis)
-
-            historyTab
-                .tabItem { Label("History", systemImage: "clock.arrow.circlepath") }
-                .tag(Tab.history)
-
-            settingsTab
-                .tabItem { Label("Settings", systemImage: "gearshape") }
-                .tag(Tab.settings)
+            Tab("Scan", systemImage: "camera.viewfinder", value: AppTab.scan) {
+                scanTab
+            }
+            Tab("Analysis", systemImage: "chart.bar.doc.horizontal", value: AppTab.analysis) {
+                analysisTab
+            }
+            Tab("History", systemImage: "clock.arrow.circlepath", value: AppTab.history) {
+                historyTab
+            }
+            Tab("Settings", systemImage: "gearshape", value: AppTab.settings) {
+                settingsTab
+            }
         }
+        .tabBarMinimizeBehavior(.onScrollDown)
         .environment(analysisStore)
     }
 

@@ -31,54 +31,42 @@ struct ReportSummaryCardView: View {
 
             Divider()
 
-            SummaryRow(
-                icon: "number.circle.fill",
-                label: "Nutrients",
-                detail: { AnyView(Text("\(nutrientCount) identified").font(.subheadline).foregroundStyle(.secondary)) }
-            )
+            SummaryRow(icon: "number.circle.fill", label: "Nutrients") {
+                Text("\(nutrientCount) identified").font(.subheadline).foregroundStyle(.secondary)
+            }
 
             if let tier = worstTier {
-                SummaryRow(
-                    icon: "sparkle",
-                    label: "Form Quality",
-                    detail: { AnyView(TierBadgeView(tier: tier)) }
-                )
+                SummaryRow(icon: "sparkle", label: "Form Quality") {
+                    TierBadgeView(tier: tier)
+                }
             }
 
             if let rdi = primaryRDI {
-                SummaryRow(
-                    icon: "chart.bar.fill",
-                    label: "Dose Adequacy",
-                    detail: { AnyView(Text(rdi).font(.subheadline).foregroundStyle(.secondary)) }
-                )
+                SummaryRow(icon: "chart.bar.fill", label: "Dose Adequacy") {
+                    Text(rdi).font(.subheadline).foregroundStyle(.secondary)
+                }
             }
 
             SummaryRow(
                 icon: anyAboveUL ? "exclamationmark.triangle.fill" : "checkmark.shield.fill",
                 label: "UL Status",
-                detail: {
-                    AnyView(
-                        Text(anyAboveUL ? "Above UL — review doses" : "All within safe limits")
-                            .font(.subheadline)
-                            .foregroundStyle(anyAboveUL ? Color(.systemRed) : Color(.systemGreen))
-                    )
-                },
                 iconColor: anyAboveUL ? Color(.systemRed) : Color(.systemGreen)
-            )
+            ) {
+                Text(anyAboveUL ? "Above UL — review doses" : "All within safe limits")
+                    .font(.subheadline)
+                    .foregroundStyle(anyAboveUL ? Color(.systemRed) : Color(.systemGreen))
+            }
 
             if analysis.flags.hasAnyInteractions {
                 SummaryRow(
                     icon: "arrow.left.arrow.right.circle.fill",
                     label: "Interactions",
-                    detail: {
-                        AnyView(
-                            Text("\(analysis.flags.nutrientInteractions.count + analysis.flags.medicationInteractions.count) detected")
-                                .font(.subheadline)
-                                .foregroundStyle(Color(.systemOrange))
-                        )
-                    },
                     iconColor: Color(.systemOrange)
-                )
+                ) {
+                    Text("\(analysis.flags.nutrientInteractions.count + analysis.flags.medicationInteractions.count) detected")
+                        .font(.subheadline)
+                        .foregroundStyle(Color(.systemOrange))
+                }
             }
         }
         .padding(16)
@@ -89,8 +77,8 @@ struct ReportSummaryCardView: View {
 private struct SummaryRow<Detail: View>: View {
     let icon: String
     let label: String
-    let detail: () -> Detail
     var iconColor: Color = .accentColor
+    @ViewBuilder let detail: () -> Detail
 
     var body: some View {
         HStack(alignment: .top, spacing: 10) {

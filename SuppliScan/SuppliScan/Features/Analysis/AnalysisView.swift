@@ -11,7 +11,7 @@ struct AnalysisView: View {
 
     @Environment(NavigationRouter.self) private var router
     @State private var activeTab: AnalysisTab = .summary
-    @State private var warningGenerator = UINotificationFeedbackGenerator()
+    @State private var ulWarningTriggered = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -27,10 +27,11 @@ struct AnalysisView: View {
                     .disabled(true) // Re-enable when ExportService is wired
             }
         }
+        .sensoryFeedback(.warning, trigger: ulWarningTriggered)
+        .sensoryFeedback(.selection, trigger: activeTab)
         .onAppear {
-            warningGenerator.prepare()
             if !analysis.flags.nutrientsAboveUL.isEmpty {
-                warningGenerator.notificationOccurred(.warning)
+                ulWarningTriggered = true
             }
         }
     }
@@ -62,7 +63,6 @@ struct AnalysisView: View {
                         label: tab.rawValue,
                         isSelected: activeTab == tab
                     ) {
-                        UISelectionFeedbackGenerator().selectionChanged()
                         withAnimation(.spring(response: 0.3)) {
                             activeTab = tab
                         }
@@ -152,6 +152,7 @@ private struct NutrientsTabView: View {
     let router: NavigationRouter
 
     @State private var filter: NutrientCategory = .all
+    @State private var rowTapCount = 0
 
     private var filteredAnalyses: [NutrientAnalysis] {
         analysis.nutrientAnalyses.filter { filter.matches($0) }
@@ -176,7 +177,7 @@ private struct NutrientsTabView: View {
                                 .padding(.horizontal, 16)
                                 .contentShape(Rectangle())
                                 .onTapGesture {
-                                    UISelectionFeedbackGenerator().selectionChanged()
+                                    rowTapCount += 1
                                     router.navigate(to: .nutrientDetail(nutrientAnalysis))
                                 }
                             Divider()
@@ -188,6 +189,7 @@ private struct NutrientsTabView: View {
                             .padding(.vertical, 16)
                     }
                 }
+                .sensoryFeedback(.selection, trigger: rowTapCount)
             }
         }
     }

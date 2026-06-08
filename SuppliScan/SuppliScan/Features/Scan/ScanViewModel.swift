@@ -43,12 +43,41 @@ final class ScanViewModel {
                 let result = try await ocrService.recognizeText(in: data)
                 try Task.checkCancellation()
 
+                let parseResult = parser.parse(result.rawText)
                 self?.rawText = result.rawText
-                self?.parseResult = parser.parse(result.rawText)
+                self?.parseResult = parseResult
                 self?.reviewWarning = result.hasLowConfidenceText
                     ? .ocrLowConfidence(recognisedText: result.rawText)
                     : nil
                 self?.loadingState = .loaded(result)
+
+#if DEBUG
+                let scanID = UUID().uuidString
+                let decisions = parser.debugDecisions(for: result.rawText)
+                let bundle = OCRDebugBundle(
+                    scanID: scanID,
+                    capturedAt: ISO8601DateFormatter().string(from: Date()),
+                    rawText: result.rawText,
+                    rawObservations: result.lines.map { line in
+                        OCRDebugObservation(
+                            text: line.text,
+                            confidence: line.confidence,
+                            boundingBox: OCRDebugBBox(
+                                minX: line.region.minX,
+                                minY: line.region.minY,
+                                width: line.region.width,
+                                height: line.region.height
+                            ),
+                            alternatives: line.alternatives.map {
+                                OCRDebugCandidate(text: $0.text, confidence: $0.confidence)
+                            }
+                        )
+                    },
+                    mergedRows: result.lines.map { OCRDebugMergedRow(text: $0.text, confidence: $0.confidence, mergedFromCount: 1) },
+                    parserDecisions: decisions
+                )
+                OCRDebugWriter.write(bundle)
+#endif
 
                 // Brief pause so the "Label detected" badge renders before navigating
                 try await Task.sleep(for: .milliseconds(700))

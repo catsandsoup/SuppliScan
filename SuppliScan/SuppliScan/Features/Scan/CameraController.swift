@@ -21,6 +21,7 @@ final class CameraController: NSObject {
     private(set) var authState: AuthState = .unknown
     private(set) var isRunning = false
 
+    private var isSessionConfigured = false
     private var captureContinuation: CheckedContinuation<Data, any Error>?
 
     // MARK: - Start
@@ -49,26 +50,32 @@ final class CameraController: NSObject {
     private func configure() async {
         let s = session
         let out = photoOutput
-        // Task.detached so startRunning() doesn't block the main thread.
-        // AVCaptureSession/@unchecked Sendable conformance above permits the capture.
+        let needsInputSetup = !isSessionConfigured
+
         await Task.detached(priority: .userInitiated) {
-            guard !s.isRunning else { return }
-            s.beginConfiguration()
-            s.sessionPreset = .photo
-            guard
-                let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
-                let input = try? AVCaptureDeviceInput(device: device),
-                s.canAddInput(input)
-            else {
+            if needsInputSetup {
+                // Inputs are added exactly once — re-adding them on subsequent
+                // tab-switches causes canAddInput to return false, preventing startRunning.
+                s.beginConfiguration()
+                s.sessionPreset = .photo
+                guard
+                    let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+                    let input = try? AVCaptureDeviceInput(device: device),
+                    s.canAddInput(input)
+                else {
+                    s.commitConfiguration()
+                    return
+                }
+                s.addInput(input)
+                if s.canAddOutput(out) { s.addOutput(out) }
                 s.commitConfiguration()
-                return
             }
-            s.addInput(input)
-            if s.canAddOutput(out) { s.addOutput(out) }
-            s.commitConfiguration()
-            s.startRunning()
+            if !s.isRunning {
+                s.startRunning()
+            }
         }.value
 
+        isSessionConfigured = true
         authState = .authorized
         isRunning = session.isRunning
     }

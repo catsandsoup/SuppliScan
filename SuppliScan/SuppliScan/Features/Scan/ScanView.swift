@@ -17,7 +17,6 @@ struct ScanView: View {
     @State private var viewModel = ScanViewModel()
     @State private var camera = CameraController()
     @State private var selectedItem: PhotosPickerItem?
-    @AppStorage("defaultStandard") private var selectedStandard: ReferenceStandard = .au
 
     var body: some View {
         ZStack {
@@ -30,7 +29,7 @@ struct ScanView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbarBackground(.black.opacity(0.45), for: .navigationBar)
-        .sensoryFeedback(.impact(flexibility: .rigid), trigger: isScanning && !isScanning)
+        .sensoryFeedback(.impact(flexibility: .rigid), trigger: captureTriggered)
         .task {
             viewModel.configure(
                 ocrService: dependencies.ocrService,
@@ -131,9 +130,6 @@ struct ScanView: View {
 
     private var bottomBar: some View {
         VStack(spacing: 18) {
-            StandardPickerView(selection: $selectedStandard)
-                .colorScheme(.dark)
-
             HStack(alignment: .center, spacing: 0) {
                 photoLibraryButton
                 Spacer()
@@ -166,7 +162,7 @@ struct ScanView: View {
                 .background(.white.opacity(0.15), in: Circle())
         }
         .disabled(isScanning)
-        .accessibilityLabel("Import from photo library")
+        .accessibilityLabel("Import Label Photo")
     }
 
     private var shutterButton: some View {

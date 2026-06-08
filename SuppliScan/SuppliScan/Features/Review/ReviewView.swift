@@ -15,8 +15,8 @@ struct ReviewView: View {
     @Environment(AnalysisStore.self) private var analysisStore
 
     @State private var viewModel: ReviewViewModel
-    @State private var impactGenerator = UIImpactFeedbackGenerator(style: .medium)
-    @State private var successGenerator = UINotificationFeedbackGenerator()
+    @State private var analyseButtonTapped = false
+    @State private var analysisSucceeded = false
 
     init(entries: [LabelEntry], extractedServing: ServingSize?) {
         self.entries = entries
@@ -44,9 +44,9 @@ struct ReviewView: View {
                 .accessibilityHint(viewModel.isEditing ? "Exit edit mode" : "Enter edit mode to modify entries")
             }
         }
+        .sensoryFeedback(.impact(weight: .medium), trigger: analyseButtonTapped)
+        .sensoryFeedback(.success, trigger: analysisSucceeded)
         .onAppear {
-            impactGenerator.prepare()
-            successGenerator.prepare()
             viewModel.configure(
                 analyseAction: { entries, serving, standard, demographic in
                     try await dependencies.reportService.generateReport(
@@ -71,7 +71,7 @@ struct ReviewView: View {
         }
         .onChange(of: viewModel.pendingAnalysis) { _, _ in
             guard let analysis = viewModel.consumePendingAnalysis() else { return }
-            successGenerator.notificationOccurred(.success)
+            analysisSucceeded = true
             analysisStore.currentAnalysis = analysis
             router.navigate(to: .analysis(analysis))
         }
@@ -114,7 +114,7 @@ struct ReviewView: View {
 
     private var analyseButton: some View {
         Button {
-            impactGenerator.impactOccurred()
+            analyseButtonTapped.toggle()
             viewModel.requestAnalysis()
         } label: {
             if viewModel.isAnalysing {
@@ -130,7 +130,7 @@ struct ReviewView: View {
             }
         }
         .buttonStyle(.borderedProminent)
-        .controlSize(.large)
+        .controlSize(.extraLarge)
         .disabled(!viewModel.hasConfirmedEntries || viewModel.isAnalysing)
         .animation(.spring(response: 0.3), value: viewModel.isAnalysing)
         .accessibilityHint("Analyse the scanned label entries")

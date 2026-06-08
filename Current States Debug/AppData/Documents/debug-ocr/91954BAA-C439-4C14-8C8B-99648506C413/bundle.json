@@ -1,0 +1,239 @@
+{
+  "capturedAt" : "2026-06-08T06:12:08Z",
+  "mergedRows" : [
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "DIRCCTIONS: Adults: Take 1 soft capsule, once a day. Or as directedby"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "your Heathcare Professional. Do not use if cap seal or if iner sealis"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "missing, torn, or broken. Store below 30°C."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Contains sultites."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "INGREDIENTS: Each soft capsule contains:"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Hhaematococcus pluvialis Astaxanthin esters extracted from 140mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "equiv. to Astaxanthin"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "CONTAINS NO ADDED: artificial flavours or sweeteners."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "®* Reg. Trademarks used in agreement with the trademark owners."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "PN2038-LAUS-A-GO1975V3"
+    }
+  ],
+  "parserDecisions" : [
+    {
+      "decision" : "skipped",
+      "rawRow" : "DIRCCTIONS: Adults: Take 1 soft capsule, once a day. Or as directedby",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "your Heathcare Professional. Do not use if cap seal or if iner sealis",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "missing, torn, or broken. Store below 30°C.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Contains sultites.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "INGREDIENTS: Each soft capsule contains:",
+      "reason" : "no amount found"
+    },
+    {
+      "amount" : 140,
+      "decision" : "nutrient",
+      "extractedName" : "Hhaematococcus Pluvialis Astaxanthin Esters Extracted From",
+      "rawRow" : "Hhaematococcus pluvialis Astaxanthin esters extracted from 140mg equiv. to Astaxanthin",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "CONTAINS NO ADDED: artificial flavours or sweeteners.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "* Reg. Trademarks used in agreement with the trademark owners.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "PN2038-LAUS-A-GO1975V3",
+      "reason" : "no amount found"
+    }
+  ],
+  "rawObservations" : [
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.02767441749572752,
+        "minX" : 0.24806202091827162,
+        "minY" : 0.6773255823590443,
+        "width" : 0.4728682047526042
+      },
+      "confidence" : 1,
+      "text" : "DIRCCTIONS: Adults: Take 1 soft capsule, once a day. Or as directedby"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.027616277694702096,
+        "minX" : 0.24999999034464843,
+        "minY" : 0.6569767446434436,
+        "width" : 0.4437984619140625
+      },
+      "confidence" : 1,
+      "text" : "your Heathcare Professional. Do not use if cap seal or if iner sealis"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.024709300994873118,
+        "minX" : 0.24806201293036884,
+        "minY" : 0.6409883726566332,
+        "width" : 0.28100775146484375
+      },
+      "confidence" : 1,
+      "text" : "missing, torn, or broken. Store below 30°C."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.016689277648925693,
+        "minX" : 0.24990852252596701,
+        "minY" : 0.6246495471951119,
+        "width" : 0.10677210489908856
+      },
+      "confidence" : 1,
+      "text" : "Contains sultites."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.020511628150939876,
+        "minX" : 0.2519379911176072,
+        "minY" : 0.5784883721029237,
+        "width" : 0.30620153808593753
+      },
+      "confidence" : 1,
+      "text" : "INGREDIENTS: Each soft capsule contains:"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.038198277201951014,
+        "minX" : 0.2518474428977907,
+        "minY" : 0.5418017226793853,
+        "width" : 0.47295875874444016
+      },
+      "confidence" : 1,
+      "text" : "Hhaematococcus pluvialis Astaxanthin esters extracted from 140mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.018855464935302657,
+        "minX" : 0.2612037355396681,
+        "minY" : 0.5253733587485381,
+        "width" : 0.12501475016276048
+      },
+      "confidence" : 1,
+      "text" : "equiv. to Astaxanthin"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.02762790584564201,
+        "minX" : 0.2558139556751655,
+        "minY" : 0.48837209369867607,
+        "width" : 0.375968994140625
+      },
+      "confidence" : 1,
+      "text" : "CONTAINS NO ADDED: artificial flavours or sweeteners."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.05668604660034182,
+        "minX" : 0.26550387481225773,
+        "minY" : 0.17296511638914602,
+        "width" : 0.4205426432291666
+      },
+      "confidence" : 1,
+      "text" : "®* Reg. Trademarks used in agreement with the trademark owners."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.06628723907470702,
+        "minX" : 0.25617165505712236,
+        "minY" : 0.1388963715222732,
+        "width" : 0.1759745890299479
+      },
+      "confidence" : 1,
+      "text" : "PN2038-LAUS-A-GO1975V3"
+    }
+  ],
+  "rawText" : "DIRCCTIONS: Adults: Take 1 soft capsule, once a day. Or as directedby\nyour Heathcare Professional. Do not use if cap seal or if iner sealis\nmissing, torn, or broken. Store below 30°C.\nContains sultites.\nINGREDIENTS: Each soft capsule contains:\nHhaematococcus pluvialis Astaxanthin esters extracted from 140mg\nequiv. to Astaxanthin\nCONTAINS NO ADDED: artificial flavours or sweeteners.\n®* Reg. Trademarks used in agreement with the trademark owners.\nPN2038-LAUS-A-GO1975V3",
+  "scanID" : "91954BAA-C439-4C14-8C8B-99648506C413"
+}

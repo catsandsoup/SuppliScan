@@ -1,0 +1,579 @@
+{
+  "capturedAt" : "2026-06-08T06:26:47Z",
+  "mergedRows" : [
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "JUN"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Relieves digestive discomfort-"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Supports healthy bowel function."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Holps"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "fendly"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "EXP 10\/2027"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "B1130670"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "dally, with food, oras directed by your health professional."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Adults and children over 12 years - Take 1 capsule"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Directions for use:"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Supports immune system health."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Lactobacillus rhamnosus HN001™ Bifidobacterium lactis BL-04® Each capsule contains: 6 billion CFU 32 billion CFU"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Lactobacillus paracasei Lpc-37"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Lactobacillus ramnosus GG.."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "5 billion CFU 5 billion CFU"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Lactobacillus casei Lc-11 Bifidobacterium lactis HN019™ 5 billion CFU 2 billion CFU"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Lactobacillus acidophilus La-14 1 billion CFU"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Lactobacillus plantarum Lp-115 Bifidobacterium animalis spp. lactis B-420® 1 billion CFU 1 billion CFU"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Bifidobacterium animalis spp. lactis DSM 15954 1 billion CFU"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Bifidobacterium lactis Bi-07 Lactobacillus brevis Lbr-35 250 million CFU 750 million CFU"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Contains sulfites."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "If symptoms persist, talk to your health professional."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "milk, peanut, soy, tree nuts, animal products,"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "055390-0\/245-0"
+    }
+  ],
+  "parserDecisions" : [
+    {
+      "decision" : "unresolved",
+      "rawRow" : "JUN",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Relieves digestive discomfort-",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Supports healthy bowel function.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Holps",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "fendly",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "EXP 10\/2027",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "B1130670",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "dally, with food, oras directed by your health professional.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Adults and children over 12 years - Take 1 capsule",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Directions for use:",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Supports immune system health.",
+      "reason" : "no amount found"
+    },
+    {
+      "amount" : 6,
+      "decision" : "probiotic",
+      "extractedName" : "Lactobacillus rhamnosus",
+      "rawRow" : "Lactobacillus rhamnosus HN001 Bifidobacterium lactis BL-04 Each capsule contains: 6 billion CFU 32 billion CFU",
+      "reason" : "CFU match + scientific name",
+      "unit" : "B CFU"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Lactobacillus paracasei Lpc-37",
+      "reason" : "no amount found"
+    },
+    {
+      "amount" : 5,
+      "decision" : "probiotic",
+      "extractedName" : "Lactobacillus ramnosus",
+      "rawRow" : "Lactobacillus ramnosus GG.. 5 billion CFU 5 billion CFU",
+      "reason" : "CFU match + scientific name",
+      "unit" : "B CFU"
+    },
+    {
+      "amount" : 5,
+      "decision" : "probiotic",
+      "extractedName" : "Lactobacillus casei",
+      "rawRow" : "Lactobacillus casei Lc-11 Bifidobacterium lactis HN019 5 billion CFU 2 billion CFU",
+      "reason" : "CFU match + scientific name",
+      "unit" : "B CFU"
+    },
+    {
+      "amount" : 1,
+      "decision" : "probiotic",
+      "extractedName" : "Lactobacillus acidophilus",
+      "rawRow" : "Lactobacillus acidophilus La-14 1 billion CFU",
+      "reason" : "CFU match + scientific name",
+      "unit" : "B CFU"
+    },
+    {
+      "amount" : 1,
+      "decision" : "probiotic",
+      "extractedName" : "Lactobacillus plantarum",
+      "rawRow" : "Lactobacillus plantarum Lp-115 Bifidobacterium animalis spp. lactis B-420 1 billion CFU 1 billion CFU",
+      "reason" : "CFU match + scientific name",
+      "unit" : "B CFU"
+    },
+    {
+      "amount" : 1,
+      "decision" : "probiotic",
+      "extractedName" : "Bifidobacterium animalis",
+      "rawRow" : "Bifidobacterium animalis spp. lactis DSM 15954 1 billion CFU",
+      "reason" : "CFU match + scientific name",
+      "unit" : "B CFU"
+    },
+    {
+      "amount" : 0.25,
+      "decision" : "probiotic",
+      "extractedName" : "Bifidobacterium lactis",
+      "rawRow" : "Bifidobacterium lactis Bi-07 Lactobacillus brevis Lbr-35 250 million CFU 750 million CFU",
+      "reason" : "CFU match + scientific name",
+      "unit" : "B CFU"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Contains sulfites.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "If symptoms persist, talk to your health professional.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "milk, peanut, soy, tree nuts, animal products,",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "055390-0\/245-0",
+      "reason" : "no amount found"
+    }
+  ],
+  "rawObservations" : [
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.066860466003418,
+        "minX" : 0.5794573602338896,
+        "minY" : 0.6686046509158696,
+        "width" : 0.05620155843098962
+      },
+      "confidence" : 1,
+      "text" : "JUN"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.01174418592452997,
+        "minX" : 0.12790698463137906,
+        "minY" : 0.5857558141391015,
+        "width" : 0.2461240234375
+      },
+      "confidence" : 1,
+      "text" : "Relieves digestive discomfort-"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.012620182037353489,
+        "minX" : 0.13355590109434767,
+        "minY" : 0.5939307169007808,
+        "width" : 0.2638651123046875
+      },
+      "confidence" : 1,
+      "text" : "Supports healthy bowel function."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.007267441749572723,
+        "minX" : 0.13953488495245248,
+        "minY" : 0.6017441859808338,
+        "width" : 0.04844961039225262
+      },
+      "confidence" : 1,
+      "text" : "Holps"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.007267441749572723,
+        "minX" : 0.251937985242267,
+        "minY" : 0.6031976744013764,
+        "width" : 0.05813953145345052
+      },
+      "confidence" : 1,
+      "text" : "fendly"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.08139180755615238,
+        "minX" : 0.6004821320180028,
+        "minY" : 0.5446185442694926,
+        "width" : 0.06660521952311194
+      },
+      "confidence" : 1,
+      "text" : "EXP 10\/2027"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.06728615570068353,
+        "minX" : 0.6283903899775829,
+        "minY" : 0.5606337704043338,
+        "width" : 0.06575551859537765
+      },
+      "confidence" : 1,
+      "text" : "B1130670"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.02771854591369627,
+        "minX" : 0.07716212612573675,
+        "minY" : 0.5282834501200937,
+        "width" : 0.5142811686197917
+      },
+      "confidence" : 1,
+      "text" : "dally, with food, oras directed by your health professional."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.02426717662811284,
+        "minX" : 0.08110119576942411,
+        "minY" : 0.541319558414195,
+        "width" : 0.4696991780598958
+      },
+      "confidence" : 1,
+      "text" : "Adults and children over 12 years - Take 1 capsule"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.011720930099487381,
+        "minX" : 0.08914728532695923,
+        "minY" : 0.5594999999716825,
+        "width" : 0.17635658772786458
+      },
+      "confidence" : 1,
+      "text" : "Directions for use:"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.015584588050842285,
+        "minX" : 0.09863450986725972,
+        "minY" : 0.5733457880389254,
+        "width" : 0.3007737426757813
+      },
+      "confidence" : 1,
+      "text" : "Supports immune system health."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.057332269174579786,
+        "minX" : 0.06328168691946602,
+        "minY" : 0.47262519492455957,
+        "width" : 0.6600661192207302
+      },
+      "confidence" : 1,
+      "text" : "Lactobacillus rhamnosus HN001™ Bifidobacterium lactis BL-04® Each capsule contains: 6 billion CFU 32 billion CFU"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.026209301948547314,
+        "minX" : 0.060077519943904464,
+        "minY" : 0.43600000003207906,
+        "width" : 0.2984496053059896
+      },
+      "confidence" : 1,
+      "text" : "Lactobacillus paracasei Lpc-37"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.025101837158203133,
+        "minX" : 0.06149706254918722,
+        "minY" : 0.45437898054884773,
+        "width" : 0.29343060302734375
+      },
+      "confidence" : 1,
+      "text" : "Lactobacillus ramnosus GG.."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.037380977079489064,
+        "minX" : 0.5984333568454498,
+        "minY" : 0.4533474950905796,
+        "width" : 0.13269123238161884
+      },
+      "confidence" : 1,
+      "text" : "5 billion CFU 5 billion CFU"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.05955617551332082,
+        "minX" : 0.05924272969905682,
+        "minY" : 0.395079185292449,
+        "width" : 0.6758598758845955
+      },
+      "confidence" : 1,
+      "text" : "Lactobacillus casei Lc-11 Bifidobacterium lactis HN019™ 5 billion CFU 2 billion CFU"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.039441852852972414,
+        "minX" : 0.059541734044668754,
+        "minY" : 0.37716640601538465,
+        "width" : 0.6774347162489626
+      },
+      "confidence" : 1,
+      "text" : "Lactobacillus acidophilus La-14 1 billion CFU"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.06402916821226856,
+        "minX" : 0.06292408491236555,
+        "minY" : 0.33582066185458437,
+        "width" : 0.6736545997587436
+      },
+      "confidence" : 1,
+      "text" : "Lactobacillus plantarum Lp-115 Bifidobacterium animalis spp. lactis B-420® 1 billion CFU 1 billion CFU"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03824482365449311,
+        "minX" : 0.06915345339947306,
+        "minY" : 0.32414504278196954,
+        "width" : 0.6679060779033557
+      },
+      "confidence" : 1,
+      "text" : "Bifidobacterium animalis spp. lactis DSM 15954 1 billion CFU"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.05651639182712187,
+        "minX" : 0.07292784139359594,
+        "minY" : 0.2898560833847159,
+        "width" : 0.6605986592941702
+      },
+      "confidence" : 1,
+      "text" : "Bifidobacterium lactis Bi-07 Lactobacillus brevis Lbr-35 250 million CFU 750 million CFU"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.020606188774108913,
+        "minX" : 0.0788194236234826,
+        "minY" : 0.27711970085611326,
+        "width" : 0.16576291910807292
+      },
+      "confidence" : 1,
+      "text" : "Contains sulfites."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03375129890441897,
+        "minX" : 0.0845860163143938,
+        "minY" : 0.2617169688283655,
+        "width" : 0.47022998046875
+      },
+      "confidence" : 1,
+      "text" : "If symptoms persist, talk to your health professional."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.027228443145752013,
+        "minX" : 0.29403717669523816,
+        "minY" : 0.2585143228149809,
+        "width" : 0.3905643310546875
+      },
+      "confidence" : 1,
+      "text" : "milk, peanut, soy, tree nuts, animal products,"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.009850811958313055,
+        "minX" : 0.5580078965443149,
+        "minY" : 0.24760311542868574,
+        "width" : 0.15922188313802077
+      },
+      "confidence" : 1,
+      "text" : "055390-0\/245-0"
+    }
+  ],
+  "rawText" : "JUN\nRelieves digestive discomfort-\nSupports healthy bowel function.\nHolps\nfendly\nEXP 10\/2027\nB1130670\ndally, with food, oras directed by your health professional.\nAdults and children over 12 years - Take 1 capsule\nDirections for use:\nSupports immune system health.\nLactobacillus rhamnosus HN001™ Bifidobacterium lactis BL-04® Each capsule contains: 6 billion CFU 32 billion CFU\nLactobacillus paracasei Lpc-37\nLactobacillus ramnosus GG..\n5 billion CFU 5 billion CFU\nLactobacillus casei Lc-11 Bifidobacterium lactis HN019™ 5 billion CFU 2 billion CFU\nLactobacillus acidophilus La-14 1 billion CFU\nLactobacillus plantarum Lp-115 Bifidobacterium animalis spp. lactis B-420® 1 billion CFU 1 billion CFU\nBifidobacterium animalis spp. lactis DSM 15954 1 billion CFU\nBifidobacterium lactis Bi-07 Lactobacillus brevis Lbr-35 250 million CFU 750 million CFU\nContains sulfites.\nIf symptoms persist, talk to your health professional.\nmilk, peanut, soy, tree nuts, animal products,\n055390-0\/245-0",
+  "scanID" : "18EEA760-E7B5-4BB9-BE32-E511446A6FC3"
+}

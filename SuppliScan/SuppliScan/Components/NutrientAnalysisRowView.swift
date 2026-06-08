@@ -84,7 +84,7 @@ struct NutrientAnalysisRowView: View {
                 RoundedRectangle(cornerRadius: 3)
                     .fill(rdiColor)
                     .frame(
-                        width: appeared ? geo.size.width * min(rdiPercent, 1.0) : 0,
+                        width: appeared ? geo.size.width * min(rdiPercent / 100.0, 1.0) : 0,
                         height: 6
                     )
                     .animation(

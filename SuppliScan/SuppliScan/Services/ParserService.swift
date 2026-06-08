@@ -80,7 +80,8 @@ nonisolated struct ParserService: Sendable {
         mergedContinuationLines(mergedTwoColumnLines(rawLines))
     }
 
-    /// Merges consecutive pairs where the first is a name-only line and the second is an amount-only line.
+    /// Merges consecutive pairs where the first is a name-only line and the second is an amount-only line
+    /// or an equivalent-continuation line (e.g. name-only + "(providing elemental X 350mg) 1750mg").
     private func mergedTwoColumnLines(_ lines: [String]) -> [String] {
         var result: [String] = []
         var i = 0
@@ -93,6 +94,11 @@ nonisolated struct ParserService: Sendable {
                     i += 2
                     continue
                 }
+                if isNameOnlyLine(current) && isEquivalentContinuation(next) {
+                    result.append(current + " " + next)
+                    i += 2
+                    continue
+                }
             }
             result.append(current)
             i += 1
@@ -101,6 +107,8 @@ nonisolated struct ParserService: Sendable {
     }
 
     /// Merges compound rows with their following elemental or equivalent continuation row.
+    /// Uses isPureContinuationLine to avoid merging consecutive (providing...) rows that each
+    /// carry their own compound name+amount (e.g. two-column OCR layout).
     private func mergedContinuationLines(_ lines: [String]) -> [String] {
         var result: [String] = []
         var i = 0
@@ -109,7 +117,7 @@ nonisolated struct ParserService: Sendable {
             let current = lines[i]
             if i + 1 < lines.count {
                 let next = lines[i + 1]
-                if amountMatch(in: current) != nil, isEquivalentContinuation(next) {
+                if amountMatch(in: current) != nil, isPureContinuationLine(next) {
                     result.append(current + " " + next)
                     i += 2
                     continue
@@ -121,6 +129,18 @@ nonisolated struct ParserService: Sendable {
         }
 
         return result
+    }
+
+    /// True when a line is a pure elemental/equiv continuation with no embedded compound name.
+    /// "(providing elemental magnesium 13mg) 210mg" → pure (only a trailing amount after ")")
+    /// "(providing elemental magnesium 12.2mg) Magnesium glycinate dihydrate 104mg" → NOT pure
+    /// "(providing Magnesium 350 mg" (no closing paren) → pure
+    private func isPureContinuationLine(_ line: String) -> Bool {
+        guard isEquivalentContinuation(line) else { return false }
+        guard let closeRange = line.range(of: ")") else { return true }
+        let afterClose = String(line[closeRange.upperBound...])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return afterClose.isEmpty || isAmountOnlyLine(afterClose)
     }
 
     /// True when a line contains a recognisable name but no parseable amount.
@@ -247,6 +267,40 @@ nonisolated struct ParserService: Sendable {
                 activeNameText: match.captures[1],
                 activeAmountText: match.captures[2],
                 activeUnitText: match.captures[3],
+                sourceLine: line
+            )
+        }
+
+        // Pattern 3: COMPOUND_NAME (providing ACTIVE_NAME ACTIVE_AMT) COMPOUND_AMT
+        // e.g. "Magnesium amino acid chelate (providing elemental magnesium 350mg) 1750mg"
+        if let match = firstMatch(
+            in: line,
+            pattern: #"(?i)^(.+?)\s+\(\s*(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\b\s*\)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\b"#
+        ) {
+            return makeCompoundEquivalentEntry(
+                compoundName: match.captures[0],
+                compoundAmountText: match.captures[4],
+                compoundUnitText: match.captures[5],
+                activeNameText: match.captures[1],
+                activeAmountText: match.captures[2],
+                activeUnitText: match.captures[3],
+                sourceLine: line
+            )
+        }
+
+        // Pattern 4: (providing ACTIVE_NAME ACTIVE_AMT) COMPOUND_NAME COMPOUND_AMT
+        // e.g. "(providing elemental magnesium 12.2mg) Magnesium glycinate dihydrate 104mg"
+        if let match = firstMatch(
+            in: line,
+            pattern: #"(?i)^\(\s*(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\s*\)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\b"#
+        ) {
+            return makeCompoundEquivalentEntry(
+                compoundName: match.captures[3],
+                compoundAmountText: match.captures[4],
+                compoundUnitText: match.captures[5],
+                activeNameText: match.captures[0],
+                activeAmountText: match.captures[1],
+                activeUnitText: match.captures[2],
                 sourceLine: line
             )
         }
@@ -542,6 +596,16 @@ nonisolated struct ParserService: Sendable {
             return true
         }
 
+        // Company, address, and contact rows — common OCR spill from label back/sides.
+        let companyAddressFragments = [
+            "pty ltd", " ltd", "p/l", " abn ", " acn ", "tel:", "tel.",
+            "www.", ".com", ".com.au", "@", " rd,", " st,", " ave,",
+            "postcode", "po box", "distributor", "manufactured by", "imported by"
+        ]
+        if companyAddressFragments.contains(where: { lower.contains($0) }) {
+            return true
+        }
+
         return false
     }
 
@@ -596,6 +660,14 @@ nonisolated struct ParserService: Sendable {
         let key = Self.normalizedKey(name)
         guard !key.isEmpty else { return true }
 
+        // Reject bare continuation keywords when they appear as the entire name with no
+        // associated compound (e.g., an isolated "Providing" or "Elemental" row).
+        // NOTE: Do NOT reject "(providing Magnesium" — that still carries elemental dose data.
+        // The compound-merge step should have merged these; a reject would silently discard
+        // the elemental amount. Fixing the merge is the correct path (see debug bundle).
+        let continuationOnly: Set<String> = ["providing", "equiv", "equivalent"]
+        if continuationOnly.contains(key) { return true }
+
         let rejectedExactNames: Set<String> = [
             "level metric teaspoon", "metric teaspoon", "teaspoon",
             "tablet", "capsule", "adults and children over", "children over"
@@ -618,6 +690,16 @@ nonisolated struct ParserService: Sendable {
             if rejectedUnknownUnits.contains(where: { lower.contains($0) }) {
                 return true
             }
+        }
+
+        // Reject OCR artifact where "TOTAL ELEMENTAL X" was misread as "f elemental X".
+        // cleanName strips "elemental", leaving a single-char prefix before the real name
+        // (e.g. "f magnesium"). Safe guard: only fires when source line contains "elemental"
+        // so it never touches legitimate D-Biotin, L-Glutamine, N-Acetyl prefixes.
+        let nameParts = name.split(separator: " ")
+        if nameParts.count >= 2, nameParts[0].count == 1,
+           line.localizedCaseInsensitiveContains("elemental") {
+            return true
         }
 
         return false
@@ -717,3 +799,61 @@ nonisolated private struct AliasEntry: Decodable {
     let canonical: String
     let variants: [String]
 }
+
+#if DEBUG
+// MARK: - Debug decision tracing
+
+extension ParserService {
+    /// Returns per-row parse decisions for debug bundle construction.
+    func debugDecisions(for rawText: String) -> [OCRDebugParserDecision] {
+        let rawLines = rawText
+            .split(whereSeparator: \.isNewline)
+            .map { sanitizedLine(String($0)) }
+            .filter { !$0.isEmpty }
+
+        let candidateLines = ingredientCandidateLines(from: rawLines)
+        var decisions: [OCRDebugParserDecision] = []
+
+        for line in candidateLines {
+            if isServingOnlyLine(line) {
+                decisions.append(OCRDebugParserDecision(
+                    rawRow: line, decision: "serving",
+                    reason: "matches serving-only pattern", extractedName: nil, amount: nil, unit: nil
+                ))
+                continue
+            }
+            if shouldSkip(line) {
+                decisions.append(OCRDebugParserDecision(
+                    rawRow: line, decision: "skipped",
+                    reason: "matches non-ingredient skip rule", extractedName: nil, amount: nil, unit: nil
+                ))
+                continue
+            }
+            if let probiotic = probioticEntry(from: line) {
+                decisions.append(OCRDebugParserDecision(
+                    rawRow: line, decision: "probiotic",
+                    reason: "CFU match + scientific name",
+                    extractedName: "\(probiotic.genus) \(probiotic.species)",
+                    amount: probiotic.cfuBillions, unit: "B CFU"
+                ))
+            } else if let nutrient = nutrientEntry(from: line) {
+                decisions.append(OCRDebugParserDecision(
+                    rawRow: line, decision: "nutrient",
+                    reason: "amount match accepted",
+                    extractedName: nutrient.displayName,
+                    amount: nutrient.amount,
+                    unit: nutrient.unit.rawValue
+                ))
+            } else {
+                let amtNil = amountMatch(in: line) == nil
+                decisions.append(OCRDebugParserDecision(
+                    rawRow: line, decision: "unresolved",
+                    reason: amtNil ? "no amount found" : "name rejected by gatekeeping",
+                    extractedName: nil, amount: nil, unit: nil
+                ))
+            }
+        }
+        return decisions
+    }
+}
+#endif

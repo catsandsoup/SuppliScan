@@ -156,6 +156,94 @@ struct ParserServiceTests {
         #expect(zinc.form == "amino acid chelate")
     }
 
+    @Test func mergesContinuationWhenCompoundAndElementalRowsPreMerged() throws {
+        // When OCR delivers both amounts on the same line (already merged into the row),
+        // mergedContinuationLines must still absorb the "(providing..." row into the
+        // compound entry — preserving the 350 mg elemental dose, not discarding it.
+        let parser = ParserService(aliasesByVariant: ["Magnesium": "Magnesium"])
+        let result = parser.parse("""
+            Magnesium Amino Acid Chelate 1750 mg
+            (providing Magnesium 350 mg
+            """)
+
+        let nutrients = nutrientEntries(in: result)
+        // The "(providing" row must not escape as a standalone nutrient.
+        #expect(nutrients.contains { $0.displayName.hasPrefix("(") } == false)
+        #expect(nutrients.contains { $0.displayName.lowercased().contains("providing") } == false)
+        // The elemental dose (350 mg) must survive in the compound entry.
+        let magnesium = try #require(nutrients.first { $0.canonicalName == "Magnesium" })
+        #expect(magnesium.amount == 350)
+        #expect(magnesium.compoundAmount == 1750)
+    }
+
+    @Test func rejectsCompanyAddressRows() {
+        let parser = ParserService()
+        let result = parser.parse("""
+            Health Direction Pty Ltd 5/
+            Vitamin C 500 mg
+            """)
+
+        let nutrients = nutrientEntries(in: result)
+        #expect(nutrients.contains { $0.displayName.lowercased().contains("pty") } == false)
+        #expect(nutrients.count == 1)
+    }
+
+    @Test func parsesRealOCRMagnesiumLabelFourForms() throws {
+        // Exact rawText from debug bundle FC1673B2 / E00BA1B6 — two real iPhone scans.
+        // Vision OCR emits compound names and their (providing...) rows as separate observations.
+        // Phosphate pentahydrate is a fourth form not in the simplified test above.
+        // "f elemental magnesium 400mg" is an OCR artifact of "TOTAL ELEMENTAL MAGNESIUM 400mg"
+        // and must be rejected (no phantom 400mg Magnesium entry in the report).
+        let parser = ParserService(aliasesByVariant: [
+            "Magnesium": "Magnesium",
+            "Taurine": "Taurine",
+            "Zinc": "Zinc"
+        ])
+        let rawText = """
+            Each level metric teaspoon (5g dose) contains:
+            Taurine 1000mg
+            Magnesium amino acid chelate
+            (providing elemental magnesium 350mg) 1750mg
+            Magnesium ascorbate
+            (providing elemental magnesium 13mg) 210mg
+            (providing elemental magnesium 12.2mg) Magnesium glycinate dihydrate 104mg
+            Magnesium phosphate pentahydrate
+            (providing elemental magnesium 24.8mg) 120mg
+            elemice
+            manee
+            f elemental magnesium 400mg
+            Zinc (as amino acid chelate) 5mg
+            Rso contains malic acid, acacia, stevia, natural lemon flavour and
+            yeast, artificial colours or flavours. Contains sulfites and galactose.
+            Health Direction Pty Ltd
+            """
+        let result = parser.parse(rawText)
+
+        #expect(result.extractedServing?.quantity == 5)
+        #expect(result.extractedServing?.unit == .gram)
+
+        let nutrients = nutrientEntries(in: result)
+
+        let taurine = try #require(nutrients.first { $0.canonicalName == "Taurine" })
+        #expect(taurine.amount == 1000)
+
+        // Four elemental forms — each with compound amount preserved
+        let magForms = nutrients.filter { $0.canonicalName == "Magnesium" && !$0.isTotalLine }
+        #expect(magForms.count == 4)
+        #expect(magForms.contains { $0.form == "amino acid chelate" && $0.amount == 350 && $0.compoundAmount == 1750 })
+        #expect(magForms.contains { $0.form == "ascorbate" && $0.amount == 13 && $0.compoundAmount == 210 })
+        #expect(magForms.contains { $0.form == "glycinate dihydrate" && $0.amount == 12.2 && $0.compoundAmount == 104 })
+        #expect(magForms.contains { $0.form == "phosphate pentahydrate" && $0.amount == 24.8 && $0.compoundAmount == 120 })
+
+        // OCR artifact "f elemental magnesium 400mg" must be rejected — no phantom total
+        #expect(nutrients.filter { $0.canonicalName == "Magnesium" && $0.isTotalLine }.isEmpty)
+        #expect(nutrients.contains { $0.displayName.lowercased().hasPrefix("f ") } == false)
+
+        let zinc = try #require(nutrients.first { $0.canonicalName == "Zinc" })
+        #expect(zinc.amount == 5)
+        #expect(zinc.form == "amino acid chelate")
+    }
+
     @Test func parsesProbioticStrainRowsAsProbioticEntries() throws {
         let parser = ParserService()
         let result = parser.parse("""

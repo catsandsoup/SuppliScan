@@ -63,6 +63,47 @@ struct CalculationServiceTests {
         }
     }
 
+    @Test func rdiPercentIsStoredAs0to100Scale() throws {
+        let entry = NutrientEntry(
+            canonicalName: "Zinc",
+            displayName: "Zinc",
+            amount: 5,
+            unit: .mg
+        )
+        let reference = NRVEntry(
+            rdi: RDIReference(
+                standard: .au,
+                demographic: Demographic.defaultAdult.key,
+                value: 14,
+                unit: .mg,
+                referenceType: .rdi,
+                source: "Test"
+            ),
+            ul: ULReference(
+                standard: .au,
+                demographic: Demographic.defaultAdult.key,
+                value: 40,
+                unit: .mg,
+                note: nil,
+                source: "Test"
+            )
+        )
+
+        let analysis = try CalculationService.analysis(
+            for: entry,
+            reference: reference,
+            servingSize: ServingSize(quantity: 1, unit: .capsule)
+        )
+
+        // 5 / 14 * 100 = 35.7..., not 3571 (double-multiply bug)
+        let rdi = try #require(analysis.rdiPercent)
+        #expect(abs(rdi - 35.714) < 0.01)
+
+        // 5 / 40 * 100 = 12.5, not 1250
+        let ul = try #require(analysis.ulPercent)
+        #expect(abs(ul - 12.5) < 0.001)
+    }
+
     @Test func preservesNilWhenReferenceDataIsMissing() throws {
         let entry = NutrientEntry(
             canonicalName: "Coenzyme Q10",

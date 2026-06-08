@@ -26,7 +26,7 @@ final class AppDependencies {
     let reportService: ReportService
 
     init(container: ModelContainer) {
-        self.persistence = PersistenceService(container: container)
+        self.persistence = PersistenceService(modelContainer: container)
         self.ocrService = OCRService()
         self.parserService = (try? ParserService.makeDefault()) ?? ParserService()
 

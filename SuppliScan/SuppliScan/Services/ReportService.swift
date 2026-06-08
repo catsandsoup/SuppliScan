@@ -165,10 +165,10 @@ actor ReportService {
         medicationInteractions: [MedicationInteractionFlag]
     ) -> ReportFlags {
         ReportFlags(
-            nutrientsAboveUL: nutrientAnalyses.filter { ($0.ulPercent ?? 0) > 1.0 },
+            nutrientsAboveUL: nutrientAnalyses.filter { ($0.ulPercent ?? 0) > 100.0 },
             nutrientsAtUL: nutrientAnalyses.filter {
                 guard let ul = $0.ulPercent else { return false }
-                return ul >= 0.9 && ul <= 1.0
+                return ul >= 90.0 && ul <= 100.0
             },
             lowBioavailabilityForms: nutrientAnalyses.filter {
                 guard let tier = $0.formQuality?.tier else { return false }

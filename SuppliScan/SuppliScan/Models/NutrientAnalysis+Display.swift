@@ -8,21 +8,20 @@ import SwiftUI
 extension NutrientAnalysis {
     // Safety colour: red if above UL, orange if approaching UL, green otherwise.
     var rdiColor: Color {
-        if let ul = ulPercent, ul > 1.0 { return AppTheme.Color.rdiDanger }
-        if let rdi = rdiPercent, rdi >= 0.8, let ul = ulPercent, ul > 0.9 { return AppTheme.Color.rdiWarning }
+        if let ul = ulPercent, ul > 100.0 { return AppTheme.Color.rdiDanger }
+        if let rdi = rdiPercent, rdi >= 80.0, let ul = ulPercent, ul > 90.0 { return AppTheme.Color.rdiWarning }
         if rdiPercent != nil { return AppTheme.Color.rdiSafe }
         return AppTheme.Color.rdiNoData
     }
 
     var rdiPercentString: String {
         guard let rdi = rdiPercent else { return "—" }
-        let pct = Int((rdi * 100).rounded())
-        return "\(pct)%"
+        return "\(Int(rdi.rounded()))%"
     }
 
     var ulPercentString: String? {
         guard let ul = ulPercent else { return nil }
-        return ul.formatted(.percent.precision(.fractionLength(0)))
+        return "\(Int(ul.rounded()))%"
     }
 
     var doseString: String {

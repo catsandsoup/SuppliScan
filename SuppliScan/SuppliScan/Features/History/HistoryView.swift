@@ -14,7 +14,7 @@ struct HistoryView: View {
 
     @State private var viewModel = HistoryViewModel()
     @State private var searchText = ""
-    @State private var impactGenerator = UIImpactFeedbackGenerator(style: .medium)
+    @State private var deleteCount = 0
 
     private var filteredRecords: [ScanRecord] {
         searchText.isEmpty ? records
@@ -44,7 +44,7 @@ struct HistoryView: View {
                         }
                     }
                     .onDelete { offsets in
-                        impactGenerator.impactOccurred()
+                        deleteCount += 1
                         let idsToDelete = offsets.map { filteredRecords[$0].id }
                         Task {
                             for id in idsToDelete {
@@ -72,8 +72,8 @@ struct HistoryView: View {
         } message: {
             Text("The saved scan could not be opened.")
         }
+        .sensoryFeedback(.impact(weight: .medium), trigger: deleteCount)
         .onAppear {
-            impactGenerator.prepare()
             viewModel.configure { [dependencies] id in
                 try await dependencies.persistence.fetchAnalysis(id: id)
             }

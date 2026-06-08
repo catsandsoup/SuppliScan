@@ -28,7 +28,7 @@ struct NutrientDetailView: View {
                 // RDI KPI — dominant number
                 if let rdi = analysis.rdiPercent {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(rdi.formatted(.percent.precision(.fractionLength(0))))
+                        Text((rdi / 100).formatted(.percent.precision(.fractionLength(0))))
                             .font(.system(size: 52, weight: .bold, design: .rounded))
                             .foregroundStyle(analysis.rdiColor)
                             .contentTransition(.numericText())
@@ -37,7 +37,7 @@ struct NutrientDetailView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    ProgressView(value: appeared ? min(rdi, 1.5) / 1.5 : 0)
+                    ProgressView(value: appeared ? min(rdi / 100.0, 1.5) / 1.5 : 0)
                         .tint(analysis.rdiColor)
                         .animation(.easeOut(duration: 0.6), value: appeared)
                 }

@@ -31,22 +31,35 @@ nonisolated struct VisionTextRecognizer: OCRTextRecognizing {
         try handler.perform([request])
         try Task.checkCancellation()
 
-        return request.results?.compactMap { observation in
-            guard let candidate = observation.topCandidates(1).first else { return nil }
-            let text = candidate.string.trimmingCharacters(in: .whitespacesAndNewlines)
+        return request.results?.compactMap { observation -> OCRRecognizedLine? in
+#if DEBUG
+            let candidateCount = 3
+#else
+            let candidateCount = 1
+#endif
+            let candidates = observation.topCandidates(candidateCount)
+            guard let top = candidates.first else { return nil }
+            let text = top.string.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !text.isEmpty else { return nil }
 
             let bounds = observation.boundingBox
-            return OCRRecognizedLine(
-                text: text,
-                confidence: candidate.confidence,
-                region: OCRTextRegion(
-                    minX: bounds.minX,
-                    minY: bounds.minY,
-                    width: bounds.width,
-                    height: bounds.height
-                )
+            let region = OCRTextRegion(
+                minX: bounds.minX,
+                minY: bounds.minY,
+                width: bounds.width,
+                height: bounds.height
             )
+#if DEBUG
+            let alts = candidates.dropFirst().map {
+                OCRAlternativeCandidate(
+                    text: $0.string.trimmingCharacters(in: .whitespacesAndNewlines),
+                    confidence: $0.confidence
+                )
+            }
+            return OCRRecognizedLine(text: text, confidence: top.confidence, region: region, alternatives: alts)
+#else
+            return OCRRecognizedLine(text: text, confidence: top.confidence, region: region)
+#endif
         } ?? []
     }
 

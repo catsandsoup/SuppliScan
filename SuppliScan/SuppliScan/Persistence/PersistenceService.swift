@@ -8,17 +8,23 @@
 // autosaveEnabled = false — all saves are explicit.
 // Never pass ModelContext or PersistentModel instances across the actor boundary.
 // Returns only Sendable value types to callers.
+//
+// ModelActor conformance ties the actor's executor to the ModelContext's serial
+// executor, resolving the "ModelContext is not Sendable" warning.
 
 import SwiftData
 import Foundation
 import OSLog
 
-actor PersistenceService {
-    private let modelContext: ModelContext
+actor PersistenceService: ModelActor {
+    nonisolated let modelContainer: ModelContainer
+    nonisolated let modelExecutor: any ModelExecutor
 
-    init(container: ModelContainer) {
-        self.modelContext = ModelContext(container)
-        self.modelContext.autosaveEnabled = false
+    init(modelContainer: ModelContainer) {
+        self.modelContainer = modelContainer
+        let ctx = ModelContext(modelContainer)
+        ctx.autosaveEnabled = false
+        self.modelExecutor = DefaultSerialModelExecutor(modelContext: ctx)
     }
 
     // MARK: - Save

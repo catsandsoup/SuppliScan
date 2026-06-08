@@ -21,17 +21,57 @@ nonisolated struct OCRTextRegion: Hashable, Sendable {
 }
 
 /// One recognized OCR line plus the confidence reported by Vision.
-nonisolated struct OCRRecognizedLine: Hashable, Sendable {
+nonisolated struct OCRRecognizedLine: Sendable {
     let text: String
     let confidence: Float
     let region: OCRTextRegion
+#if DEBUG
+    /// Runner-up candidates from Vision topCandidates(3). Empty in release builds.
+    let alternatives: [OCRAlternativeCandidate]
+#endif
 
     init(text: String, confidence: Float, region: OCRTextRegion) {
         self.text = text
         self.confidence = confidence
         self.region = region
+#if DEBUG
+        self.alternatives = []
+#endif
+    }
+
+#if DEBUG
+    init(
+        text: String,
+        confidence: Float,
+        region: OCRTextRegion,
+        alternatives: [OCRAlternativeCandidate]
+    ) {
+        self.text = text
+        self.confidence = confidence
+        self.region = region
+        self.alternatives = alternatives
+    }
+#endif
+}
+
+nonisolated extension OCRRecognizedLine: Hashable {
+    static func == (lhs: OCRRecognizedLine, rhs: OCRRecognizedLine) -> Bool {
+        lhs.text == rhs.text && lhs.confidence == rhs.confidence && lhs.region == rhs.region
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(text)
+        hasher.combine(confidence)
+        hasher.combine(region)
     }
 }
+
+#if DEBUG
+nonisolated struct OCRAlternativeCandidate: Hashable, Sendable {
+    let text: String
+    let confidence: Float
+}
+#endif
 
 /// OCR text output and confidence metadata for user review.
 nonisolated struct OCRResult: Hashable, Sendable {
