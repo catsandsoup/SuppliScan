@@ -9,6 +9,7 @@ struct FormsAndPotencyView: View {
     let analyses: [NutrientAnalysis]
 
     @Environment(NavigationRouter.self) private var router
+    @State private var rowTapCount = 0
 
     private var analysesWithQuality: [NutrientAnalysis] {
         analyses.filter { $0.formQuality != nil }
@@ -20,7 +21,7 @@ struct FormsAndPotencyView: View {
                 FormPotencyRowView(analysis: analysis)
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        UISelectionFeedbackGenerator().selectionChanged()
+                        rowTapCount += 1
                         router.navigate(to: .nutrientDetail(analysis))
                     }
             }
@@ -33,5 +34,6 @@ struct FormsAndPotencyView: View {
         }
         .navigationTitle("Forms & Potency")
         .navigationBarTitleDisplayMode(.inline)
+        .sensoryFeedback(.selection, trigger: rowTapCount)
     }
 }

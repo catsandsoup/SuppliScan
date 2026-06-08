@@ -82,7 +82,7 @@ private struct NutrientReviewRow: View {
                 } label: {
                     Image(systemName: "flag.fill")
                         .font(.caption)
-                        .foregroundStyle(Color(.systemOrange))
+                        .foregroundStyle(AppTheme.Color.warning)
                 }
                 .buttonStyle(.plain)
             }
@@ -150,17 +150,17 @@ private struct UnresolvedReviewRow: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "questionmark.circle")
-                .foregroundStyle(Color(.systemYellow))
+                .foregroundStyle(AppTheme.Color.unresolved)
             Text(line.text)
                 .font(.subheadline)
                 .foregroundStyle(.primary)
             Spacer()
             Text("Needs review")
                 .font(.caption)
-                .foregroundStyle(Color(.systemYellow))
+                .foregroundStyle(AppTheme.Color.unresolved)
         }
         .padding(.vertical, 8)
-        .listRowBackground(Color(.systemYellow).opacity(0.12))
+        .listRowBackground(AppTheme.Color.unresolved.opacity(0.12))
     }
 }
 
@@ -174,7 +174,7 @@ private struct FlagExplanationSheet: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Image(systemName: "flag.fill")
-                    .foregroundStyle(Color(.systemOrange))
+                    .foregroundStyle(AppTheme.Color.warning)
                 Text("Review Note")
                     .font(.headline)
                 Spacer()

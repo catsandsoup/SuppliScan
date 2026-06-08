@@ -14,7 +14,7 @@ enum AppTheme {
         static let rdiSafe    = SwiftUI.Color(.systemGreen)
         static let rdiWarning = SwiftUI.Color(.systemOrange)
         static let rdiDanger  = SwiftUI.Color(.systemRed)
-        static let rdiNoData  = SwiftUI.Color(UIColor.secondaryLabel)
+        static let rdiNoData  = SwiftUI.Color(.secondaryLabel)
 
         // Tier badges (bioavailability / form quality)
         static let tier1 = SwiftUI.Color(.systemGreen)
@@ -23,9 +23,10 @@ enum AppTheme {
         static let tier4 = SwiftUI.Color(.systemRed)
 
         // Status
-        static let success  = SwiftUI.Color(.systemGreen)
-        static let warning  = SwiftUI.Color(.systemOrange)
-        static let critical = SwiftUI.Color(.systemRed)
+        static let success    = SwiftUI.Color(.systemGreen)
+        static let warning    = SwiftUI.Color(.systemOrange)
+        static let critical   = SwiftUI.Color(.systemRed)
+        static let unresolved = SwiftUI.Color(.systemYellow)
 
         // Camera chrome
         static let scanChrome = SwiftUI.Color.white

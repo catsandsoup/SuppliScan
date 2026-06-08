@@ -29,7 +29,7 @@ struct LabelRecognisedBannerView: View {
         .opacity(isVisible ? 1 : 0)
         .offset(y: isVisible ? 0 : 12)
         .onAppear {
-            withAnimation(.spring()) {
+            withAnimation(.spring(response: 0.45, dampingFraction: 0.70)) {
                 isVisible = true
             }
         }

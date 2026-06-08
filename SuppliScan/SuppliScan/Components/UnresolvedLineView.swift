@@ -10,7 +10,7 @@ struct UnresolvedLineView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
             Image(systemName: "questionmark.circle")
-                .foregroundStyle(Color(.systemYellow))
+                .foregroundStyle(AppTheme.Color.unresolved)
                 .font(.subheadline)
             VStack(alignment: .leading, spacing: 2) {
                 Text(line.text)
@@ -22,6 +22,6 @@ struct UnresolvedLineView: View {
             }
         }
         .padding(.vertical, 4)
-        .listRowBackground(Color(.systemYellow).opacity(0.08))
+        .listRowBackground(AppTheme.Color.unresolved.opacity(0.08))
     }
 }

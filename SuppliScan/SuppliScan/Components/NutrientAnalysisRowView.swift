@@ -30,7 +30,14 @@ struct NutrientAnalysisRowView: View {
                 .padding(.top, 5)
                 .padding(.bottom, 14)
         }
-        .onAppear { appeared = true }
+        .opacity(appeared ? 1 : 0)
+        .offset(y: appeared ? 0 : 6)
+        .onAppear {
+            let delay = Double(min(index, 8)) * 0.05
+            withAnimation(.spring(response: 0.40, dampingFraction: 0.80).delay(delay)) {
+                appeared = true
+            }
+        }
     }
 
     // MARK: - Left column

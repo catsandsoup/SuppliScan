@@ -13,49 +13,49 @@ struct FlagBannerView: View {
             if !flags.nutrientsAboveUL.isEmpty {
                 FlagRow(
                     icon: "exclamationmark.triangle.fill",
-                    color: Color(.systemRed),
+                    color: AppTheme.Color.critical,
                     message: "\(flags.nutrientsAboveUL.count) nutrient\(flags.nutrientsAboveUL.count == 1 ? "" : "s") exceed the Tolerable Upper Intake Level"
                 )
             }
             if !flags.nutrientsAtUL.isEmpty {
                 FlagRow(
                     icon: "exclamationmark.circle.fill",
-                    color: Color(.systemOrange),
+                    color: AppTheme.Color.warning,
                     message: "\(flags.nutrientsAtUL.count) nutrient\(flags.nutrientsAtUL.count == 1 ? "" : "s") approaching the Upper Intake Level"
                 )
             }
             if !flags.lowBioavailabilityForms.isEmpty {
                 FlagRow(
                     icon: "arrow.down.circle.fill",
-                    color: Color(.systemOrange),
+                    color: AppTheme.Color.warning,
                     message: "\(flags.lowBioavailabilityForms.count) nutrient\(flags.lowBioavailabilityForms.count == 1 ? "" : "s") use low-bioavailability forms"
                 )
             }
             if !flags.aiInferredForms.isEmpty {
                 FlagRow(
                     icon: "sparkles",
-                    color: Color.purple,
+                    color: .purple,
                     message: "\(flags.aiInferredForms.count) form quality rating\(flags.aiInferredForms.count == 1 ? "" : "s") are AI-inferred"
                 )
             }
             if !flags.unresolvedEntries.isEmpty {
                 FlagRow(
                     icon: "questionmark.circle.fill",
-                    color: Color(.systemYellow),
+                    color: AppTheme.Color.unresolved,
                     message: "\(flags.unresolvedEntries.count) label line\(flags.unresolvedEntries.count == 1 ? "" : "s") could not be analysed"
                 )
             }
             if !flags.nutrientInteractions.isEmpty {
                 FlagRow(
                     icon: "arrow.left.arrow.right.circle.fill",
-                    color: Color(.systemBlue),
+                    color: .blue,
                     message: "\(flags.nutrientInteractions.count) nutrient interaction\(flags.nutrientInteractions.count == 1 ? "" : "s") detected — see Interactions tab"
                 )
             }
             if !flags.medicationInteractions.isEmpty {
                 FlagRow(
                     icon: "pills.fill",
-                    color: Color(.systemRed),
+                    color: AppTheme.Color.critical,
                     message: "\(flags.medicationInteractions.count) potential medication interaction\(flags.medicationInteractions.count == 1 ? "" : "s") — consult your prescriber"
                 )
             }

@@ -37,9 +37,7 @@ struct NutrientDetailView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    ProgressView(value: appeared ? min(rdi / 100.0, 1.5) / 1.5 : 0)
-                        .tint(analysis.rdiColor)
-                        .animation(.easeOut(duration: 0.6), value: appeared)
+                    RDIProgressBar(rdiPercent: rdi, appeared: appeared)
                 }
 
                 // Stats table
@@ -74,7 +72,7 @@ struct NutrientDetailView: View {
         .navigationTitle(analysis.entry.canonicalName)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            withAnimation {
+            withAnimation(.spring(response: 0.50, dampingFraction: 0.75)) {
                 appeared = true
             }
         }
@@ -88,5 +86,77 @@ struct NutrientDetailView: View {
             .init(label: "UL", value: analysis.ulReferenceString ?? "Not established"),
             .init(label: "% of UL", value: analysis.ulPercentString ?? "—"),
         ]
+    }
+}
+
+// MARK: - RDI Zone Progress Bar
+
+private struct RDIProgressBar: View {
+    let rdiPercent: Double
+    let appeared: Bool
+
+    // Scale: 0 – 150% RDI rendered across full width
+    private let maxScale: Double = 150
+
+    // Zone boundaries as fractions of maxScale
+    private var greenEnd: Double  { 100 / maxScale }   // 0.667
+    private var yellowEnd: Double { 125 / maxScale }   // 0.833
+    private var rdiTick: Double   { 100 / maxScale }
+
+    private var fillFraction: Double {
+        appeared ? min(rdiPercent / maxScale, 1.0) : 0
+    }
+
+    private var fillColor: Color {
+        if rdiPercent > 125 { return AppTheme.Color.critical }
+        if rdiPercent > 100 { return AppTheme.Color.warning }
+        return AppTheme.Color.success
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            GeometryReader { geo in
+                let w = geo.size.width
+                ZStack(alignment: .leading) {
+                    // Zone background bands
+                    HStack(spacing: 0) {
+                        AppTheme.Color.success.opacity(0.10)
+                            .frame(width: w * greenEnd)
+                        AppTheme.Color.warning.opacity(0.10)
+                            .frame(width: w * (yellowEnd - greenEnd))
+                        AppTheme.Color.critical.opacity(0.10)
+                            .frame(width: w * (1 - yellowEnd))
+                    }
+                    .clipShape(Capsule())
+                    .frame(height: 8)
+
+                    // Animated fill
+                    Capsule()
+                        .fill(fillColor)
+                        .frame(width: w * fillFraction, height: 8)
+                        .animation(.spring(response: 0.70, dampingFraction: 0.75), value: fillFraction)
+
+                    // 100% RDI tick mark
+                    Rectangle()
+                        .fill(.background)
+                        .frame(width: 2, height: 14)
+                        .offset(x: w * rdiTick - 1)
+                }
+            }
+            .frame(height: 14)
+
+            // Zone labels
+            HStack(spacing: 0) {
+                Text("0")
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text("RDI")
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .offset(x: -(0.5 - greenEnd) * 16) // nudge toward tick
+                Text("150%")
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+            }
+            .font(.caption2)
+            .foregroundStyle(.tertiary)
+        }
     }
 }

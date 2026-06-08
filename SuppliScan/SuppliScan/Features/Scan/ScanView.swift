@@ -275,6 +275,8 @@ struct ScanView: View {
 // MARK: - ViewfinderFrame
 
 private struct ViewfinderFrame: View {
+    @State private var pulse = false
+
     var body: some View {
         Canvas { context, size in
             let arm: CGFloat = 36
@@ -302,7 +304,12 @@ private struct ViewfinderFrame: View {
             path.addLine(to: CGPoint(x: size.width, y: size.height))
             path.addLine(to: CGPoint(x: size.width, y: size.height - arm))
 
-            context.stroke(path, with: .color(.white.opacity(0.85)), style: style)
+            context.stroke(path, with: .color(.white.opacity(pulse ? 0.45 : 0.88)), style: style)
+        }
+        .onAppear {
+            withAnimation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true)) {
+                pulse = true
+            }
         }
     }
 }

@@ -50,11 +50,11 @@ struct ReportSummaryCardView: View {
             SummaryRow(
                 icon: anyAboveUL ? "exclamationmark.triangle.fill" : "checkmark.shield.fill",
                 label: "UL Status",
-                iconColor: anyAboveUL ? Color(.systemRed) : Color(.systemGreen)
+                iconColor: anyAboveUL ? AppTheme.Color.critical : AppTheme.Color.success
             ) {
                 Text(anyAboveUL ? "Above UL — review doses" : "All within safe limits")
                     .font(.subheadline)
-                    .foregroundStyle(anyAboveUL ? Color(.systemRed) : Color(.systemGreen))
+                    .foregroundStyle(anyAboveUL ? AppTheme.Color.critical : AppTheme.Color.success)
             }
 
             if analysis.flags.hasAnyInteractions {

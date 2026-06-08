@@ -6,6 +6,7 @@ import SwiftUI
 
 struct NutrientFilterBar: View {
     @Binding var selection: NutrientCategory
+    @State private var filterTapCount = 0
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
@@ -15,7 +16,7 @@ struct NutrientFilterBar: View {
                         label: category.rawValue,
                         isSelected: selection == category
                     ) {
-                        UISelectionFeedbackGenerator().selectionChanged()
+                        filterTapCount += 1
                         selection = category
                     }
                 }
@@ -23,5 +24,6 @@ struct NutrientFilterBar: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
         }
+        .sensoryFeedback(.selection, trigger: filterTapCount)
     }
 }
