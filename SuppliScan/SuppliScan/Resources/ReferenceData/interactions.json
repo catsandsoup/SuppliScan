@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "nutrient_interactions": [
+    {
+      "participants": ["Calcium", "Iron"],
+      "severity": "moderate",
+      "effect": "Calcium inhibits non-haem iron absorption when taken concurrently at doses above 300 mg calcium.",
+      "recommendation": "Separate calcium and iron supplements by at least 2 hours.",
+      "references": ["Hallberg L et al. Am J Clin Nutr. 1991;53(1):112-119."]
+    },
+    {
+      "participants": ["Zinc", "Copper"],
+      "severity": "moderate",
+      "effect": "High-dose zinc supplementation (>50 mg/day) competitively inhibits copper absorption and can cause copper deficiency.",
+      "recommendation": "Ensure copper intake is adequate when supplementing zinc at high doses. A zinc:copper ratio of 8–15:1 is generally considered safe.",
+      "references": ["Fosmire GJ. Am J Clin Nutr. 1990;51(2):225-227."]
+    },
+    {
+      "participants": ["Magnesium", "Calcium"],
+      "severity": "low",
+      "effect": "Calcium and magnesium compete for the same intestinal absorption pathway. Very high calcium intake may reduce magnesium absorption.",
+      "recommendation": "Take calcium and magnesium supplements at different times of day if doses are high.",
+      "references": ["Hardwick LL et al. Am J Clin Nutr. 1991;53(3):762-766."]
+    },
+    {
+      "participants": ["Vitamin D", "Calcium"],
+      "severity": "low",
+      "effect": "Vitamin D significantly enhances intestinal calcium absorption. Adequate vitamin D is necessary for calcium to be absorbed effectively.",
+      "recommendation": "Ensure adequate vitamin D when supplementing calcium. This is a beneficial synergistic interaction.",
+      "references": ["Heaney RP. J Steroid Biochem Mol Biol. 2005;97(1-2):13-19."]
+    },
+    {
+      "participants": ["Iron", "Vitamin C"],
+      "severity": "low",
+      "effect": "Vitamin C (ascorbic acid) substantially enhances non-haem iron absorption by reducing ferric iron to the more absorbable ferrous form.",
+      "recommendation": "Taking iron with vitamin C is beneficial and commonly recommended to improve iron absorption.",
+      "references": ["Hallberg L et al. Scand J Gastroenterol Suppl. 1987;129:93-99."]
+    }
+  ],
+  "medication_interactions": [
+    {
+      "nutrient": "Vitamin K",
+      "medication_class": "Anticoagulants (Warfarin)",
+      "severity": "high",
+      "effect": "Vitamin K is the direct antagonist of warfarin. Consistent intake is required; sudden changes in vitamin K intake destabilise INR.",
+      "recommendation": "Patients on warfarin must maintain consistent vitamin K intake and inform their prescribing physician of any supplementation.",
+      "references": ["Booth SL. Annu Rev Nutr. 2009;29:229-248."]
+    },
+    {
+      "nutrient": "Calcium",
+      "medication_class": "Thyroid medications (Levothyroxine)",
+      "severity": "moderate",
+      "effect": "Calcium supplements can impair levothyroxine absorption when taken concurrently.",
+      "recommendation": "Take levothyroxine at least 4 hours apart from calcium supplements.",
+      "references": ["Zamfirescu I, Carlson HE. Thyroid. 2011;21(10):1161-1163."]
+    },
+    {
+      "nutrient": "Iron",
+      "medication_class": "Thyroid medications (Levothyroxine)",
+      "severity": "moderate",
+      "effect": "Iron supplements can bind to levothyroxine and reduce its absorption.",
+      "recommendation": "Take levothyroxine at least 4 hours apart from iron supplements.",
+      "references": ["Campbell NR, Hasinoff BB. Ann Pharmacother. 1992;26(12):1565-1566."]
+    },
+    {
+      "nutrient": "Magnesium",
+      "medication_class": "Antibiotics (Fluoroquinolones, Tetracyclines)",
+      "severity": "moderate",
+      "effect": "Magnesium forms chelation complexes with fluoroquinolone and tetracycline antibiotics, significantly reducing antibiotic absorption.",
+      "recommendation": "Separate magnesium supplementation from fluoroquinolone or tetracycline antibiotics by at least 2 hours.",
+      "references": ["Neuvonen PJ et al. Clin Pharmacol Ther. 1990;47(2):140-146."]
+    }
+  ]
+}

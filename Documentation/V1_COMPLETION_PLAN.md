@@ -1,6 +1,46 @@
 # SuppliScan V1 Completion Plan
 
-Last updated: 2026-06-07
+Last updated: 2026-06-08
+
+---
+
+## Session Progress Log
+
+### 2026-06-08 — Reference Data Sourcing
+
+**What was done:**
+
+1. **Official NHMRC PDF obtained and saved to the repository.**
+   Path: `Documentation/nrv_au_nhmrc_2006_v1.2_sep2017.pdf` (2.1 MB)
+   Title: *Nutrient Reference Values for Australia and New Zealand Including Recommended Dietary Intakes, 2006, Version 1.2, Updated September 2017*
+   Published by: NHMRC + NZ Ministry of Health. ISBN 1864962437.
+   This is the authoritative AU NRV source. All AU numeric data in `nrv_au.json` must trace here.
+
+2. **All adult AU NRV summary tables read directly from the PDF.**
+   Tables 5–9 (pages 282–291) were read and all values transcribed. These cover:
+   - Table 5 (p282–283): Thiamin, Riboflavin, Niacin, B6, B12, Folate, Pantothenic Acid, Biotin
+   - Table 6 (p284–285): Vitamin A, C, D, E, K, Choline
+   - Table 7 (p286–287): Calcium, Phosphorus, Zinc, Iron
+   - Table 8 (p288–289): Magnesium, Iodine, Selenium, Molybdenum
+   - Table 9 (p290–291): Copper, Chromium, Manganese, Fluoride, Sodium, Potassium
+   All 10 adult demographics: adult male/female 19–50, 51–70, 70+; adolescent 14–18; pregnant; lactating.
+
+3. **NASEM DRI vitamins table read (partial).** Vitamins data visible: Biotin, Choline, Folate, Niacin, Pantothenic Acid. Mineral DRI tables still needed from official NIH ODS source.
+
+4. **Handoff document created:** `Documentation/HANDOFF_REFERENCE_DATA.md`
+   Contains complete transcribed NRV tables, JSON schema reference, ordered implementation steps, and all critical rules. A fresh window can write `nrv_au.json` from this document without re-reading the PDF.
+
+**What was NOT done (next session must complete):**
+- `nrv_au.json` not yet written (data ready in HANDOFF_REFERENCE_DATA.md)
+- `nrv_us.json` not yet written (partial data available; minerals still needed from NIH ODS)
+- `nrv_eu.json` not yet written (stub needed to prevent ReferenceDataService crash)
+- `interactions.json` not yet written
+- `ReferenceDataService.load()` crash fix not yet applied
+- `ReportService.swift`, `FormQualityService.swift`, `InteractionService.swift` not yet written
+- `ReviewViewModel.requestAnalysis()` still calls `LabelAnalysis.placeholder(...)` — not ReportService
+- Auto-analyse on ReviewView appear not yet implemented
+- Auto-tab-switch (RootTabView) not yet removed
+- "Nutrient Analysis Pending" developer state views not yet removed
 
 ---
 
@@ -77,7 +117,7 @@ Additionally:
 - Fine-print / allergen disclaimer text at the bottom of the label is being OCR'd and surfaced as unresolved entries
 - "1400-5" (product code from label background) is being captured
 
-**Fix:** Phase 3 parser overhaul — see revised Phase 3 requirements. The fix likely requires using Vision bounding-box geometry to reconstruct the two-column table structure, not purely text heuristics. The next session must inspect actual `VNRecognizedTextObservation` output from a real label before deciding the fix approach.
+**Fix (implemented):** Two-column merging pre-pass added to `ParserService.mergedTwoColumnLines()`. Consecutive name-only + amount-only lines are merged before parsing. Real-device testing required to validate against additional label formats.
 
 ---
 
@@ -121,13 +161,7 @@ These are **not v1**. Do not build until the core analysis loop is correct and t
 
 | Integration | Relevance to this app | Target |
 |---|---|---|
-| HealthKit nutrient write | Write Magnesium, Vitamin D, Zinc, etc. to Apple Health after scan | v2 |
-| WidgetKit | "Last scan: Magnesium Complex — Good" glanceable widget | v2 |
-| Spotlight Search | Find any saved scan by product name | v2 |
-| PDF export to GP | Share full clinical report via share sheet | v2 (Phase 6) |
-| Siri Shortcuts | "Scan this label" intent | v3 |
-| Live Activities | Scan-in-progress on Dynamic Island | v3 |
-| Apple Watch | View last scan result on wrist | v3 |
+| HealthKit nutrient write | Write Magnesium, Vitamin D, Zinc, etc. to Apple Health after scan | v2 
 
 **Not applicable to this app (tracking model required):**
 - "3 of 7 supplements taken today" widget — requires daily dose log, not in data model
@@ -221,7 +255,7 @@ The current ScanView is a static grey box with photo-library import only. There 
 
 Steps:
 
-1. **Replace the grey import box with a live camera viewfinder.** Use `AVCaptureSession` with a `AVCaptureVideoPreviewLayer` embedded in a SwiftUI view. This should be the default state of the Scan tab — always on, like a QR scanner. Photo library import stays as a secondary option (small button below the viewfinder).
+1. **Replace the grey import box view entirely with modern iOS  live camera viewfinder.** Use `AVCaptureSession` with a `AVCaptureVideoPreviewLayer` embedded in a SwiftUI view. This should be the default state of the Scan tab — always on, like a QR scanner. Photo library import stays as a secondary option (small button below the viewfinder).
 2. Add animated corners (pulse green when a rectangular region with dense text is detected) to signal "label detected."
 3. On shutter tap (or 1.5-second stable-detection auto-capture), freeze frame and run `VNRecognizeTextRequest` on the captured `CVPixelBuffer`.
 4. **Return raw `VNRecognizedTextObservation` array, not just strings.** The bounding-box geometry (`boundingBox`) is critical for the Phase 3 parser to reconstruct the two-column table structure. Do not reduce observations to strings before handing to the parser.
@@ -251,10 +285,7 @@ The parser is marked "done and tested" but fails on every real label tested. The
 - "element", "manies", "tot" appear as unresolved (OCR fragments of "elemental", possibly "companies", "total")
 - "Also contains malic acid, acacia, stevia..." and full allergen disclaimer text appear as unresolved rows
 
-**Root cause to investigate before fixing:** Real supplement labels use a two-column format (ingredient name left, amount right). Vision's `VNRecognizeTextRequest` may return the name and amount as separate `VNRecognizedTextObservation` instances with distinct x-positions, not as one string "Taurine 1000mg". The parser likely assumes joined-string input. **Before rewriting the parser: print the raw `VNRecognizedTextObservation` array from a real label and determine whether name+amount arrive on the same line or as spatially-separated tokens. The fix approach depends on this.**
-
-If name and amount are on the same line (one observation): the regex pairing logic is wrong.
-If name and amount are separate observations (two-column): the parser needs geometry-based column reconstruction — group observations by Y-position band, then match left-column (name) to right-column (amount) on the same row.
+**Root cause (confirmed):** Vision returns two-column supplement fact tables as spatially-separated observations. `ParserService.mergedTwoColumnLines()` now merges consecutive name-only + amount-only lines before parsing. Test on real device labels and extend heuristics if needed.
 
 Additional fixes needed regardless:
 - **Serving size line detection:** The line "Each level metric teaspoon (5g dose) contains:" must be recognized as the serving descriptor and not passed to entry parsing. Add heuristics: contains "contains:", follows a standalone weight "Xg", or is the first dense-text line.

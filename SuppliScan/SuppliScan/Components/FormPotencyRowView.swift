@@ -1,6 +1,6 @@
 // FormPotencyRowView.swift
 // SuppliScan
-// SF Symbol icon + nutrient name + tier badge + rationale — used in FormsAndPotencyView.
+// Nutrient row with colored circular avatar, bioavailability tier label, and rationale.
 
 import SwiftUI
 
@@ -9,56 +9,72 @@ struct FormPotencyRowView: View {
 
     var body: some View {
         guard let quality = analysis.formQuality else { return AnyView(EmptyView()) }
-        return AnyView(
-            HStack(alignment: .top, spacing: 12) {
-                Image(systemName: nutrientSymbol(for: analysis.entry.canonicalName))
-                    .font(.title2)
-                    .foregroundStyle(nutrientColor(for: quality.tier))
-                    .frame(width: 40)
+        let name = analysis.entry.canonicalName
+        return AnyView(content(quality: quality, canonicalName: name))
+    }
 
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack {
-                        Text(analysis.entry.displayName)
-                            .font(.headline)
-                        Spacer()
-                        TierBadgeView(tier: quality.tier)
-                    }
-                    Text(quality.rationale)
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(3)
-                    if quality.isAIInferred {
-                        AIInferredBadgeView()
-                    }
+    private func content(quality: FormQuality, canonicalName: String) -> some View {
+        HStack(alignment: .center, spacing: 14) {
+            NutrientAvatarView(canonicalName: canonicalName)
+
+            VStack(alignment: .leading, spacing: 5) {
+                Text(analysis.entry.displayName)
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.primary)
+
+                Text(quality.tier.potencyLabel)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(quality.tier.badgeColor)
+
+                Text(quality.rationale)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+
+                if quality.isAIInferred {
+                    AIInferredBadgeView()
                 }
             }
-            .padding(.vertical, 4)
-        )
+
+            Spacer(minLength: 0)
+
+            TierBadgeView(tier: quality.tier)
+        }
+        .padding(.vertical, 8)
     }
 }
 
-private func nutrientSymbol(for name: String) -> String {
-    switch name.lowercased() {
-    case let n where n.contains("vitamin d"): return "sun.max"
-    case let n where n.contains("vitamin k"): return "leaf"
-    case let n where n.contains("vitamin c"): return "c.circle"
-    case let n where n.contains("vitamin b"): return "b.circle"
-    case let n where n.contains("vitamin a"): return "eye"
-    case let n where n.contains("vitamin e"): return "e.circle"
-    case "magnesium": return "circle.hexagongrid"
-    case "zinc": return "atom"
-    case "iron": return "drop"
-    case "calcium": return "circle.dotted"
-    case "omega", "dha", "epa": return "drop.fill"
-    default: return "pill"
-    }
-}
+// MARK: - NutrientAvatarView
 
-private func nutrientColor(for tier: FormTier) -> Color {
-    switch tier {
-    case .tier1: .green
-    case .tier2: .yellow
-    case .tier3: .orange
-    case .tier4: .red
+struct NutrientAvatarView: View {
+    let canonicalName: String
+    var size: CGFloat = 48
+
+    private var abbreviation: String {
+        AppTheme.Color.nutrientAbbreviation(for: canonicalName)
+    }
+
+    private var bgColor: Color {
+        AppTheme.Color.nutrientAvatarBackground(for: canonicalName)
+    }
+
+    private var fontSize: CGFloat {
+        switch abbreviation.count {
+        case 1:    return 20
+        case 2:    return 16
+        case 3:    return 13
+        default:   return 11
+        }
+    }
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(bgColor)
+                .frame(width: size, height: size)
+            Text(abbreviation)
+                .font(.system(size: fontSize, weight: .bold, design: .rounded))
+                .foregroundStyle(.white)
+        }
     }
 }

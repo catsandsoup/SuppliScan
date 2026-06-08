@@ -35,10 +35,15 @@ nonisolated struct ParserService: Sendable {
         var entries: [LabelEntry] = []
         var extractedServing: ServingSize?
 
-        let lines = rawText
+        let rawLines = rawText
             .split(whereSeparator: \.isNewline)
             .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty }
+
+        // Merge two-column OCR lines: nutrient name on one line, amount on the next.
+        // Vision returns each table column as a separate observation when text is
+        // spatially separated, producing "Taurine" then "1000mg" as separate lines.
+        let lines = mergedTwoColumnLines(rawLines)
 
         for (index, line) in lines.enumerated() {
             if let serving = servingSize(from: line) {
@@ -55,6 +60,43 @@ nonisolated struct ParserService: Sendable {
         }
 
         return ParseResult(entries: entries, extractedServing: extractedServing)
+    }
+
+    /// Merges consecutive pairs where the first is a name-only line and the second is
+    /// an amount-only line — the two-column supplement facts table pattern from Vision OCR.
+    private func mergedTwoColumnLines(_ lines: [String]) -> [String] {
+        var result: [String] = []
+        var i = 0
+        while i < lines.count {
+            let current = lines[i]
+            if i + 1 < lines.count {
+                let next = lines[i + 1]
+                if isNameOnlyLine(current) && isAmountOnlyLine(next) {
+                    result.append(current + " " + next)
+                    i += 2
+                    continue
+                }
+            }
+            result.append(current)
+            i += 1
+        }
+        return result
+    }
+
+    /// True when a line contains a recognisable name but no parseable amount.
+    private func isNameOnlyLine(_ line: String) -> Bool {
+        guard !shouldSkip(line) else { return false }
+        guard !line.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
+        return amountMatch(in: line) == nil
+    }
+
+    /// True when a line is purely an amount with no meaningful name prefix.
+    /// e.g. "1000mg", "350 mcg", "< 1 mg" — the name must appear on the previous line.
+    private func isAmountOnlyLine(_ line: String) -> Bool {
+        guard let match = amountMatch(in: line) else { return false }
+        let prefix = String(line[..<match.range.lowerBound])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return prefix.isEmpty || prefix.count <= 2
     }
 
     private func nutrientEntry(from line: String) -> NutrientEntry? {

@@ -19,7 +19,9 @@ actor ReferenceDataService {
         var loadedEntries: [ReferenceStandard: [String: NRVNutrientEntry]] = [:]
 
         for standard in ReferenceStandard.allCases {
-            let file = try bundle.referenceData(named: standard.jsonFileName, as: NRVDataFile.self)
+            guard let file = try? bundle.referenceData(named: standard.jsonFileName, as: NRVDataFile.self) else {
+                continue  // skip missing or malformed standards without crashing
+            }
             loadedEntries[standard] = Dictionary(
                 uniqueKeysWithValues: file.nutrients.map { (Self.normalizedKey($0.name), $0) }
             )

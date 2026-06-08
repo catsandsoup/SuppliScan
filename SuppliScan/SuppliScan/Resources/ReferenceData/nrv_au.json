@@ -1,0 +1,457 @@
+{
+  "standard": "AU",
+  "edition": "NHMRC 2006 v1.2 (September 2017)",
+  "source": "National Health and Medical Research Council, Australian Government Department of Health and Ageing, New Zealand Ministry of Health. Nutrient Reference Values for Australia and New Zealand Including Recommended Dietary Intakes. Canberra: NHMRC; 2006. ISBN 1864962437.",
+  "nutrients": [
+    {
+      "name": "Vitamin A",
+      "aliases": ["Retinol", "Vit A", "Beta-carotene", "Retinyl Palmitate"],
+      "calculation_unit": "mcg",
+      "source": "NHMRC NRV 2006 v1.2: Table 6, p284-285. UL applies to preformed retinol only.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 630, "rdi": 900,  "ul": 2800, "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 485, "rdi": 700,  "ul": 2800, "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 625, "rdi": 900,  "ul": 3000, "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 500, "rdi": 700,  "ul": 3000, "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 625, "rdi": 900,  "ul": 3000, "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 500, "rdi": 700,  "ul": 3000, "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 625, "rdi": 900,  "ul": 3000, "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 500, "rdi": 700,  "ul": 3000, "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 550, "rdi": 800,  "ul": 3000, "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 800, "rdi": 1100, "ul": 3000, "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Vitamin C",
+      "aliases": ["Ascorbic Acid", "L-Ascorbic Acid", "Vit C", "Sodium Ascorbate", "Calcium Ascorbate"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 6, p284-285. No formal UL; source notes a prudent limit of 1000 mg/day.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 28, "rdi": 40, "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 28, "rdi": 40, "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 30, "rdi": 45, "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 30, "rdi": 45, "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 30, "rdi": 45, "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 30, "rdi": 45, "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 30, "rdi": 45, "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 30, "rdi": 45, "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 40, "rdi": 60, "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 60, "rdi": 85, "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Vitamin D",
+      "aliases": ["Cholecalciferol", "Ergocalciferol", "Vit D", "D3", "D2"],
+      "calculation_unit": "mcg",
+      "source": "NHMRC NRV 2006 v1.2: Table 6, p284-285. All values are AI (no EAR established). UL applies to all sources.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ai": 5,  "ul": 80, "reference_type": "ai" },
+        { "group": "adolescent_female_14_18","ai": 5,  "ul": 80, "reference_type": "ai" },
+        { "group": "adult_male_19_50",       "ai": 5,  "ul": 80, "reference_type": "ai" },
+        { "group": "adult_female_19_50",     "ai": 5,  "ul": 80, "reference_type": "ai" },
+        { "group": "adult_male_51_70",       "ai": 10, "ul": 80, "reference_type": "ai" },
+        { "group": "adult_female_51_70",     "ai": 10, "ul": 80, "reference_type": "ai" },
+        { "group": "adult_male_70plus",      "ai": 15, "ul": 80, "reference_type": "ai" },
+        { "group": "adult_female_70plus",    "ai": 15, "ul": 80, "reference_type": "ai" },
+        { "group": "pregnant_female_19_50",  "ai": 5,  "ul": 80, "reference_type": "ai" },
+        { "group": "lactating_female_19_50", "ai": 5,  "ul": 80, "reference_type": "ai" }
+      ]
+    },
+    {
+      "name": "Vitamin E",
+      "aliases": ["Tocopherol", "d-alpha-Tocopherol", "dl-alpha-Tocopherol", "Alpha-Tocopherol"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 6, p284-285. All values are AI (mg α-tocopherol equivalents). UL is for supplemental α-tocopherol only.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ai": 10, "ul": 250, "reference_type": "ai" },
+        { "group": "adolescent_female_14_18","ai": 8,  "ul": 250, "reference_type": "ai" },
+        { "group": "adult_male_19_50",       "ai": 10, "ul": 300, "reference_type": "ai" },
+        { "group": "adult_female_19_50",     "ai": 7,  "ul": 300, "reference_type": "ai" },
+        { "group": "adult_male_51_70",       "ai": 10, "ul": 300, "reference_type": "ai" },
+        { "group": "adult_female_51_70",     "ai": 7,  "ul": 300, "reference_type": "ai" },
+        { "group": "adult_male_70plus",      "ai": 10, "ul": 300, "reference_type": "ai" },
+        { "group": "adult_female_70plus",    "ai": 7,  "ul": 300, "reference_type": "ai" },
+        { "group": "pregnant_female_19_50",  "ai": 7,  "ul": 300, "reference_type": "ai" },
+        { "group": "lactating_female_19_50", "ai": 11, "ul": 300, "reference_type": "ai" }
+      ]
+    },
+    {
+      "name": "Vitamin K",
+      "aliases": ["Vitamin K1", "Vitamin K2", "Phylloquinone", "Menaquinone", "MK-4", "MK-7"],
+      "calculation_unit": "mcg",
+      "source": "NHMRC NRV 2006 v1.2: Table 6, p284-285. All values are AI. No UL established.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ai": 55, "reference_type": "ai" },
+        { "group": "adolescent_female_14_18","ai": 45, "reference_type": "ai" },
+        { "group": "adult_male_19_50",       "ai": 70, "reference_type": "ai" },
+        { "group": "adult_female_19_50",     "ai": 60, "reference_type": "ai" },
+        { "group": "adult_male_51_70",       "ai": 70, "reference_type": "ai" },
+        { "group": "adult_female_51_70",     "ai": 60, "reference_type": "ai" },
+        { "group": "adult_male_70plus",      "ai": 70, "reference_type": "ai" },
+        { "group": "adult_female_70plus",    "ai": 60, "reference_type": "ai" },
+        { "group": "pregnant_female_19_50",  "ai": 60, "reference_type": "ai" },
+        { "group": "lactating_female_19_50", "ai": 60, "reference_type": "ai" }
+      ]
+    },
+    {
+      "name": "Vitamin B1",
+      "aliases": ["Thiamine", "Thiamin", "Thiamine HCl", "Thiamine Mononitrate"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 5, p282-283. No UL established.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 1.0, "rdi": 1.2, "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 0.9, "rdi": 1.1, "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 1.0, "rdi": 1.2, "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 0.9, "rdi": 1.1, "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 1.0, "rdi": 1.2, "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 0.9, "rdi": 1.1, "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 1.0, "rdi": 1.2, "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 0.9, "rdi": 1.1, "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 1.2, "rdi": 1.4, "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 1.2, "rdi": 1.4, "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Vitamin B2",
+      "aliases": ["Riboflavin", "Vitamin B-2"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 5, p282-283. No UL established.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 1.1, "rdi": 1.3, "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 0.9, "rdi": 1.1, "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 1.1, "rdi": 1.3, "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 0.9, "rdi": 1.1, "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 1.1, "rdi": 1.3, "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 0.9, "rdi": 1.1, "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 1.1, "rdi": 1.3, "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 0.9, "rdi": 1.1, "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 1.2, "rdi": 1.4, "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 1.3, "rdi": 1.6, "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Vitamin B3",
+      "aliases": ["Niacin", "Nicotinamide", "Nicotinic Acid", "Niacinamide", "Inositol Hexanicotinate"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 5, p282-283. Values in mg niacin equivalents. UL applies to synthetic nicotinic acid from supplements and fortified foods only.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 12, "rdi": 16, "ul": 30, "ul_note": "UL applies to synthetic nicotinic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 11, "rdi": 14, "ul": 30, "ul_note": "UL applies to synthetic nicotinic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 12, "rdi": 16, "ul": 35, "ul_note": "UL applies to synthetic nicotinic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 11, "rdi": 14, "ul": 35, "ul_note": "UL applies to synthetic nicotinic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 12, "rdi": 16, "ul": 35, "ul_note": "UL applies to synthetic nicotinic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 11, "rdi": 14, "ul": 35, "ul_note": "UL applies to synthetic nicotinic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 12, "rdi": 16, "ul": 35, "ul_note": "UL applies to synthetic nicotinic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 11, "rdi": 14, "ul": 35, "ul_note": "UL applies to synthetic nicotinic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 14, "rdi": 18, "ul": 35, "ul_note": "UL applies to synthetic nicotinic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 13, "rdi": 17, "ul": 35, "ul_note": "UL applies to synthetic nicotinic acid from supplements and fortified foods only", "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Vitamin B5",
+      "aliases": ["Pantothenic Acid", "Calcium Pantothenate", "D-Pantothenic Acid", "Pantothenate"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 5, p282-283. All values are AI (no EAR established). No UL established.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ai": 6.0, "reference_type": "ai" },
+        { "group": "adolescent_female_14_18","ai": 4.0, "reference_type": "ai" },
+        { "group": "adult_male_19_50",       "ai": 6.0, "reference_type": "ai" },
+        { "group": "adult_female_19_50",     "ai": 4.0, "reference_type": "ai" },
+        { "group": "adult_male_51_70",       "ai": 6.0, "reference_type": "ai" },
+        { "group": "adult_female_51_70",     "ai": 4.0, "reference_type": "ai" },
+        { "group": "adult_male_70plus",      "ai": 6.0, "reference_type": "ai" },
+        { "group": "adult_female_70plus",    "ai": 4.0, "reference_type": "ai" },
+        { "group": "pregnant_female_19_50",  "ai": 5.0, "reference_type": "ai" },
+        { "group": "lactating_female_19_50", "ai": 6.0, "reference_type": "ai" }
+      ]
+    },
+    {
+      "name": "Vitamin B6",
+      "aliases": ["Pyridoxine", "Pyridoxal-5-Phosphate", "P5P", "Pyridoxine HCl", "Pyridoxal Phosphate"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 5, p282-283. UL applies to pyridoxine (supplemental form).",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 1.1, "rdi": 1.3, "ul": 40, "ul_note": "UL applies to pyridoxine from supplements", "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 1.0, "rdi": 1.2, "ul": 40, "ul_note": "UL applies to pyridoxine from supplements", "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 1.1, "rdi": 1.3, "ul": 50, "ul_note": "UL applies to pyridoxine from supplements", "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 1.1, "rdi": 1.3, "ul": 50, "ul_note": "UL applies to pyridoxine from supplements", "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 1.4, "rdi": 1.7, "ul": 50, "ul_note": "UL applies to pyridoxine from supplements", "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 1.3, "rdi": 1.5, "ul": 50, "ul_note": "UL applies to pyridoxine from supplements", "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 1.4, "rdi": 1.7, "ul": 50, "ul_note": "UL applies to pyridoxine from supplements", "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 1.3, "rdi": 1.5, "ul": 50, "ul_note": "UL applies to pyridoxine from supplements", "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 1.6, "rdi": 1.9, "ul": 50, "ul_note": "UL applies to pyridoxine from supplements", "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 1.7, "rdi": 2.0, "ul": 50, "ul_note": "UL applies to pyridoxine from supplements", "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Vitamin B7",
+      "aliases": ["Biotin", "d-Biotin", "Vitamin H"],
+      "calculation_unit": "mcg",
+      "source": "NHMRC NRV 2006 v1.2: Table 5, p282-283. All values are AI (no EAR established). No UL established.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ai": 25, "reference_type": "ai" },
+        { "group": "adolescent_female_14_18","ai": 25, "reference_type": "ai" },
+        { "group": "adult_male_19_50",       "ai": 30, "reference_type": "ai" },
+        { "group": "adult_female_19_50",     "ai": 25, "reference_type": "ai" },
+        { "group": "adult_male_51_70",       "ai": 30, "reference_type": "ai" },
+        { "group": "adult_female_51_70",     "ai": 25, "reference_type": "ai" },
+        { "group": "adult_male_70plus",      "ai": 30, "reference_type": "ai" },
+        { "group": "adult_female_70plus",    "ai": 25, "reference_type": "ai" },
+        { "group": "pregnant_female_19_50",  "ai": 30, "reference_type": "ai" },
+        { "group": "lactating_female_19_50", "ai": 35, "reference_type": "ai" }
+      ]
+    },
+    {
+      "name": "Vitamin B9",
+      "aliases": ["Folate", "Folic Acid", "L-5-MTHF", "Methylfolate", "Folinic Acid", "L-Methylfolate", "5-MTHF"],
+      "calculation_unit": "mcg",
+      "source": "NHMRC NRV 2006 v1.2: Table 5, p282-283. Values in mcg dietary folate equivalents. UL applies to folic acid from supplements and fortified foods only.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 330, "rdi": 400, "ul": 800,  "ul_note": "UL applies to folic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 330, "rdi": 400, "ul": 800,  "ul_note": "UL applies to folic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 320, "rdi": 400, "ul": 1000, "ul_note": "UL applies to folic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 320, "rdi": 400, "ul": 1000, "ul_note": "UL applies to folic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 320, "rdi": 400, "ul": 1000, "ul_note": "UL applies to folic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 320, "rdi": 400, "ul": 1000, "ul_note": "UL applies to folic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 320, "rdi": 400, "ul": 1000, "ul_note": "UL applies to folic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 320, "rdi": 400, "ul": 1000, "ul_note": "UL applies to folic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 520, "rdi": 600, "ul": 1000, "ul_note": "UL applies to folic acid from supplements and fortified foods only", "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 450, "rdi": 500, "ul": 1000, "ul_note": "UL applies to folic acid from supplements and fortified foods only", "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Vitamin B12",
+      "aliases": ["B12", "Cobalamin", "Methylcobalamin", "Cyanocobalamin", "Adenosylcobalamin", "Hydroxocobalamin"],
+      "calculation_unit": "mcg",
+      "source": "NHMRC NRV 2006 v1.2: Table 5, p282-283. No UL established.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 2.0, "rdi": 2.4, "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 2.0, "rdi": 2.4, "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 2.0, "rdi": 2.4, "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 2.0, "rdi": 2.4, "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 2.0, "rdi": 2.4, "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 2.0, "rdi": 2.4, "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 2.0, "rdi": 2.4, "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 2.0, "rdi": 2.4, "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 2.2, "rdi": 2.6, "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 2.4, "rdi": 2.8, "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Choline",
+      "aliases": ["Choline Bitartrate", "CDP-Choline", "Alpha-GPC", "Citicoline", "Choline Citrate"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 6, p284-285. All values are AI (no EAR established).",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ai": 550, "ul": 3000, "reference_type": "ai" },
+        { "group": "adolescent_female_14_18","ai": 400, "ul": 3000, "reference_type": "ai" },
+        { "group": "adult_male_19_50",       "ai": 550, "ul": 3500, "reference_type": "ai" },
+        { "group": "adult_female_19_50",     "ai": 425, "ul": 3500, "reference_type": "ai" },
+        { "group": "adult_male_51_70",       "ai": 550, "ul": 3500, "reference_type": "ai" },
+        { "group": "adult_female_51_70",     "ai": 425, "ul": 3500, "reference_type": "ai" },
+        { "group": "adult_male_70plus",      "ai": 550, "ul": 3500, "reference_type": "ai" },
+        { "group": "adult_female_70plus",    "ai": 425, "ul": 3500, "reference_type": "ai" },
+        { "group": "pregnant_female_19_50",  "ai": 440, "ul": 3500, "reference_type": "ai" },
+        { "group": "lactating_female_19_50", "ai": 550, "ul": 3500, "reference_type": "ai" }
+      ]
+    },
+    {
+      "name": "Calcium",
+      "aliases": ["Ca", "Calcium Carbonate", "Calcium Citrate", "Calcium Phosphate", "Calcium Glycinate"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 7, p286-287.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 1050, "rdi": 1300, "ul": 2500, "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 1050, "rdi": 1300, "ul": 2500, "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 840,  "rdi": 1000, "ul": 2500, "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 840,  "rdi": 1000, "ul": 2500, "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 840,  "rdi": 1000, "ul": 2500, "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 840,  "rdi": 1000, "ul": 2500, "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 1100, "rdi": 1300, "ul": 2500, "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 1100, "rdi": 1300, "ul": 2500, "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 840,  "rdi": 1000, "ul": 2500, "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 840,  "rdi": 1000, "ul": 2500, "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Phosphorus",
+      "aliases": ["P", "Phosphate", "Phosphorous"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 7, p286-287.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 1055, "rdi": 1250, "ul": 4000, "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 1055, "rdi": 1250, "ul": 3500, "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 580,  "rdi": 1000, "ul": 4000, "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 580,  "rdi": 1000, "ul": 4000, "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 580,  "rdi": 1000, "ul": 4000, "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 580,  "rdi": 1000, "ul": 4000, "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 580,  "rdi": 1000, "ul": 3000, "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 580,  "rdi": 1000, "ul": 3000, "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 580,  "rdi": 1000, "ul": 3500, "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 580,  "rdi": 1000, "ul": 4000, "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Zinc",
+      "aliases": ["Zn", "Zinc Citrate", "Zinc Picolinate", "Zinc Glycinate", "Zinc Bisglycinate", "Zinc Oxide", "Zinc Sulfate"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 7, p286-287.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 11.0, "rdi": 13, "ul": 35, "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 6.0,  "rdi": 7,  "ul": 35, "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 12.0, "rdi": 14, "ul": 40, "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 6.5,  "rdi": 8,  "ul": 40, "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 12.0, "rdi": 14, "ul": 40, "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 6.5,  "rdi": 8,  "ul": 40, "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 12.0, "rdi": 14, "ul": 40, "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 6.5,  "rdi": 8,  "ul": 40, "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 9.0,  "rdi": 11, "ul": 40, "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 10.0, "rdi": 12, "ul": 40, "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Iron",
+      "aliases": ["Fe", "Ferrous Bisglycinate", "Ferrous Gluconate", "Ferrous Fumarate", "Ferrous Sulfate", "Iron Glycinate"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 7, p286-287. Female 19-50 RDI is elevated due to menstrual losses.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 8,   "rdi": 11, "ul": 45, "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 8,   "rdi": 15, "ul": 45, "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 6,   "rdi": 8,  "ul": 45, "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 8,   "rdi": 18, "ul": 45, "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 6,   "rdi": 8,  "ul": 45, "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 5,   "rdi": 8,  "ul": 45, "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 6,   "rdi": 8,  "ul": 45, "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 5,   "rdi": 8,  "ul": 45, "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 22,  "rdi": 27, "ul": 45, "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 6.5, "rdi": 9,  "ul": 45, "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Magnesium",
+      "aliases": ["Mg", "Mag", "Magnesium Glycinate", "Magnesium Oxide", "Magnesium Citrate", "Magnesium Malate", "Magnesium Bisglycinate"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 8, p288-289. UL applies to supplemental magnesium only — no UL from food sources.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 340, "rdi": 410, "ul": 350, "ul_note": "UL applies to supplemental magnesium only; no UL established from food sources", "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 300, "rdi": 360, "ul": 350, "ul_note": "UL applies to supplemental magnesium only; no UL established from food sources", "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 330, "rdi": 400, "ul": 350, "ul_note": "UL applies to supplemental magnesium only; no UL established from food sources", "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 255, "rdi": 310, "ul": 350, "ul_note": "UL applies to supplemental magnesium only; no UL established from food sources", "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 350, "rdi": 420, "ul": 350, "ul_note": "UL applies to supplemental magnesium only; no UL established from food sources", "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 265, "rdi": 320, "ul": 350, "ul_note": "UL applies to supplemental magnesium only; no UL established from food sources", "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 350, "rdi": 420, "ul": 350, "ul_note": "UL applies to supplemental magnesium only; no UL established from food sources", "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 265, "rdi": 320, "ul": 350, "ul_note": "UL applies to supplemental magnesium only; no UL established from food sources", "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 300, "rdi": 350, "ul": 350, "ul_note": "UL applies to supplemental magnesium only; no UL established from food sources", "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 255, "rdi": 310, "ul": 350, "ul_note": "UL applies to supplemental magnesium only; no UL established from food sources", "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Iodine",
+      "aliases": ["I", "Potassium Iodide", "Sodium Iodide", "Kelp Iodine"],
+      "calculation_unit": "mcg",
+      "source": "NHMRC NRV 2006 v1.2: Table 8, p288-289.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 95,  "rdi": 150, "ul": 900,  "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 95,  "rdi": 150, "ul": 900,  "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 100, "rdi": 150, "ul": 1100, "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 100, "rdi": 150, "ul": 1100, "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 100, "rdi": 150, "ul": 1100, "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 100, "rdi": 150, "ul": 1100, "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 100, "rdi": 150, "ul": 1100, "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 100, "rdi": 150, "ul": 1100, "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 160, "rdi": 220, "ul": 1100, "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 190, "rdi": 270, "ul": 1100, "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Selenium",
+      "aliases": ["Se", "Selenomethionine", "Sodium Selenite", "Selenium Glycinate"],
+      "calculation_unit": "mcg",
+      "source": "NHMRC NRV 2006 v1.2: Table 8, p288-289.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 60, "rdi": 70, "ul": 400, "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 60, "rdi": 70, "ul": 400, "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 60, "rdi": 70, "ul": 400, "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 50, "rdi": 60, "ul": 400, "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 60, "rdi": 70, "ul": 400, "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 50, "rdi": 60, "ul": 400, "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 60, "rdi": 70, "ul": 400, "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 50, "rdi": 60, "ul": 400, "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 55, "rdi": 65, "ul": 400, "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 65, "rdi": 75, "ul": 400, "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Molybdenum",
+      "aliases": ["Mo", "Sodium Molybdate"],
+      "calculation_unit": "mcg",
+      "source": "NHMRC NRV 2006 v1.2: Table 8, p288-289.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ear": 33, "rdi": 43, "ul": 1700, "reference_type": "rdi" },
+        { "group": "adolescent_female_14_18","ear": 33, "rdi": 43, "ul": 1100, "reference_type": "rdi" },
+        { "group": "adult_male_19_50",       "ear": 34, "rdi": 45, "ul": 2000, "reference_type": "rdi" },
+        { "group": "adult_female_19_50",     "ear": 34, "rdi": 45, "ul": 2000, "reference_type": "rdi" },
+        { "group": "adult_male_51_70",       "ear": 34, "rdi": 45, "ul": 2000, "reference_type": "rdi" },
+        { "group": "adult_female_51_70",     "ear": 34, "rdi": 45, "ul": 2000, "reference_type": "rdi" },
+        { "group": "adult_male_70plus",      "ear": 34, "rdi": 45, "ul": 2000, "reference_type": "rdi" },
+        { "group": "adult_female_70plus",    "ear": 34, "rdi": 45, "ul": 2000, "reference_type": "rdi" },
+        { "group": "pregnant_female_19_50",  "ear": 40, "rdi": 50, "ul": 2000, "reference_type": "rdi" },
+        { "group": "lactating_female_19_50", "ear": 36, "rdi": 50, "ul": 2000, "reference_type": "rdi" }
+      ]
+    },
+    {
+      "name": "Copper",
+      "aliases": ["Cu", "Copper Glycinate", "Copper Bisglycinate", "Copper Gluconate"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 9, p290-291. All values are AI (no EAR established for adults).",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ai": 1.5, "ul": 8,  "reference_type": "ai" },
+        { "group": "adolescent_female_14_18","ai": 1.1, "ul": 8,  "reference_type": "ai" },
+        { "group": "adult_male_19_50",       "ai": 1.7, "ul": 10, "reference_type": "ai" },
+        { "group": "adult_female_19_50",     "ai": 1.2, "ul": 10, "reference_type": "ai" },
+        { "group": "adult_male_51_70",       "ai": 1.7, "ul": 10, "reference_type": "ai" },
+        { "group": "adult_female_51_70",     "ai": 1.2, "ul": 10, "reference_type": "ai" },
+        { "group": "adult_male_70plus",      "ai": 1.7, "ul": 10, "reference_type": "ai" },
+        { "group": "adult_female_70plus",    "ai": 1.2, "ul": 10, "reference_type": "ai" },
+        { "group": "pregnant_female_19_50",  "ai": 1.3, "ul": 10, "reference_type": "ai" },
+        { "group": "lactating_female_19_50", "ai": 1.5, "ul": 10, "reference_type": "ai" }
+      ]
+    },
+    {
+      "name": "Chromium",
+      "aliases": ["Cr", "Chromium Picolinate", "Chromium Nicotinate", "GTF Chromium"],
+      "calculation_unit": "mcg",
+      "source": "NHMRC NRV 2006 v1.2: Table 9, p290-291. All values are AI (no EAR established). No UL established.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ai": 35, "reference_type": "ai" },
+        { "group": "adolescent_female_14_18","ai": 24, "reference_type": "ai" },
+        { "group": "adult_male_19_50",       "ai": 35, "reference_type": "ai" },
+        { "group": "adult_female_19_50",     "ai": 25, "reference_type": "ai" },
+        { "group": "adult_male_51_70",       "ai": 35, "reference_type": "ai" },
+        { "group": "adult_female_51_70",     "ai": 25, "reference_type": "ai" },
+        { "group": "adult_male_70plus",      "ai": 35, "reference_type": "ai" },
+        { "group": "adult_female_70plus",    "ai": 25, "reference_type": "ai" },
+        { "group": "pregnant_female_19_50",  "ai": 30, "reference_type": "ai" },
+        { "group": "lactating_female_19_50", "ai": 45, "reference_type": "ai" }
+      ]
+    },
+    {
+      "name": "Potassium",
+      "aliases": ["K", "Potassium Citrate", "Potassium Gluconate", "Potassium Chloride"],
+      "calculation_unit": "mg",
+      "source": "NHMRC NRV 2006 v1.2: Table 9, p290-291. All values are AI (no EAR established). No UL established.",
+      "demographics": [
+        { "group": "adolescent_male_14_18",  "ai": 3600, "reference_type": "ai" },
+        { "group": "adolescent_female_14_18","ai": 2600, "reference_type": "ai" },
+        { "group": "adult_male_19_50",       "ai": 3800, "reference_type": "ai" },
+        { "group": "adult_female_19_50",     "ai": 2800, "reference_type": "ai" },
+        { "group": "adult_male_51_70",       "ai": 3800, "reference_type": "ai" },
+        { "group": "adult_female_51_70",     "ai": 2800, "reference_type": "ai" },
+        { "group": "adult_male_70plus",      "ai": 3800, "reference_type": "ai" },
+        { "group": "adult_female_70plus",    "ai": 2800, "reference_type": "ai" },
+        { "group": "pregnant_female_19_50",  "ai": 2800, "reference_type": "ai" },
+        { "group": "lactating_female_19_50", "ai": 3200, "reference_type": "ai" }
+      ]
+    }
+  ]
+}

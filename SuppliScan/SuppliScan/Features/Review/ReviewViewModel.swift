@@ -8,24 +8,68 @@ import SwiftUI
 final class ReviewViewModel {
     var entries: [LabelEntry]
     var servingSize: ServingSize
-    var selectedStandard: ReferenceStandard = .au
-    var selectedDemographicKey: String = Demographic.defaultAdult.key
+    var selectedStandard: ReferenceStandard
+    var selectedDemographicKey: String
     var isEditing = false
     var pendingAnalysis: LabelAnalysis?
+    var isAnalysing = false
+    var analysisError: Error?
+
+    typealias AnalyseAction = @Sendable ([LabelEntry], ServingSize, ReferenceStandard, Demographic) async throws -> LabelAnalysis
+    typealias PersistAction = @Sendable (LabelAnalysis, ReferenceStandard, Demographic) async -> Void
+
+    @ObservationIgnored private var analyseAction: AnalyseAction?
+    @ObservationIgnored private var persistAction: PersistAction?
+    @ObservationIgnored private var analysisTask: Task<Void, Never>?
 
     init(entries: [LabelEntry], extractedServing: ServingSize?) {
         self.entries = entries
         self.servingSize = extractedServing ?? ServingSize(quantity: 1, unit: .capsule)
+
+        // Read stored defaults (written by SettingsView via @AppStorage)
+        let storedStandard = UserDefaults.standard.string(forKey: "defaultStandard") ?? "AU"
+        self.selectedStandard = ReferenceStandard(rawValue: storedStandard) ?? .au
+        self.selectedDemographicKey = UserDefaults.standard.string(forKey: "defaultDemographicKey")
+            ?? Demographic.defaultAdult.key
     }
 
     var hasConfirmedEntries: Bool { !entries.isEmpty }
 
+    func configure(analyseAction: @escaping AnalyseAction, persistAction: @escaping PersistAction) {
+        self.analyseAction = analyseAction
+        self.persistAction = persistAction
+    }
+
+    /// Triggers analysis if not already running. Idempotent — safe to call on every appear.
+    func requestAnalysisIfNeeded() {
+        guard pendingAnalysis == nil, !isAnalysing else { return }
+        requestAnalysis()
+    }
+
     func requestAnalysis() {
-        pendingAnalysis = LabelAnalysis.placeholder(
-            entries: entries,
-            serving: servingSize,
-            standard: selectedStandard
-        )
+        guard hasConfirmedEntries, let analyseAction else { return }
+
+        analysisTask?.cancel()
+        isAnalysing = true
+        analysisError = nil
+
+        let capturedEntries = entries
+        let capturedServing = servingSize
+        let capturedStandard = selectedStandard
+        let demographic = Demographic.all.first { $0.key == selectedDemographicKey } ?? .defaultAdult
+
+        analysisTask = Task { @MainActor [weak self, analyseAction] in
+            defer { self?.isAnalysing = false }
+            do {
+                let analysis = try await analyseAction(capturedEntries, capturedServing, capturedStandard, demographic)
+                self?.pendingAnalysis = analysis
+                // Persist in a sibling Task — failures don't block navigation
+                let persist = self?.persistAction
+                Task { await persist?(analysis, capturedStandard, demographic) }
+            } catch {
+                self?.analysisError = error
+            }
+        }
     }
 
     func consumePendingAnalysis() -> LabelAnalysis? {

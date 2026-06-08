@@ -1,6 +1,6 @@
 // ReportSummaryCardView.swift
 // SuppliScan
-// Summary card: form quality, dose adequacy, UL status, clinical note placeholder.
+// Summary card: form quality, dose adequacy, UL status.
 
 import SwiftUI
 
@@ -20,12 +20,22 @@ struct ReportSummaryCardView: View {
         !analysis.flags.nutrientsAboveUL.isEmpty
     }
 
+    private var nutrientCount: Int {
+        analysis.nutrientAnalyses.filter { !$0.entry.isTotalLine }.count
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Analysis Summary")
                 .font(.headline)
 
             Divider()
+
+            SummaryRow(
+                icon: "number.circle.fill",
+                label: "Nutrients",
+                detail: { AnyView(Text("\(nutrientCount) identified").font(.subheadline).foregroundStyle(.secondary)) }
+            )
 
             if let tier = worstTier {
                 SummaryRow(
@@ -56,11 +66,20 @@ struct ReportSummaryCardView: View {
                 iconColor: anyAboveUL ? Color(.systemRed) : Color(.systemGreen)
             )
 
-            SummaryRow(
-                icon: "stethoscope",
-                label: "Clinical Note",
-                detail: { AnyView(Text("Connect ReportService for clinical insights").font(.caption).foregroundStyle(.secondary)) }
-            )
+            if analysis.flags.hasAnyInteractions {
+                SummaryRow(
+                    icon: "arrow.left.arrow.right.circle.fill",
+                    label: "Interactions",
+                    detail: {
+                        AnyView(
+                            Text("\(analysis.flags.nutrientInteractions.count + analysis.flags.medicationInteractions.count) detected")
+                                .font(.subheadline)
+                                .foregroundStyle(Color(.systemOrange))
+                        )
+                    },
+                    iconColor: Color(.systemOrange)
+                )
+            }
         }
         .padding(16)
         .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))

@@ -10,6 +10,7 @@ final class ScanViewModel {
     var loadingState: LoadingState<OCRResult> = .idle
     var reviewWarning: AppError?
     var isShowingError = false
+    var capturedImageData: Data?
 
     private(set) var parseResult = ParseResult(entries: [], extractedServing: nil)
     private(set) var pendingDestination: AppDestination?

@@ -3,7 +3,8 @@
 //
 // App root — 4-tab container.
 // Each tab owns an independent NavigationRouter and NavigationStack.
-// AnalysisStore triggers a tab switch when a new analysis arrives from ReviewView.
+// Analysis results push within the Scan tab's stack (Option A navigation).
+// The Analysis tab shows AnalysisRootView which reads AnalysisStore.
 
 import SwiftUI
 
@@ -40,11 +41,6 @@ struct RootTabView: View {
                 .tag(Tab.settings)
         }
         .environment(analysisStore)
-        .onChange(of: analysisStore.currentAnalysis) { _, newValue in
-            if newValue != nil {
-                selectedTab = .analysis
-            }
-        }
     }
 
     // MARK: - Tabs

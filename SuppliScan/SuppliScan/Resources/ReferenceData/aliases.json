@@ -30,6 +30,7 @@
     { "canonical": "Coenzyme Q10","variants": ["CoQ10", "Ubiquinone", "Ubiquinol", "Co-Enzyme Q10"] },
     { "canonical": "N-Acetyl Cysteine", "variants": ["NAC", "N-Acetylcysteine", "N-Acetyl-L-Cysteine"] },
     { "canonical": "Alpha Lipoic Acid", "variants": ["ALA", "Lipoic Acid", "Thioctic Acid", "R-Lipoic Acid"] },
-    { "canonical": "5-HTP",       "variants": ["5-Hydroxytryptophan", "L-5-Hydroxytryptophan"] }
+    { "canonical": "5-HTP",       "variants": ["5-Hydroxytryptophan", "L-5-Hydroxytryptophan"] },
+    { "canonical": "Choline",     "variants": ["Choline Bitartrate", "CDP-Choline", "Alpha-GPC", "Citicoline", "Choline Citrate", "L-Alpha Glycerylphosphorylcholine"] }
   ]
 }

@@ -1,7 +1,8 @@
 // ReviewView.swift
 // SuppliScan
 // User confirms or corrects OCR output before analysis.
-// The only place ServingSize is adjusted and entries are edited.
+// Analysis auto-triggers on appear. Edit button gives access to corrections.
+// Navigation: pushes AnalysisView within the Scan stack (Option A — no tab switch).
 
 import SwiftUI
 
@@ -9,6 +10,7 @@ struct ReviewView: View {
     let entries: [LabelEntry]
     let extractedServing: ServingSize?
 
+    @Environment(AppDependencies.self) private var dependencies
     @Environment(NavigationRouter.self) private var router
     @Environment(AnalysisStore.self) private var analysisStore
 
@@ -45,11 +47,33 @@ struct ReviewView: View {
         .onAppear {
             impactGenerator.prepare()
             successGenerator.prepare()
+            viewModel.configure(
+                analyseAction: { entries, serving, standard, demographic in
+                    try await dependencies.reportService.generateReport(
+                        entries: entries,
+                        servingSize: serving,
+                        productName: nil,
+                        standard: standard,
+                        demographic: demographic
+                    )
+                },
+                persistAction: { analysis, standard, demographic in
+                    let name = analysis.productName.isEmpty ? "Supplement" : analysis.productName
+                    try? await dependencies.persistence.save(
+                        analysis: analysis,
+                        productName: name,
+                        standard: standard,
+                        demographic: demographic
+                    )
+                }
+            )
+            viewModel.requestAnalysisIfNeeded()
         }
-        .onChange(of: viewModel.pendingAnalysis) { _, newValue in
+        .onChange(of: viewModel.pendingAnalysis) { _, _ in
             guard let analysis = viewModel.consumePendingAnalysis() else { return }
             successGenerator.notificationOccurred(.success)
             analysisStore.currentAnalysis = analysis
+            router.navigate(to: .analysis(analysis))
         }
     }
 
@@ -93,15 +117,22 @@ struct ReviewView: View {
             impactGenerator.impactOccurred()
             viewModel.requestAnalysis()
         } label: {
-            Text("Analyse")
+            if viewModel.isAnalysing {
+                HStack(spacing: 8) {
+                    ProgressView()
+                        .tint(.white)
+                    Text("Analysing…")
+                }
                 .frame(maxWidth: .infinity)
+            } else {
+                Text(viewModel.pendingAnalysis == nil ? "Analyse" : "Re-Analyse")
+                    .frame(maxWidth: .infinity)
+            }
         }
         .buttonStyle(.borderedProminent)
         .controlSize(.large)
-        .disabled(!viewModel.hasConfirmedEntries)
-        .opacity(viewModel.hasConfirmedEntries ? 1.0 : 0.4)
-        .scaleEffect(viewModel.hasConfirmedEntries ? 1.0 : 0.97)
-        .animation(.spring(response: 0.3), value: viewModel.hasConfirmedEntries)
+        .disabled(!viewModel.hasConfirmedEntries || viewModel.isAnalysing)
+        .animation(.spring(response: 0.3), value: viewModel.isAnalysing)
         .accessibilityHint("Analyse the scanned label entries")
     }
 }

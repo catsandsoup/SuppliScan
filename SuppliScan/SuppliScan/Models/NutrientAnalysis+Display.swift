@@ -6,17 +6,18 @@
 import SwiftUI
 
 extension NutrientAnalysis {
-    // Safety colour: red if above UL, orange if approaching, green otherwise, secondary if no data.
+    // Safety colour: red if above UL, orange if approaching UL, green otherwise.
     var rdiColor: Color {
-        if let ul = ulPercent, ul > 1.0 { return Color(.systemRed) }
-        if let rdi = rdiPercent, rdi >= 0.8, let ul = ulPercent, ul > 0.9 { return Color(.systemOrange) }
-        if rdiPercent != nil { return Color(.systemGreen) }
-        return Color(.secondaryLabel)
+        if let ul = ulPercent, ul > 1.0 { return AppTheme.Color.rdiDanger }
+        if let rdi = rdiPercent, rdi >= 0.8, let ul = ulPercent, ul > 0.9 { return AppTheme.Color.rdiWarning }
+        if rdiPercent != nil { return AppTheme.Color.rdiSafe }
+        return AppTheme.Color.rdiNoData
     }
 
     var rdiPercentString: String {
-        guard let rdi = rdiPercent else { return "No RDI data" }
-        return rdi.formatted(.percent.precision(.fractionLength(0)))
+        guard let rdi = rdiPercent else { return "—" }
+        let pct = Int((rdi * 100).rounded())
+        return "\(pct)%"
     }
 
     var ulPercentString: String? {

@@ -35,6 +35,9 @@ struct SuppliScanApp: App {
         WindowGroup {
             RootTabView()
                 .environment(dependencies)
+                .task {
+                    await dependencies.load()
+                }
         }
         // Inject for @Query reads in Views (HistoryView, HomeView)
         .modelContainer(container)

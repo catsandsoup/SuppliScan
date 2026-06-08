@@ -45,6 +45,20 @@ struct FlagBannerView: View {
                     message: "\(flags.unresolvedEntries.count) label line\(flags.unresolvedEntries.count == 1 ? "" : "s") could not be analysed"
                 )
             }
+            if !flags.nutrientInteractions.isEmpty {
+                FlagRow(
+                    icon: "arrow.left.arrow.right.circle.fill",
+                    color: Color(.systemBlue),
+                    message: "\(flags.nutrientInteractions.count) nutrient interaction\(flags.nutrientInteractions.count == 1 ? "" : "s") detected — see Interactions tab"
+                )
+            }
+            if !flags.medicationInteractions.isEmpty {
+                FlagRow(
+                    icon: "pills.fill",
+                    color: Color(.systemRed),
+                    message: "\(flags.medicationInteractions.count) potential medication interaction\(flags.medicationInteractions.count == 1 ? "" : "s") — consult your prescriber"
+                )
+            }
         }
     }
 }

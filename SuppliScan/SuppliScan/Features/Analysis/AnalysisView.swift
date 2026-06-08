@@ -1,7 +1,7 @@
 // AnalysisView.swift
 // SuppliScan
 // Primary deliverable screen — renders a LabelAnalysis in full.
-// Three internal tabs: Summary, Nutrients, Details.
+// Four internal tabs: Summary, Nutrients, Details, Interactions.
 // Disclaimer shown on every tab per clinical rules.
 
 import SwiftUI
@@ -57,7 +57,7 @@ struct AnalysisView: View {
     private var internalTabBar: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
-                ForEach(AnalysisTab.allCases) { tab in
+                ForEach(visibleTabs) { tab in
                     FilterChip(
                         label: tab.rawValue,
                         isSelected: activeTab == tab
@@ -76,6 +76,15 @@ struct AnalysisView: View {
         Divider()
     }
 
+    private var visibleTabs: [AnalysisTab] {
+        AnalysisTab.allCases.filter { tab in
+            if tab == .interactions {
+                return analysis.flags.hasAnyInteractions
+            }
+            return true
+        }
+    }
+
     // MARK: - Tab content
 
     private var tabContent: some View {
@@ -86,6 +95,8 @@ struct AnalysisView: View {
                 .tag(AnalysisTab.nutrients)
             DetailsTabView(analysis: analysis, router: router)
                 .tag(AnalysisTab.details)
+            InteractionsTabView(analysis: analysis)
+                .tag(AnalysisTab.interactions)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
     }
@@ -97,6 +108,7 @@ enum AnalysisTab: String, CaseIterable, Identifiable {
     case summary = "Summary"
     case nutrients = "Nutrients"
     case details = "Details"
+    case interactions = "Interactions"
 
     var id: String { rawValue }
 }
@@ -109,22 +121,12 @@ private struct SummaryTabView: View {
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 16) {
-                if analysis.nutrientAnalyses.isEmpty {
-                    ContentUnavailableView(
-                        "Nutrient Analysis Pending",
-                        systemImage: "arrow.clockwise",
-                        description: Text("Analysis will appear here once the report service is connected.")
-                    )
-                    .padding(.top, 40)
-                } else {
-                    ReportSummaryCardView(analysis: analysis)
-                }
+                ReportSummaryCardView(analysis: analysis)
 
                 if analysis.flags.hasAnyFlags {
                     FlagBannerView(flags: analysis.flags)
                 }
 
-                // Serving context
                 HStack(spacing: 6) {
                     Image(systemName: "info.circle")
                         .foregroundStyle(.secondary)
@@ -162,9 +164,9 @@ private struct NutrientsTabView: View {
 
             if analysis.nutrientAnalyses.isEmpty {
                 ContentUnavailableView(
-                    "Nutrient Analysis Pending",
-                    systemImage: "arrow.clockwise",
-                    description: Text("Analysis will appear here once the report service is connected.")
+                    "No Nutrients Found",
+                    systemImage: "text.badge.xmark",
+                    description: Text("No nutrients were identified in this label.")
                 )
             } else {
                 ScrollView {
@@ -204,7 +206,6 @@ private struct DetailsTabView: View {
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 24) {
-                // Forms & Potency link
                 if !withFormQuality.isEmpty {
                     Button {
                         router.navigate(to: .formsAndPotency(withFormQuality))
@@ -228,13 +229,11 @@ private struct DetailsTabView: View {
                     .buttonStyle(.plain)
                 }
 
-                // Herbal section
                 if analysis.hasHerbals {
                     ReportSectionHeader("Herbal Extracts")
                     ForEach(analysis.herbalEntries, id: \.id) { HerbalRowView(entry: $0) }
                 }
 
-                // Probiotic section
                 if analysis.hasProbiotics {
                     ReportSectionHeader("Probiotics")
                     if let total = analysis.totalCFUBillions {
@@ -249,7 +248,6 @@ private struct DetailsTabView: View {
                         .foregroundStyle(.secondary)
                 }
 
-                // Unresolved section
                 if analysis.hasUnresolved {
                     ReportSectionHeader("Could Not Be Analysed")
                     ForEach(analysis.unresolvedLines, id: \.id) { UnresolvedLineView(line: $0) }
@@ -260,6 +258,213 @@ private struct DetailsTabView: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 16)
         }
+    }
+}
+
+// MARK: - Interactions Tab
+
+private struct InteractionsTabView: View {
+    let analysis: LabelAnalysis
+
+    private var flags: ReportFlags { analysis.flags }
+
+    private var interactingNames: Set<String> {
+        Set(flags.nutrientInteractions.flatMap { $0.participants })
+    }
+
+    private var noInteractionNutrients: [NutrientAnalysis] {
+        analysis.nutrientAnalyses.filter { !interactingNames.contains($0.entry.canonicalName) }
+    }
+
+    private var totalInteractionCount: Int {
+        flags.nutrientInteractions.count + flags.medicationInteractions.count
+    }
+
+    var body: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: 0) {
+
+                // Found interactions
+                if totalInteractionCount > 0 {
+                    InteractionSectionHeader(
+                        title: "Potential Interactions Found",
+                        count: totalInteractionCount,
+                        icon: "exclamationmark.triangle.fill",
+                        color: AppTheme.Color.warning
+                    )
+                    .padding(.horizontal, 16)
+                    .padding(.top, 16)
+                    .padding(.bottom, 8)
+
+                    ForEach(flags.nutrientInteractions) { interaction in
+                        InteractionRowView(
+                            participants: interaction.participants,
+                            severity: interaction.severity,
+                            effect: interaction.effect,
+                            recommendation: interaction.recommendation
+                        )
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 10)
+                    }
+
+                    ForEach(flags.medicationInteractions) { interaction in
+                        InteractionRowView(
+                            participants: [interaction.nutrient, interaction.medicationClass],
+                            severity: interaction.severity,
+                            effect: interaction.effect,
+                            recommendation: interaction.recommendation
+                        )
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 10)
+                    }
+                }
+
+                // No-interaction nutrients
+                if !noInteractionNutrients.isEmpty {
+                    InteractionSectionHeader(
+                        title: "No Known Interactions",
+                        count: noInteractionNutrients.count,
+                        icon: "checkmark.circle.fill",
+                        color: AppTheme.Color.success
+                    )
+                    .padding(.horizontal, 16)
+                    .padding(.top, totalInteractionCount > 0 ? 16 : 16)
+                    .padding(.bottom, 8)
+
+                    ForEach(noInteractionNutrients) { nutrient in
+                        NoInteractionRowView(analysis: nutrient)
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 8)
+                    }
+                }
+
+                DisclaimerView(
+                    text: "Interactions listed are based on published clinical evidence. Individual responses vary. Always consult a healthcare professional before adjusting supplement or medication regimens."
+                )
+                .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 24)
+            }
+        }
+    }
+}
+
+// MARK: - Interaction section header
+
+private struct InteractionSectionHeader: View {
+    let title: String
+    let count: Int
+    let icon: String
+    let color: Color
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: icon)
+                .foregroundStyle(color)
+                .font(.subheadline)
+            Text(title)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.primary)
+            Spacer()
+            Text("\(count)")
+                .font(.caption.weight(.bold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 9)
+                .padding(.vertical, 4)
+                .background(color, in: Capsule())
+        }
+    }
+}
+
+// MARK: - Interaction row (with participant avatars)
+
+private struct InteractionRowView: View {
+    let participants: [String]
+    let severity: InteractionSeverity
+    let effect: String
+    let recommendation: String
+
+    private var severityColor: Color {
+        switch severity {
+        case .low:      AppTheme.Color.success
+        case .moderate: AppTheme.Color.warning
+        case .high:     AppTheme.Color.critical
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 6) {
+                participantAvatars
+                Spacer()
+                Text(severity.displayLabel)
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(severityColor)
+                    .padding(.horizontal, 9)
+                    .padding(.vertical, 4)
+                    .background(severityColor.opacity(0.12), in: Capsule())
+            }
+
+            Text(effect)
+                .font(.subheadline)
+                .foregroundStyle(.primary)
+
+            HStack(alignment: .top, spacing: 6) {
+                Image(systemName: "lightbulb.fill")
+                    .font(.caption)
+                    .foregroundStyle(.yellow)
+                Text(recommendation)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(14)
+        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    @ViewBuilder
+    private var participantAvatars: some View {
+        HStack(spacing: -8) {
+            ForEach(participants.prefix(3), id: \.self) { name in
+                NutrientAvatarView(canonicalName: name, size: 32)
+                    .overlay(Circle().stroke(Color(.systemBackground), lineWidth: 2))
+            }
+        }
+        if participants.count > 1 {
+            Image(systemName: "plus")
+                .font(.caption2.weight(.bold))
+                .foregroundStyle(.secondary)
+                .padding(.leading, 12)
+        }
+        Text(participants.joined(separator: " + "))
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(.primary)
+            .lineLimit(1)
+    }
+}
+
+// MARK: - No-interaction row
+
+private struct NoInteractionRowView: View {
+    let analysis: NutrientAnalysis
+
+    var body: some View {
+        HStack(spacing: 12) {
+            NutrientAvatarView(canonicalName: analysis.entry.canonicalName, size: 36)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(analysis.entry.displayName)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.primary)
+                Text("No known interactions")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+            Image(systemName: "checkmark.circle.fill")
+                .foregroundStyle(AppTheme.Color.success.opacity(0.70))
+                .font(.subheadline)
+        }
+        .padding(.vertical, 4)
     }
 }
 
