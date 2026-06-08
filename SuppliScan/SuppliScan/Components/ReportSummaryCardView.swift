@@ -61,11 +61,11 @@ struct ReportSummaryCardView: View {
                 SummaryRow(
                     icon: "arrow.left.arrow.right.circle.fill",
                     label: "Interactions",
-                    iconColor: Color(.systemOrange)
+                    iconColor: AppTheme.Color.warning
                 ) {
                     Text("\(analysis.flags.nutrientInteractions.count + analysis.flags.medicationInteractions.count) detected")
                         .font(.subheadline)
-                        .foregroundStyle(Color(.systemOrange))
+                        .foregroundStyle(AppTheme.Color.warning)
                 }
             }
         }

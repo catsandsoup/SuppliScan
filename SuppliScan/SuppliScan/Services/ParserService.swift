@@ -180,15 +180,47 @@ nonisolated struct ParserService: Sendable {
             )
         }
 
-        guard let name = probioticName(from: prefix) else { return nil }
-        return ProbioticEntry(
-            genus: name.genus,
-            species: name.species,
-            strain: name.strain,
-            cfuBillions: cfuMatch.cfuBillions,
-            isTotalLine: isTotalLine(line),
-            reviewFlags: isTotalLine(line) ? [.totalLineAmbiguous] : []
-        )
+        if let name = probioticName(from: prefix) {
+            return ProbioticEntry(
+                genus: name.genus,
+                species: name.species,
+                strain: name.strain,
+                cfuBillions: cfuMatch.cfuBillions,
+                isTotalLine: isTotalLine(line),
+                reviewFlags: isTotalLine(line) ? [.totalLineAmbiguous] : []
+            )
+        }
+
+        // Two-column label format uses abbreviated genera: "L. rhamnosus", "B. longum"
+        if let name = abbreviatedProbioticName(from: prefix) {
+            return ProbioticEntry(
+                genus: name.genus,
+                species: name.species,
+                strain: name.strain,
+                cfuBillions: cfuMatch.cfuBillions,
+                isTotalLine: isTotalLine(line),
+                reviewFlags: isTotalLine(line) ? [.totalLineAmbiguous] : []
+            )
+        }
+
+        return nil
+    }
+
+    private func abbreviatedProbioticName(from text: String) -> (genus: String, species: String, strain: String?)? {
+        let abbreviationMap: [String: String] = [
+            "l": "Lactobacillus", "b": "Bifidobacterium",
+            "s": "Streptococcus",  "e": "Enterococcus",
+        ]
+        guard let match = firstMatch(
+            in: text,
+            pattern: #"(?i)\b([A-Za-z])\.\s+([a-z][a-z-]+)\b\s*([\w\s\-]*)"#
+        ) else { return nil }
+
+        let abbrev = match.captures[0].lowercased()
+        guard let genus = abbreviationMap[abbrev] else { return nil }
+        let species = match.captures[1].lowercased()
+        let strain = match.captures.count > 2 ? normalizedStrain(match.captures[2]) : nil
+        return (genus, species, strain)
     }
 
     private func nutrientEntry(from line: String) -> NutrientEntry? {
@@ -299,6 +331,23 @@ nonisolated struct ParserService: Sendable {
                 compoundAmountText: match.captures[4],
                 compoundUnitText: match.captures[5],
                 activeNameText: match.captures[0],
+                activeAmountText: match.captures[1],
+                activeUnitText: match.captures[2],
+                sourceLine: line
+            )
+        }
+
+        // Pattern 5: SERVING_DESC provides AMOUNT UNIT ACTIVE_NAME
+        // e.g. "1 level scoop provides 1g N-Acetyl-Cysteine"
+        if let match = firstMatch(
+            in: line,
+            pattern: #"(?i)^(.+?)\s+provides\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g|iu)\b\s+(.+?)$"#
+        ) {
+            return makeCompoundEquivalentEntry(
+                compoundName: match.captures[0],
+                compoundAmountText: nil,
+                compoundUnitText: nil,
+                activeNameText: match.captures[3],
                 activeAmountText: match.captures[1],
                 activeUnitText: match.captures[2],
                 sourceLine: line
@@ -463,29 +512,31 @@ nonisolated struct ParserService: Sendable {
     }
 
     private func cfuMatch(in line: String) -> CFUMatch? {
-        guard let match = firstMatch(
+        // Primary: "X billion/million CFU" (explicit CFU suffix)
+        if let match = firstMatch(
             in: line,
             pattern: #"(?i)(\d+(?:[\.,]\d+)?)\s*(billion|million)?\s*cfu\b"#
-        ) else {
-            return nil
+        ) {
+            var flags: [ReviewFlag] = []
+            guard let amount = decimalAmount(match.captures[0], flags: &flags) else { return nil }
+            let scale = match.captures.count > 1 ? match.captures[1].lowercased() : ""
+            let cfuBillions: Double = scale == "million" ? amount / 1_000 : amount
+            return CFUMatch(cfuBillions: cfuBillions, range: match.range)
         }
 
-        var flags: [ReviewFlag] = []
-        guard let amount = decimalAmount(match.captures[0], flags: &flags) else {
-            return nil
+        // Fallback: "X Billion" / "X Million" alone — two-column probiotic label format
+        // where "CFU" only appears in the column header, not on each row.
+        if let match = firstMatch(
+            in: line,
+            pattern: #"(?i)(\d+(?:[\.,]\d+)?)\s+(billion|million)\b"#
+        ) {
+            var flags: [ReviewFlag] = []
+            guard let amount = decimalAmount(match.captures[0], flags: &flags) else { return nil }
+            let cfuBillions: Double = match.captures[1].lowercased() == "million" ? amount / 1_000 : amount
+            return CFUMatch(cfuBillions: cfuBillions, range: match.range)
         }
 
-        let scale = match.captures.count > 1 ? match.captures[1].lowercased() : ""
-        let cfuBillions: Double
-        if scale == "million" {
-            cfuBillions = amount / 1_000
-        } else if scale == "billion" || scale.isEmpty {
-            cfuBillions = amount
-        } else {
-            cfuBillions = amount
-        }
-
-        return CFUMatch(cfuBillions: cfuBillions, range: match.range)
+        return nil
     }
 
     private func decimalAmount(_ rawValue: String, flags: inout [ReviewFlag]) -> Double? {
@@ -517,6 +568,14 @@ nonisolated struct ParserService: Sendable {
         let servingKeywords = ["serv", "each", "teaspoon", "tablespoon", "scoop", "sachet"]
         guard servingKeywords.contains(where: { lower.contains($0) }) else {
             return nil
+        }
+
+        // Scoop: handle "N level scoop" / "N heaping scoop" where a descriptor word
+        // sits between the number and "scoop", e.g. "1 level scoop provides 1g NAC".
+        if lower.contains("scoop"),
+           let match = firstMatch(in: line, pattern: #"(?i)(\d+(?:[\.,]\d+)?)\s+(?:\w+\s+)?scoops?\b"#) {
+            let quantity = Double(match.captures[0].replacingOccurrences(of: ",", with: ".")) ?? 1
+            return ServingSize(quantity: quantity, unit: .scoop)
         }
 
         guard let match = firstMatch(
@@ -575,10 +634,14 @@ nonisolated struct ParserService: Sendable {
             return true
         }
 
+        // Section headers — skip regardless of whether they contain an amount.
+        // "each vegetarian capsule contains: 96 billion CFU" must not become a nutrient entry.
         let ingredientSectionHeaders = [
-            "each tablet contains", "each capsule contains", "each dose contains"
+            "each tablet contains", "each capsule contains", "each dose contains",
+            "each vegetarian capsule", "each veg capsule", "each softgel contains",
+            "each softcap contains", "each sachet contains", "each scoop contains",
         ]
-        if ingredientSectionHeaders.contains(where: { lower.contains($0) }), amountMatch(in: trimmed) == nil {
+        if ingredientSectionHeaders.contains(where: { lower.contains($0) }) {
             return true
         }
 
@@ -590,7 +653,23 @@ nonisolated struct ParserService: Sendable {
             "does not contain", "contains egg", "contains gluten",
             "contains milk", "contains peanut", "contains soy", "contains tree nuts",
             "artificial colours", "artificial flavours", "store below",
-            "store in", "batch", "expiry", " exp ", " lot "
+            "store in", "batch", "expiry", " exp ", " lot ", "exp:",
+            // "Also contains" ingredient-disclaimer separator and allergen lists
+            "also contains", "contains no ", "contains sulfites", "contains galactose",
+            "dairy products", "natural flavour", "natural flavor",
+            "lemon flavour", "lime flavour", "lemon flavor", "lime flavor",
+            "malic acid", "acacia", "stevia",
+            // Regulatory, safety and compliance disclaimers
+            "this product contains", "daily dose of", "not be exceeded",
+            "daily value not established", "value not established",
+            "natural color variation", "natural colour variation",
+            "dietary supplements should not", "not replace a balanced",
+            "per tablet", "per capsule", "per serve", "per serving",
+            "gmp facility", "refrigeration required",
+            "keep out of reach", "for extemporaneous", "compounding only",
+            "not manufactured with", "suitable for vegans", "suitable for vegetarians",
+            "100% money back", "money back guarantee", "no added", "no artificial",
+            "designed and packed", "packed in australia",
         ]
         if nonIngredientPhrases.contains(where: { lower.contains($0) }) {
             return true
@@ -599,10 +678,20 @@ nonisolated struct ParserService: Sendable {
         // Company, address, and contact rows — common OCR spill from label back/sides.
         let companyAddressFragments = [
             "pty ltd", " ltd", "p/l", " abn ", " acn ", "tel:", "tel.",
-            "www.", ".com", ".com.au", "@", " rd,", " st,", " ave,",
-            "postcode", "po box", "distributor", "manufactured by", "imported by"
+            "www.", ".com", ".com.au", "@", " rd,", " rd.", " rd ", " st,", " ave,",
+            "postcode", "po box", "distributor", "manufactured by", "imported by",
+            " nsw ", " vic ", " qld ", " sa ", " wa ", " act ", " tas ", " nt ",
+            " usa ", " il ", "bloomingdale", "glen ellyn",
         ]
         if companyAddressFragments.contains(where: { lower.contains($0) }) {
+            return true
+        }
+
+        // OCR misread of "total elemental X Ymg" — single-letter word before "elemental"
+        // e.g. "f elemental magnesium 400mg" (misread of "total elemental magnesium 400mg")
+        if let firstWord = trimmed.split(separator: " ").first,
+           firstWord.count == 1,
+           lower.contains("elemental") {
             return true
         }
 
@@ -620,8 +709,10 @@ nonisolated struct ParserService: Sendable {
     }
 
     private func isEquivalentContinuation(_ line: String) -> Bool {
+        // Matches standalone form-qualifier lines: "(providing ...)", "(equiv ...)",
+        // "(as Selenomethionine)", "(from X)", "(as amino acid chelate)" etc.
         line.range(
-            of: #"(?i)^\(?\s*(providing|equiv\.?|equivalent(?:\s+to)?)\b"#,
+            of: #"(?i)^\(?\s*(providing|equiv\.?|equivalent(?:\s+to)?|as\s+\w|from\s+\w)\b"#,
             options: .regularExpression
         ) != nil
     }

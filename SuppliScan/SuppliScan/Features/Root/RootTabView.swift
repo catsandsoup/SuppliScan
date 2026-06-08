@@ -39,7 +39,27 @@ struct RootTabView: View {
         }
         .tabBarMinimizeBehavior(.onScrollDown)
         .environment(analysisStore)
+        #if DEBUG
+        .onAppear { injectSeedDataIfNeeded() }
+        #endif
     }
+
+    #if DEBUG
+    private func injectSeedDataIfNeeded() {
+        let args = ProcessInfo.processInfo.arguments
+        guard args.contains("--uitest-supplement-seed") else { return }
+        analysisStore.currentAnalysis = SampleData.analysis
+        selectedTab = .analysis
+        if args.contains("--screen=nutrient-detail") {
+            if let first = SampleData.analysis.nutrientAnalyses.first {
+                Task { @MainActor in
+                    try? await Task.sleep(for: .milliseconds(200))
+                    analysisRouter.navigate(to: .nutrientDetail(first))
+                }
+            }
+        }
+    }
+    #endif
 
     // MARK: - Tabs
 

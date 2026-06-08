@@ -49,7 +49,7 @@ nonisolated enum ServingUnit: String, Codable, Hashable, CaseIterable, Sendable 
     case unknown
 }
 
-extension ServingUnit {
+nonisolated extension ServingUnit {
     var displayName: String {
         switch self {
         case .capsule:    "capsule"

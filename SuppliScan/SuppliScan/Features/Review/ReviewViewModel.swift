@@ -21,7 +21,6 @@ final class ReviewViewModel {
     @ObservationIgnored private var analyseAction: AnalyseAction?
     @ObservationIgnored private var persistAction: PersistAction?
     @ObservationIgnored private var analysisTask: Task<Void, Never>?
-    @ObservationIgnored private var hasRequestedInitialAnalysis = false
     @ObservationIgnored private var persistedAnalysisIDs: Set<UUID> = []
 
     init(entries: [LabelEntry], extractedServing: ServingSize?) {
@@ -40,13 +39,6 @@ final class ReviewViewModel {
     func configure(analyseAction: @escaping AnalyseAction, persistAction: @escaping PersistAction) {
         self.analyseAction = analyseAction
         self.persistAction = persistAction
-    }
-
-    /// Triggers analysis if not already running. Idempotent — safe to call on every appear.
-    func requestAnalysisIfNeeded() {
-        guard !hasRequestedInitialAnalysis, pendingAnalysis == nil, !isAnalysing else { return }
-        hasRequestedInitialAnalysis = true
-        requestAnalysis()
     }
 
     func requestAnalysis() {

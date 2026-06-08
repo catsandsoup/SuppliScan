@@ -67,7 +67,6 @@ struct ReviewView: View {
                     )
                 }
             )
-            viewModel.requestAnalysisIfNeeded()
         }
         .onChange(of: viewModel.pendingAnalysis) { _, _ in
             guard let analysis = viewModel.consumePendingAnalysis() else { return }

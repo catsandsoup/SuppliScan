@@ -23,8 +23,12 @@ struct AnalysisView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button("Share", systemImage: "square.and.arrow.up") { }
-                    .disabled(true) // Re-enable when ExportService is wired
+                ShareLink(
+                    item: analysis.shareText,
+                    subject: Text(analysis.productName.isEmpty ? "SuppliScan Analysis" : analysis.productName)
+                ) {
+                    Label("Share", systemImage: "square.and.arrow.up")
+                }
             }
         }
         .sensoryFeedback(.warning, trigger: ulWarningTriggered)
@@ -117,14 +121,21 @@ enum AnalysisTab: String, CaseIterable, Identifiable {
 
 private struct SummaryTabView: View {
     let analysis: LabelAnalysis
+    @State private var appeared = false
 
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 16) {
                 ReportSummaryCardView(analysis: analysis)
+                    .opacity(appeared ? 1 : 0)
+                    .offset(y: appeared ? 0 : 10)
+                    .animation(.spring(response: 0.40, dampingFraction: 0.80), value: appeared)
 
                 if analysis.flags.hasAnyFlags {
                     FlagBannerView(flags: analysis.flags)
+                        .opacity(appeared ? 1 : 0)
+                        .offset(y: appeared ? 0 : 10)
+                        .animation(.spring(response: 0.40, dampingFraction: 0.80).delay(0.07), value: appeared)
                 }
 
                 HStack(spacing: 6) {
@@ -136,11 +147,18 @@ private struct SummaryTabView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(.horizontal, 4)
+                .opacity(appeared ? 1 : 0)
+                .animation(.spring(response: 0.40, dampingFraction: 0.80).delay(0.14), value: appeared)
 
                 DisclaimerView(text: analysis.disclaimer)
+                    .opacity(appeared ? 1 : 0)
+                    .animation(.easeOut(duration: 0.35).delay(0.20), value: appeared)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 16)
+        }
+        .onAppear {
+            withAnimation { appeared = true }
         }
     }
 }

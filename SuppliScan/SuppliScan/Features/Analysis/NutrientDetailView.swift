@@ -145,18 +145,21 @@ private struct RDIProgressBar: View {
             }
             .frame(height: 14)
 
-            // Zone labels
-            HStack(spacing: 0) {
-                Text("0")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text("RDI")
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .offset(x: -(0.5 - greenEnd) * 16) // nudge toward tick
-                Text("150%")
-                    .frame(maxWidth: .infinity, alignment: .trailing)
+            // Zone labels — positioned absolutely so "RDI" aligns with the tick
+            GeometryReader { labelGeo in
+                let w = labelGeo.size.width
+                ZStack(alignment: .topLeading) {
+                    Text("0")
+                        .position(x: 4, y: 7)
+                    Text("RDI")
+                        .position(x: w * rdiTick, y: 7)
+                    Text("150%")
+                        .position(x: w - 10, y: 7)
+                }
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
             }
-            .font(.caption2)
-            .foregroundStyle(.tertiary)
+            .frame(height: 14)
         }
     }
 }

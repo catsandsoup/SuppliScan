@@ -71,6 +71,28 @@ nonisolated extension LabelAnalysis {
     var hasProbiotics: Bool { !probioticEntries.isEmpty }
     var hasUnresolved: Bool { !unresolvedLines.isEmpty }
 
+    /// Plain-text summary for share sheet.
+    var shareText: String {
+        let name = productName.isEmpty ? "Supplement" : productName
+        let serving = "\(servingSize.selectedQuantity.formatted()) \(servingSize.unit.pluralised(for: servingSize.selectedQuantity))"
+        var lines: [String] = [
+            "\(name) — SuppliScan Analysis",
+            "\(referenceStandard.rawValue) Standard · \(serving)",
+            "",
+            "\(nutrientAnalyses.count) nutrient(s) identified",
+        ]
+        if !flags.nutrientsAboveUL.isEmpty {
+            lines.append("⚠️ \(flags.nutrientsAboveUL.count) nutrient(s) above Tolerable Upper Intake Level")
+        }
+        if !flags.nutrientInteractions.isEmpty || !flags.medicationInteractions.isEmpty {
+            let count = flags.nutrientInteractions.count + flags.medicationInteractions.count
+            lines.append("ℹ️ \(count) potential interaction(s) detected")
+        }
+        lines.append("")
+        lines.append(disclaimer)
+        return lines.joined(separator: "\n")
+    }
+
     /// Total CFU across all probiotic entries (excluding total lines).
     var totalCFUBillions: Double? {
         let strains = probioticEntries.filter { !$0.isTotalLine }
