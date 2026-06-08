@@ -41,7 +41,9 @@ actor ReportService {
         var probioticEntries: [ProbioticEntry] = []
         var unresolvedLines: [RawLine] = []
 
-        for entry in entries {
+        let reportEntries = calculationEntries(from: entries)
+
+        for entry in reportEntries {
             switch entry {
             case .nutrient(let raw):
                 let analysis = await analyseNutrient(
@@ -63,9 +65,7 @@ actor ReportService {
             }
         }
 
-        // Interaction check excludes total-line entries to avoid double counting.
         let interactableNames = nutrientAnalyses
-            .filter { !$0.entry.isTotalLine }
             .map(\.entry.canonicalName)
 
         let interactions = await interactionService.interactions(for: interactableNames)
@@ -97,6 +97,27 @@ actor ReportService {
     }
 
     // MARK: - Private
+
+    private func calculationEntries(from entries: [LabelEntry]) -> [LabelEntry] {
+        let nutrientEntries = entries.compactMap { entry -> NutrientEntry? in
+            if case .nutrient(let nutrient) = entry { return nutrient }
+            return nil
+        }
+
+        let nutrientsWithTotals = Set(
+            nutrientEntries
+                .filter(\.isTotalLine)
+                .map { normalizedKey($0.canonicalName) }
+        )
+
+        return entries.filter { entry in
+            guard case .nutrient(let nutrient) = entry else { return true }
+            if nutrientsWithTotals.contains(normalizedKey(nutrient.canonicalName)) {
+                return nutrient.isTotalLine
+            }
+            return true
+        }
+    }
 
     private func analyseNutrient(
         _ entry: NutrientEntry,
@@ -159,5 +180,13 @@ actor ReportService {
             nutrientInteractions: interactions,
             medicationInteractions: medicationInteractions
         )
+    }
+
+    private func normalizedKey(_ value: String) -> String {
+        value
+            .folding(options: [.caseInsensitive, .diacriticInsensitive], locale: .current)
+            .lowercased()
+            .replacingOccurrences(of: #"[^a-z0-9]+"#, with: " ", options: .regularExpression)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

@@ -4,14 +4,8 @@
 // Session start/stop run on a detached task to avoid blocking the main thread.
 // Gracefully handles permission denied and no-camera-device (Simulator).
 
-import AVFoundation
+@preconcurrency import AVFoundation
 import SwiftUI
-
-// AVFoundation session types are designed for cross-thread use; @unchecked Sendable
-// conformances let Swift 6 strict concurrency accept them in Task.detached closures.
-extension AVCaptureSession:     @unchecked Sendable {}
-extension AVCapturePhotoOutput: @unchecked Sendable {}
-extension AVCaptureDevice:      @unchecked Sendable {}
 
 @Observable
 @MainActor

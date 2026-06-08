@@ -37,13 +37,24 @@ nonisolated struct ParserService: Sendable {
 
         let rawLines = rawText
             .split(whereSeparator: \.isNewline)
-            .map { String($0).trimmingCharacters(in: .whitespacesAndNewlines) }
+            .map { sanitizedLine(String($0)) }
             .filter { !$0.isEmpty }
 
-        // Merge two-column OCR lines: nutrient name on one line, amount on the next.
-        // Vision returns each table column as a separate observation when text is
-        // spatially separated, producing "Taurine" then "1000mg" as separate lines.
-        let lines = mergedTwoColumnLines(rawLines)
+        for line in rawLines {
+            if let serving = servingSize(from: line) {
+                extractedServing = serving
+            }
+        }
+
+        let candidateLines = ingredientCandidateLines(from: rawLines)
+        for line in candidateLines {
+            if let serving = servingSize(from: line) {
+                extractedServing = serving
+            }
+        }
+
+        let lines = candidateLines
+            .filter { !isServingOnlyLine($0) }
 
         for (index, line) in lines.enumerated() {
             if let serving = servingSize(from: line) {
@@ -52,7 +63,9 @@ nonisolated struct ParserService: Sendable {
 
             guard !shouldSkip(line) else { continue }
 
-            if let nutrient = nutrientEntry(from: line) {
+            if let probiotic = probioticEntry(from: line) {
+                entries.append(.probiotic(probiotic))
+            } else if let nutrient = nutrientEntry(from: line) {
                 entries.append(.nutrient(UnitConversionService.convertIfNeeded(nutrient)))
             } else {
                 entries.append(.unresolved(RawLine(text: line, lineNumber: index + 1)))
@@ -62,8 +75,12 @@ nonisolated struct ParserService: Sendable {
         return ParseResult(entries: entries, extractedServing: extractedServing)
     }
 
-    /// Merges consecutive pairs where the first is a name-only line and the second is
-    /// an amount-only line — the two-column supplement facts table pattern from Vision OCR.
+    /// Prepares OCR lines for deterministic parsing while preserving visible label order.
+    private func ingredientCandidateLines(from rawLines: [String]) -> [String] {
+        mergedContinuationLines(mergedTwoColumnLines(rawLines))
+    }
+
+    /// Merges consecutive pairs where the first is a name-only line and the second is an amount-only line.
     private func mergedTwoColumnLines(_ lines: [String]) -> [String] {
         var result: [String] = []
         var i = 0
@@ -83,6 +100,29 @@ nonisolated struct ParserService: Sendable {
         return result
     }
 
+    /// Merges compound rows with their following elemental or equivalent continuation row.
+    private func mergedContinuationLines(_ lines: [String]) -> [String] {
+        var result: [String] = []
+        var i = 0
+
+        while i < lines.count {
+            let current = lines[i]
+            if i + 1 < lines.count {
+                let next = lines[i + 1]
+                if amountMatch(in: current) != nil, isEquivalentContinuation(next) {
+                    result.append(current + " " + next)
+                    i += 2
+                    continue
+                }
+            }
+
+            result.append(current)
+            i += 1
+        }
+
+        return result
+    }
+
     /// True when a line contains a recognisable name but no parseable amount.
     private func isNameOnlyLine(_ line: String) -> Bool {
         guard !shouldSkip(line) else { return false }
@@ -93,13 +133,49 @@ nonisolated struct ParserService: Sendable {
     /// True when a line is purely an amount with no meaningful name prefix.
     /// e.g. "1000mg", "350 mcg", "< 1 mg" — the name must appear on the previous line.
     private func isAmountOnlyLine(_ line: String) -> Bool {
+        if let match = cfuMatch(in: line) {
+            let prefix = String(line[..<match.range.lowerBound])
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return prefix.isEmpty || prefix.count <= 2
+        }
+
         guard let match = amountMatch(in: line) else { return false }
         let prefix = String(line[..<match.range.lowerBound])
             .trimmingCharacters(in: .whitespacesAndNewlines)
         return prefix.isEmpty || prefix.count <= 2
     }
 
+    private func probioticEntry(from line: String) -> ProbioticEntry? {
+        guard let cfuMatch = cfuMatch(in: line) else { return nil }
+        let prefix = String(line[..<cfuMatch.range.lowerBound])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        if isTotalLine(line), !containsProbioticScientificName(prefix) {
+            return ProbioticEntry(
+                genus: "Total",
+                species: "probiotics",
+                cfuBillions: cfuMatch.cfuBillions,
+                isTotalLine: true,
+                reviewFlags: [.totalLineAmbiguous]
+            )
+        }
+
+        guard let name = probioticName(from: prefix) else { return nil }
+        return ProbioticEntry(
+            genus: name.genus,
+            species: name.species,
+            strain: name.strain,
+            cfuBillions: cfuMatch.cfuBillions,
+            isTotalLine: isTotalLine(line),
+            reviewFlags: isTotalLine(line) ? [.totalLineAmbiguous] : []
+        )
+    }
+
     private func nutrientEntry(from line: String) -> NutrientEntry? {
+        if let nutrient = compoundEquivalentEntry(from: line) {
+            return nutrient
+        }
+
         guard let amountMatch = amountMatch(in: line) else {
             if isBlendLine(line) {
                 return makeNutrientEntry(from: line, amountMatch: nil, extraFlags: [.amountNotFound, .proprietaryBlend])
@@ -122,12 +198,14 @@ nonisolated struct ParserService: Sendable {
         let prefix = amountMatch.map { String(line[..<$0.range.lowerBound]) } ?? line
         let nameAndForm = extractNameAndForm(from: prefix)
         guard !nameAndForm.name.isEmpty else { return nil }
+        guard !shouldRejectCandidateName(nameAndForm.name, line: line, unit: amountMatch?.unit) else { return nil }
 
         let canonical = canonicalName(for: nameAndForm.name)
         let inferred = canonical != nameAndForm.name
+        let totalFlags: [ReviewFlag] = isTotalLine(line) ? [.totalLineAmbiguous] : []
         let flags = appended(
             inferred ? [.canonicalNameInferred] : [],
-            to: appended(amountMatch?.flags ?? [], to: extraFlags)
+            to: appended(totalFlags, to: appended(amountMatch?.flags ?? [], to: extraFlags))
         )
 
         return NutrientEntry(
@@ -142,6 +220,81 @@ nonisolated struct ParserService: Sendable {
         )
     }
 
+    private func compoundEquivalentEntry(from line: String) -> NutrientEntry? {
+        if let match = firstMatch(
+            in: line,
+            pattern: #"(?i)^(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\b\s*\(?\s*(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\b\)?"#
+        ) {
+            return makeCompoundEquivalentEntry(
+                compoundName: match.captures[0],
+                compoundAmountText: match.captures[1],
+                compoundUnitText: match.captures[2],
+                activeNameText: match.captures[3],
+                activeAmountText: match.captures[4],
+                activeUnitText: match.captures[5],
+                sourceLine: line
+            )
+        }
+
+        if let match = firstMatch(
+            in: line,
+            pattern: #"(?i)^(.+?)\s+(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\b"#
+        ) {
+            return makeCompoundEquivalentEntry(
+                compoundName: match.captures[0],
+                compoundAmountText: nil,
+                compoundUnitText: nil,
+                activeNameText: match.captures[1],
+                activeAmountText: match.captures[2],
+                activeUnitText: match.captures[3],
+                sourceLine: line
+            )
+        }
+
+        return nil
+    }
+
+    private func makeCompoundEquivalentEntry(
+        compoundName: String,
+        compoundAmountText: String?,
+        compoundUnitText: String?,
+        activeNameText: String,
+        activeAmountText: String,
+        activeUnitText: String,
+        sourceLine: String
+    ) -> NutrientEntry? {
+        var activeFlags: [ReviewFlag] = []
+        let cleanedActiveText = cleanedEquivalentText(activeNameText)
+        let activeNameAndForm = extractNameAndForm(from: cleanedActiveText)
+        guard !activeNameAndForm.name.isEmpty else { return nil }
+
+        let canonical = canonicalName(for: activeNameAndForm.name)
+        let inferred = canonical != activeNameAndForm.name
+        let compoundBaseName = cleanName(compoundName)
+        let form = compoundForm(from: compoundBaseName, canonicalName: canonical) ?? activeNameAndForm.form
+
+        let amount = decimalAmount(activeAmountText, flags: &activeFlags)
+        let compoundAmount = compoundAmountText.flatMap { decimalAmount($0, flags: &activeFlags) }
+        let totalFlags: [ReviewFlag] = isTotalLine(sourceLine) ? [.totalLineAmbiguous] : []
+        let flags = appended(
+            inferred ? [.canonicalNameInferred] : [],
+            to: appended(totalFlags, to: appended(activeFlags, to: [.extractEquivalent]))
+        )
+
+        return NutrientEntry(
+            canonicalName: canonical,
+            displayName: titleCased(activeNameAndForm.name),
+            form: form,
+            amount: amount,
+            unit: unit(from: activeUnitText),
+            isElemental: true,
+            compoundAmount: compoundAmount,
+            compoundUnit: compoundUnitText.map { unit(from: $0) },
+            isTotalLine: isTotalLine(sourceLine),
+            reviewFlags: flags
+        )
+    }
+
     private func extractNameAndForm(from text: String) -> (name: String, form: String?) {
         var working = text
             .replacingOccurrences(of: ":", with: " ")
@@ -151,6 +304,9 @@ nonisolated struct ParserService: Sendable {
             let open = working.firstIndex(of: "("),
             let close = working[open...].firstIndex(of: ")")
         else {
+            if let inlineForm = firstMatch(in: working, pattern: #"(?i)^(.+?)\s+(as|from)\s+(.+)$"#) {
+                return (cleanName(inlineForm.captures[0]), normalizedForm(inlineForm.captures[2]))
+            }
             return (cleanName(working), nil)
         }
 
@@ -160,6 +316,33 @@ nonisolated struct ParserService: Sendable {
         working.removeSubrange(open...close)
 
         return (cleanName(working), form)
+    }
+
+    private func cleanedEquivalentText(_ text: String) -> String {
+        replacing(
+            pattern: #"(?i)^\s*(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+"#,
+            in: text,
+            with: ""
+        )
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func compoundForm(from compoundName: String, canonicalName: String) -> String? {
+        let normalizedCanonical = Self.normalizedKey(canonicalName)
+        let lowerCompound = compoundName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !lowerCompound.isEmpty else { return nil }
+
+        if Self.normalizedKey(lowerCompound).hasPrefix(normalizedCanonical) {
+            let wordsToDrop = normalizedCanonical.split(separator: " ").count
+            let form = lowerCompound
+                .split(separator: " ")
+                .dropFirst(wordsToDrop)
+                .joined(separator: " ")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            return form.isEmpty ? nil : form.lowercased()
+        }
+
+        return lowerCompound.lowercased()
     }
 
     private func normalizedForm(_ text: String) -> String? {
@@ -175,7 +358,7 @@ nonisolated struct ParserService: Sendable {
     }
 
     private func cleanName(_ text: String) -> String {
-        replacing(pattern: #"(?i)\b(elemental|contains|per|each)\b"#, in: text, with: "")
+        replacing(pattern: #"(?i)\b(total|elemental|contains|per|each|tablet|capsule)\b"#, in: text, with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
@@ -225,8 +408,37 @@ nonisolated struct ParserService: Sendable {
         return nil
     }
 
+    private func cfuMatch(in line: String) -> CFUMatch? {
+        guard let match = firstMatch(
+            in: line,
+            pattern: #"(?i)(\d+(?:[\.,]\d+)?)\s*(billion|million)?\s*cfu\b"#
+        ) else {
+            return nil
+        }
+
+        var flags: [ReviewFlag] = []
+        guard let amount = decimalAmount(match.captures[0], flags: &flags) else {
+            return nil
+        }
+
+        let scale = match.captures.count > 1 ? match.captures[1].lowercased() : ""
+        let cfuBillions: Double
+        if scale == "million" {
+            cfuBillions = amount / 1_000
+        } else if scale == "billion" || scale.isEmpty {
+            cfuBillions = amount
+        } else {
+            cfuBillions = amount
+        }
+
+        return CFUMatch(cfuBillions: cfuBillions, range: match.range)
+    }
+
     private func decimalAmount(_ rawValue: String, flags: inout [ReviewFlag]) -> Double? {
         if rawValue.contains(",") {
+            if rawValue.range(of: #"^\d{1,3}(,\d{3})+$"#, options: .regularExpression) != nil {
+                return Double(rawValue.replacingOccurrences(of: ",", with: ""))
+            }
             flags.append(.decimalCommaNormalised)
         }
         return Double(rawValue.replacingOccurrences(of: ",", with: "."))
@@ -247,7 +459,9 @@ nonisolated struct ParserService: Sendable {
     }
 
     private func servingSize(from line: String) -> ServingSize? {
-        guard line.localizedCaseInsensitiveContains("serv") || line.localizedCaseInsensitiveContains("each") else {
+        let lower = line.lowercased()
+        let servingKeywords = ["serv", "each", "teaspoon", "tablespoon", "scoop", "sachet"]
+        guard servingKeywords.contains(where: { lower.contains($0) }) else {
             return nil
         }
 
@@ -275,6 +489,17 @@ nonisolated struct ParserService: Sendable {
         return .unknown
     }
 
+    private func isServingOnlyLine(_ line: String) -> Bool {
+        let lower = line.lowercased()
+        if lower.contains("amount per serving") || lower.contains("amount per serve") {
+            return true
+        }
+        if lower.contains("level metric teaspoon") || lower.contains("serving size") {
+            return true
+        }
+        return false
+    }
+
     private func shouldSkip(_ line: String) -> Bool {
         let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
         let lower = trimmed.lowercased()
@@ -287,12 +512,37 @@ nonisolated struct ParserService: Sendable {
             return true
         }
 
-        let headers = [
+        let alwaysSkippedHeaders = [
             "supplement facts", "nutrition information", "active ingredients",
             "amount per serve", "amount per serving", "amount per capsule",
             "amount per tablet", "% daily value", "% rdi", "% nrv"
         ]
-        return headers.contains { lower.contains($0) }
+        if alwaysSkippedHeaders.contains(where: { lower.contains($0) }) {
+            return true
+        }
+
+        let ingredientSectionHeaders = [
+            "each tablet contains", "each capsule contains", "each dose contains"
+        ]
+        if ingredientSectionHeaders.contains(where: { lower.contains($0) }), amountMatch(in: trimmed) == nil {
+            return true
+        }
+
+        let nonIngredientPhrases = [
+            "directions for use", "recommended use", "for general health",
+            "for muscle", "for joint", "take ", "with food", "directed by",
+            "health professional", "doctor", "pregnancy", "pregnant",
+            "lactating", "warning", "do not", "symptoms persist",
+            "does not contain", "contains egg", "contains gluten",
+            "contains milk", "contains peanut", "contains soy", "contains tree nuts",
+            "artificial colours", "artificial flavours", "store below",
+            "store in", "batch", "expiry", " exp ", " lot "
+        ]
+        if nonIngredientPhrases.contains(where: { lower.contains($0) }) {
+            return true
+        }
+
+        return false
     }
 
     private func isBlendLine(_ line: String) -> Bool {
@@ -303,6 +553,87 @@ nonisolated struct ParserService: Sendable {
 
     private func isTotalLine(_ line: String) -> Bool {
         line.lowercased().contains("total")
+    }
+
+    private func isEquivalentContinuation(_ line: String) -> Bool {
+        line.range(
+            of: #"(?i)^\(?\s*(providing|equiv\.?|equivalent(?:\s+to)?)\b"#,
+            options: .regularExpression
+        ) != nil
+    }
+
+    private func containsProbioticScientificName(_ line: String) -> Bool {
+        probioticName(from: line) != nil
+    }
+
+    private func probioticName(from text: String) -> (genus: String, species: String, strain: String?)? {
+        let cleaned = replacing(pattern: #"(?i)\beach\s+capsule\s+contains\b|\bcontains\b|:"#, in: text, with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard let match = firstMatch(
+            in: cleaned,
+            pattern: #"(?i)\b(bifidobacterium|lactobacillus|lactococcus|bacillus|saccharomyces|streptococcus)\s+([a-z][a-z-]+)\b\s*([^()]*)?"#
+        ) else {
+            return nil
+        }
+
+        let genus = titleCased(match.captures[0])
+        let species = match.captures[1].lowercased()
+        let strain = match.captures.count > 2
+            ? normalizedStrain(match.captures[2])
+            : nil
+        return (genus, species, strain)
+    }
+
+    private func normalizedStrain(_ text: String) -> String? {
+        let trimmed = text
+            .replacingOccurrences(of: #"^[\s,;:()]+|[\s,;:()]+$"#, with: "", options: .regularExpression)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
+
+    private func shouldRejectCandidateName(_ name: String, line: String, unit: NutrientUnit?) -> Bool {
+        let key = Self.normalizedKey(name)
+        guard !key.isEmpty else { return true }
+
+        let rejectedExactNames: Set<String> = [
+            "level metric teaspoon", "metric teaspoon", "teaspoon",
+            "tablet", "capsule", "adults and children over", "children over"
+        ]
+        if rejectedExactNames.contains(key) {
+            return true
+        }
+
+        let rejectedNameFragments = [
+            "directions", "recommended", "take", "daily", "health professional",
+            "adult", "children", "serving", "level metric", "teaspoon"
+        ]
+        if rejectedNameFragments.contains(where: { key.contains($0) }) {
+            return true
+        }
+
+        if unit == .unknown {
+            let lower = line.lowercased()
+            let rejectedUnknownUnits = [" year", "years", "day", "days", "time", "times", "pack"]
+            if rejectedUnknownUnits.contains(where: { lower.contains($0) }) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    private func sanitizedLine(_ rawLine: String) -> String {
+        rawLine
+            .precomposedStringWithCanonicalMapping
+            .replacingOccurrences(of: "\u{200B}", with: "")
+            .replacingOccurrences(of: "\u{FEFF}", with: "")
+            .replacingOccurrences(of: "®", with: "")
+            .replacingOccurrences(of: "™", with: "")
+            .replacingOccurrences(of: "✓", with: "")
+            .replacingOccurrences(of: #"[…·•]{2,}|[.]{3,}"#, with: " ", options: .regularExpression)
+            .replacingOccurrences(of: #"\s+"#, with: " ", options: .regularExpression)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private func canonicalName(for extractedName: String) -> String {
@@ -365,6 +696,11 @@ nonisolated private struct AmountMatch {
     let amount: Double?
     let unit: NutrientUnit
     let flags: [ReviewFlag]
+    let range: Range<String.Index>
+}
+
+nonisolated private struct CFUMatch {
+    let cfuBillions: Double
     let range: Range<String.Index>
 }
 

@@ -23,7 +23,8 @@ nonisolated struct VisionTextRecognizer: OCRTextRecognizing {
         let request = VNRecognizeTextRequest()
         request.recognitionLevel = .accurate
         request.recognitionLanguages = ["en-US"]
-        request.usesLanguageCorrection = true
+        request.usesLanguageCorrection = false
+        request.customWords = Self.supplementVocabulary
         request.minimumTextHeight = 0.015
 
         let handler = VNImageRequestHandler(cgImage: image, options: [:])
@@ -48,6 +49,21 @@ nonisolated struct VisionTextRecognizer: OCRTextRecognizing {
             )
         } ?? []
     }
+
+    private static let supplementVocabulary: [String] = [
+        "Ascorbic", "ascorbic", "Bioflavonoids", "bioflavonoids",
+        "Bifidobacterium", "Lactobacillus", "Lactococcus",
+        "Bacillus", "Saccharomyces", "rhamnosus", "plantarum",
+        "paracasei", "casei", "acidophilus", "brevis", "lactis",
+        "longum", "coagulans", "boulardii", "Florafit",
+        "FloraFIT", "HOWARU", "DSM", "HN001", "HN019", "BL-04",
+        "Lpc-37", "Lp-115", "Bi-07", "Lbr-35", "BB-12",
+        "CFU", "cfu", "IU", "mcg", "micrograms", "µg", "μg",
+        "Selenomethionine", "selenium", "Eicosapentaenoic",
+        "Docosahexaenoic", "Quercetin", "Rutoside", "Hesperidin",
+        "Hypromellose", "N-Acetyl-L-Cysteine", "Acetyl-L-Cysteine",
+        "NAC", "Glycinate", "dihydrate", "chelate", "elemental"
+    ]
 }
 
 /// Extracts OCR text from images while preserving confidence metadata.

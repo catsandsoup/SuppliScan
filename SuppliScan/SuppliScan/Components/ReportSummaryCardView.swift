@@ -21,7 +21,7 @@ struct ReportSummaryCardView: View {
     }
 
     private var nutrientCount: Int {
-        analysis.nutrientAnalyses.filter { !$0.entry.isTotalLine }.count
+        Set(analysis.nutrientAnalyses.map(\.entry.canonicalName)).count
     }
 
     var body: some View {

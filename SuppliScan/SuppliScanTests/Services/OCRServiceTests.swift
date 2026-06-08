@@ -61,6 +61,52 @@ struct OCRServiceTests {
             Magnesium 300mg
             """)
     }
+
+    @Test func mergesAmountColumnFragmentsOnSameVisualRow() async throws {
+        let service = OCRService(recognizer: StubRecognizer(lines: [
+            OCRRecognizedLine(
+                text: "Calcium ascorbate dihydrate",
+                confidence: 0.92,
+                region: OCRTextRegion(minX: 0.1, minY: 0.5, width: 0.5, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "605.3mg",
+                confidence: 0.91,
+                region: OCRTextRegion(minX: 0.78, minY: 0.502, width: 0.12, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Each tablet contains",
+                confidence: 0.95,
+                region: OCRTextRegion(minX: 0.1, minY: 0.7, width: 0.6, height: 0.05)
+            )
+        ]))
+
+        let result = try await service.recognizeText(in: try makeImage())
+
+        #expect(result.rawText == """
+            Each tablet contains
+            Calcium ascorbate dihydrate 605.3mg
+            """)
+    }
+
+    @Test func mergesProbioticCFUFragmentsOnSameVisualRow() async throws {
+        let service = OCRService(recognizer: StubRecognizer(lines: [
+            OCRRecognizedLine(
+                text: "Lactobacillus rhamnosus GG",
+                confidence: 0.92,
+                region: OCRTextRegion(minX: 0.1, minY: 0.5, width: 0.55, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "6 billion CFU",
+                confidence: 0.91,
+                region: OCRTextRegion(minX: 0.76, minY: 0.502, width: 0.14, height: 0.05)
+            )
+        ]))
+
+        let result = try await service.recognizeText(in: try makeImage())
+
+        #expect(result.rawText == "Lactobacillus rhamnosus GG 6 billion CFU")
+    }
 }
 
 private struct StubRecognizer: OCRTextRecognizing {

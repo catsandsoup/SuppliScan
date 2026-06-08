@@ -56,4 +56,143 @@ struct ParserServiceTests {
         #expect(result.extractedServing?.unit == .capsule)
         #expect(result.entries.isEmpty)
     }
+
+    @Test func parsesVitaminCLabelWithoutDirectionsOrCompoundDoubleCountRows() throws {
+        let parser = ParserService(aliasesByVariant: [
+            "Ascorbic Acid": "Vitamin C",
+            "Vitamin C": "Vitamin C",
+            "Zinc": "Zinc"
+        ])
+        let result = parser.parse("""
+            Directions for use:
+            Adults And Children Over
+            12 years - Take 1 tablet, one to three times a day, with food
+            Each tablet contains:
+            Calcium ascorbate dihydrate
+            605.3mg
+            equiv. Ascorbic Acid as vitamin C
+            500 mg
+            Sodium ascorbate
+            562.4mg
+            equiv. Ascorbic Acid (VITAMIN C)
+            500mg
+            TOTAL ASCORBIC ACID (VITAMIN C) 1g
+            Citrus Bioflavonoids Extract.
+            50mg
+            Zinc amino acid chelate equiv. Zinc
+            5mg
+            """)
+
+        let nutrients = nutrientEntries(in: result)
+        #expect(nutrients.contains { $0.displayName == "Adults And Children Over" } == false)
+        #expect(nutrients.contains { $0.displayName == "Tablet" } == false)
+
+        let vitaminCEntries = nutrients.filter { $0.canonicalName == "Vitamin C" }
+        #expect(vitaminCEntries.count == 3)
+        #expect(vitaminCEntries.contains { $0.amount == 500 && $0.compoundAmount == 605.3 })
+        #expect(vitaminCEntries.contains { $0.amount == 500 && $0.compoundAmount == 562.4 })
+
+        let totalVitaminC = try #require(vitaminCEntries.first { $0.isTotalLine })
+        #expect(totalVitaminC.amount == 1)
+        #expect(totalVitaminC.unit == .g)
+        #expect(totalVitaminC.reviewFlags.contains(.totalLineAmbiguous))
+
+        let zinc = try #require(nutrients.first { $0.canonicalName == "Zinc" })
+        #expect(zinc.amount == 5)
+        #expect(zinc.unit == .mg)
+        #expect(zinc.form == "amino acid chelate")
+    }
+
+    @Test func parsesMagnesiumPowderCompoundElementalRows() throws {
+        let parser = ParserService(aliasesByVariant: [
+            "Magnesium": "Magnesium",
+            "Zinc": "Zinc"
+        ])
+        let result = parser.parse("""
+            Level Metric Teaspoon (
+            5 g
+            Taurine
+            1,000 mg
+            Magnesium Amino Acid Chelate
+            1,750 mg
+            (providing Magnesium
+            350 mg
+            Magnesium Ascorbate
+            210 mg
+            (providing Magnesium
+            13 mg
+            Magnesium Glycinate Dihydrate
+            104 mg
+            (providing Magnesium
+            12.2 mg
+            TOTAL ELEMENTAL MAGNESIUM
+            400mg
+            Zinc (as amino acid chelate)
+            5mg
+            """)
+
+        #expect(result.extractedServing?.quantity == 5)
+        #expect(result.extractedServing?.unit == .gram)
+
+        let nutrients = nutrientEntries(in: result)
+        #expect(nutrients.contains { $0.displayName == "Level Metric Teaspoon" } == false)
+        #expect(nutrients.contains { $0.displayName == "Providing Magnesium" } == false)
+
+        let taurine = try #require(nutrients.first { $0.canonicalName == "Taurine" })
+        #expect(taurine.amount == 1000)
+
+        let magnesiumForms = nutrients.filter { $0.canonicalName == "Magnesium" && !$0.isTotalLine }
+        #expect(magnesiumForms.count == 3)
+        #expect(magnesiumForms.contains { $0.form == "amino acid chelate" && $0.amount == 350 && $0.compoundAmount == 1750 })
+        #expect(magnesiumForms.contains { $0.form == "ascorbate" && $0.amount == 13 && $0.compoundAmount == 210 })
+        #expect(magnesiumForms.contains { $0.form == "glycinate dihydrate" && $0.amount == 12.2 && $0.compoundAmount == 104 })
+
+        let totalMagnesium = try #require(nutrients.first { $0.canonicalName == "Magnesium" && $0.isTotalLine })
+        #expect(totalMagnesium.amount == 400)
+        #expect(totalMagnesium.unit == .mg)
+
+        let zinc = try #require(nutrients.first { $0.canonicalName == "Zinc" })
+        #expect(zinc.amount == 5)
+        #expect(zinc.form == "amino acid chelate")
+    }
+
+    @Test func parsesProbioticStrainRowsAsProbioticEntries() throws {
+        let parser = ParserService()
+        let result = parser.parse("""
+            Each capsule contains:
+            Bifidobacterium lactis BL-04 32 billion CFU
+            Lactobacillus rhamnosus GG 6 billion CFU
+            Lactobacillus brevis Lbr-35 250 million CFU
+            Contains sulfites.
+            """)
+
+        let probiotics = probioticEntries(in: result)
+        #expect(probiotics.count == 3)
+
+        let lactis = try #require(probiotics.first { $0.genus == "Bifidobacterium" && $0.species == "lactis" })
+        #expect(lactis.strain == "BL-04")
+        #expect(lactis.cfuBillions == 32)
+
+        let rhamnosus = try #require(probiotics.first { $0.genus == "Lactobacillus" && $0.species == "rhamnosus" })
+        #expect(rhamnosus.strain == "GG")
+        #expect(rhamnosus.cfuBillions == 6)
+
+        let brevis = try #require(probiotics.first { $0.genus == "Lactobacillus" && $0.species == "brevis" })
+        #expect(brevis.strain == "Lbr-35")
+        #expect(brevis.cfuBillions == 0.25)
+    }
+}
+
+private func nutrientEntries(in result: ParseResult) -> [NutrientEntry] {
+    result.entries.compactMap { entry in
+        if case .nutrient(let nutrient) = entry { return nutrient }
+        return nil
+    }
+}
+
+private func probioticEntries(in result: ParseResult) -> [ProbioticEntry] {
+    result.entries.compactMap { entry in
+        if case .probiotic(let probiotic) = entry { return probiotic }
+        return nil
+    }
 }

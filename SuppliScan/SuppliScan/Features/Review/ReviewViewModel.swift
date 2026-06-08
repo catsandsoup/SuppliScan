@@ -21,6 +21,8 @@ final class ReviewViewModel {
     @ObservationIgnored private var analyseAction: AnalyseAction?
     @ObservationIgnored private var persistAction: PersistAction?
     @ObservationIgnored private var analysisTask: Task<Void, Never>?
+    @ObservationIgnored private var hasRequestedInitialAnalysis = false
+    @ObservationIgnored private var persistedAnalysisIDs: Set<UUID> = []
 
     init(entries: [LabelEntry], extractedServing: ServingSize?) {
         self.entries = entries
@@ -42,7 +44,8 @@ final class ReviewViewModel {
 
     /// Triggers analysis if not already running. Idempotent — safe to call on every appear.
     func requestAnalysisIfNeeded() {
-        guard pendingAnalysis == nil, !isAnalysing else { return }
+        guard !hasRequestedInitialAnalysis, pendingAnalysis == nil, !isAnalysing else { return }
+        hasRequestedInitialAnalysis = true
         requestAnalysis()
     }
 
@@ -64,12 +67,20 @@ final class ReviewViewModel {
                 let analysis = try await analyseAction(capturedEntries, capturedServing, capturedStandard, demographic)
                 self?.pendingAnalysis = analysis
                 // Persist in a sibling Task — failures don't block navigation
-                let persist = self?.persistAction
-                Task { await persist?(analysis, capturedStandard, demographic) }
+                if self?.markAnalysisForPersistence(analysis.id) == true {
+                    let persist = self?.persistAction
+                    Task { await persist?(analysis, capturedStandard, demographic) }
+                }
             } catch {
                 self?.analysisError = error
             }
         }
+    }
+
+    private func markAnalysisForPersistence(_ id: UUID) -> Bool {
+        guard !persistedAnalysisIDs.contains(id) else { return false }
+        persistedAnalysisIDs.insert(id)
+        return true
     }
 
     func consumePendingAnalysis() -> LabelAnalysis? {
