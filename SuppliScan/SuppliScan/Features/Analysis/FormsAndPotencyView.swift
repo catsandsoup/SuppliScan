@@ -18,12 +18,14 @@ struct FormsAndPotencyView: View {
     var body: some View {
         List {
             ForEach(analysesWithQuality) { analysis in
-                FormPotencyRowView(analysis: analysis)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        rowTapCount += 1
-                        router.navigate(to: .nutrientDetail(analysis))
-                    }
+                Button {
+                    rowTapCount += 1
+                    router.navigate(to: .nutrientDetail(analysis))
+                } label: {
+                    FormPotencyRowView(analysis: analysis)
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint("Shows nutrient detail")
             }
 
             Section {

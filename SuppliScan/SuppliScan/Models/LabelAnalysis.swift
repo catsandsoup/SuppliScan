@@ -79,18 +79,20 @@ nonisolated extension LabelAnalysis {
     var shareText: String {
         let name = productName.isEmpty ? "Supplement" : productName
         let serving = "\(servingSize.selectedQuantity.formatted()) \(servingSize.unit.pluralised(for: servingSize.selectedQuantity))"
+        let nutrientCount = nutrientAnalyses.count
         var lines: [String] = [
             "\(name) — SuppliScan Analysis",
             "\(referenceStandard.rawValue) Standard · \(serving)",
             "",
-            "\(nutrientAnalyses.count) nutrient(s) identified",
+            "\(nutrientCount) nutrient\(nutrientCount == 1 ? "" : "s") identified",
         ]
         if !flags.nutrientsAboveUL.isEmpty {
-            lines.append("⚠️ \(flags.nutrientsAboveUL.count) nutrient(s) above Tolerable Upper Intake Level")
+            let count = flags.nutrientsAboveUL.count
+            lines.append("Warning: \(count) nutrient\(count == 1 ? "" : "s") above Tolerable Upper Intake Level")
         }
         if !flags.nutrientInteractions.isEmpty || !flags.medicationInteractions.isEmpty {
             let count = flags.nutrientInteractions.count + flags.medicationInteractions.count
-            lines.append("ℹ️ \(count) potential interaction(s) detected")
+            lines.append("\(count) potential interaction\(count == 1 ? "" : "s") detected")
         }
         lines.append("")
         lines.append(disclaimer)

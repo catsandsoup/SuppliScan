@@ -49,6 +49,48 @@ struct ParserServiceTests {
         #expect(entry.unit == .mcg)
     }
 
+    @Test func preservesAliasFormWhenVariantNamesParentNutrientForm() throws {
+        let parser = try ParserService.makeDefault()
+        let result = parser.parse("""
+            P-5-P 10mg
+            Cholecalciferol 25mcg
+            """)
+
+        let nutrients = nutrientEntries(in: result)
+
+        let vitaminB6 = try #require(nutrients.first { $0.canonicalName == "Vitamin B6" })
+        #expect(vitaminB6.displayName == "P-5-P")
+        #expect(vitaminB6.form == "p-5-p")
+        #expect(vitaminB6.amount == 10)
+        #expect(vitaminB6.unit == .mg)
+
+        let vitaminD = try #require(nutrients.first { $0.canonicalName == "Vitamin D" })
+        #expect(vitaminD.displayName == "Cholecalciferol")
+        #expect(vitaminD.form == "cholecalciferol")
+        #expect(vitaminD.amount == 25)
+        #expect(vitaminD.unit == .mcg)
+    }
+
+    @Test func flagsImplausibleCompendiumUnitsForReview() throws {
+        let parser = try ParserService.makeDefault()
+        let result = parser.parse("""
+            Vitamin B12 500mg
+            Selenium 200mg
+            Magnesium 400mcg
+            """)
+
+        let nutrients = nutrientEntries(in: result)
+
+        let b12 = try #require(nutrients.first { $0.canonicalName == "Vitamin B12" })
+        #expect(b12.reviewFlags.contains(.unitImplausible))
+
+        let selenium = try #require(nutrients.first { $0.canonicalName == "Selenium" })
+        #expect(selenium.reviewFlags.contains(.unitImplausible))
+
+        let magnesium = try #require(nutrients.first { $0.canonicalName == "Magnesium" })
+        #expect(magnesium.reviewFlags.contains(.unitImplausible))
+    }
+
     @Test func treatsCitrusBioflavonoidsExtractAsNutrientLikeAliasNotHerbal() throws {
         let parser = ParserService(aliasesByVariant: [
             "Citrus Bioflavonoids": "Citrus Bioflavonoids",

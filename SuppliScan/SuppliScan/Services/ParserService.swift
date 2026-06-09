@@ -8,9 +8,21 @@ import Foundation
 
 nonisolated struct ParserService: Sendable {
     private let aliasesByVariant: [String: String]
+    private let formsByVariant: [String: String]
+    private let semanticProfilesByCanonical: [String: NutritionSemanticProfile]
 
-    init(aliasesByVariant: [String: String] = [:]) {
+    init(
+        aliasesByVariant: [String: String] = [:],
+        formsByVariant: [String: String] = [:],
+        semanticProfilesByCanonical: [String: NutritionSemanticProfile] = [:]
+    ) {
         self.aliasesByVariant = aliasesByVariant.reduce(into: [:]) { result, pair in
+            result[Self.normalizedKey(pair.key)] = pair.value
+        }
+        self.formsByVariant = formsByVariant.reduce(into: [:]) { result, pair in
+            result[Self.normalizedKey(pair.key)] = pair.value
+        }
+        self.semanticProfilesByCanonical = semanticProfilesByCanonical.reduce(into: [:]) { result, pair in
             result[Self.normalizedKey(pair.key)] = pair.value
         }
     }
@@ -27,13 +39,22 @@ nonisolated struct ParserService: Sendable {
             }
         }
 
+        var forms: [String: String] = [:]
+        var semanticProfiles: [String: NutritionSemanticProfile] = [:]
+
         if let lexicon = try? NutritionLexicon.load(bundle: bundle) {
             for (variant, canonical) in lexicon.aliasesByVariant {
                 aliases[variant] = canonical
             }
+            forms = lexicon.formsByVariant
+            semanticProfiles = lexicon.semanticProfilesByCanonical
         }
 
-        return ParserService(aliasesByVariant: aliases)
+        return ParserService(
+            aliasesByVariant: aliases,
+            formsByVariant: forms,
+            semanticProfilesByCanonical: semanticProfiles
+        )
     }
 
     /// Parses raw OCR text into typed label entries and an optional serving size.
@@ -399,18 +420,23 @@ nonisolated struct ParserService: Sendable {
 
         let canonical = canonicalName(for: nameAndForm.name)
         let inferred = canonical != nameAndForm.name
+        let unit = amountMatch?.unit ?? .unknown
+        let form = nameAndForm.form ?? formName(for: nameAndForm.name)
         let totalFlags: [ReviewFlag] = isTotalLine(line) ? [.totalLineAmbiguous] : []
         let flags = appended(
-            inferred ? [.canonicalNameInferred] : [],
-            to: appended(totalFlags, to: appended(amountMatch?.flags ?? [], to: extraFlags))
+            semanticFlags(for: canonical, unit: unit),
+            to: appended(
+                inferred ? [.canonicalNameInferred] : [],
+                to: appended(totalFlags, to: appended(amountMatch?.flags ?? [], to: extraFlags))
+            )
         )
 
         return NutrientEntry(
             canonicalName: canonical,
             displayName: titleCased(nameAndForm.name),
-            form: nameAndForm.form,
+            form: form,
             amount: amountMatch?.amount,
-            unit: amountMatch?.unit ?? .unknown,
+            unit: unit,
             isElemental: line.localizedCaseInsensitiveContains("elemental"),
             isTotalLine: isTotalLine(line),
             reviewFlags: flags
@@ -519,14 +545,20 @@ nonisolated struct ParserService: Sendable {
         let canonical = canonicalName(for: activeNameAndForm.name)
         let inferred = canonical != activeNameAndForm.name
         let compoundBaseName = cleanName(compoundName)
-        let form = compoundForm(from: compoundBaseName, canonicalName: canonical) ?? activeNameAndForm.form
+        let form = compoundForm(from: compoundBaseName, canonicalName: canonical)
+            ?? activeNameAndForm.form
+            ?? formName(for: activeNameAndForm.name)
+        let activeUnit = unit(from: activeUnitText)
 
         let amount = decimalAmount(activeAmountText, flags: &activeFlags)
         let compoundAmount = compoundAmountText.flatMap { decimalAmount($0, flags: &activeFlags) }
         let totalFlags: [ReviewFlag] = isTotalLine(sourceLine) ? [.totalLineAmbiguous] : []
         let flags = appended(
-            inferred ? [.canonicalNameInferred] : [],
-            to: appended(totalFlags, to: appended(activeFlags, to: [.extractEquivalent]))
+            semanticFlags(for: canonical, unit: activeUnit),
+            to: appended(
+                inferred ? [.canonicalNameInferred] : [],
+                to: appended(totalFlags, to: appended(activeFlags, to: [.extractEquivalent]))
+            )
         )
 
         return NutrientEntry(
@@ -534,7 +566,7 @@ nonisolated struct ParserService: Sendable {
             displayName: titleCased(activeNameAndForm.name),
             form: form,
             amount: amount,
-            unit: unit(from: activeUnitText),
+            unit: activeUnit,
             isElemental: true,
             compoundAmount: compoundAmount,
             compoundUnit: compoundUnitText.map { unit(from: $0) },
@@ -961,6 +993,28 @@ nonisolated struct ParserService: Sendable {
 
     private func canonicalName(for extractedName: String) -> String {
         aliasesByVariant[Self.normalizedKey(extractedName)] ?? titleCased(extractedName)
+    }
+
+    private func formName(for extractedName: String) -> String? {
+        formsByVariant[Self.normalizedKey(extractedName)]
+    }
+
+    private func semanticFlags(for canonical: String, unit: NutrientUnit) -> [ReviewFlag] {
+        guard unit != .unknown,
+              let profile = semanticProfilesByCanonical[Self.normalizedKey(canonical)]
+        else {
+            return []
+        }
+
+        if profile.suspiciousUnits.contains(unit) {
+            return [.unitImplausible]
+        }
+
+        if !profile.acceptedUnits.isEmpty, !profile.acceptedUnits.contains(unit) {
+            return [.unitUnexpected]
+        }
+
+        return []
     }
 
     private func titleCased(_ value: String) -> String {

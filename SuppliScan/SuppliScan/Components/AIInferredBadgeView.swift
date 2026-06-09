@@ -1,6 +1,6 @@
 // AIInferredBadgeView.swift
 // SuppliScan
-// Purple dot + "AI" text — shown when formQuality.isAIInferred is true.
+// Purple dot + estimate text shown when form quality needs source review.
 
 import SwiftUI
 
@@ -10,7 +10,7 @@ struct AIInferredBadgeView: View {
             Circle()
                 .fill(Color.purple)
                 .frame(width: 6, height: 6)
-            Text("AI")
+            Text("Estimate")
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(Color.purple)
         }

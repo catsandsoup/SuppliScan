@@ -9,6 +9,8 @@
       "forms": ["preformed vitamin A", "provitamin A", "retinol equivalents", "retinol activity equivalents", "RAE", "retinyl palmitate", "retinyl acetate", "retinyl propionate", "mixed carotenoids"],
       "label_phrases": ["vitamin A activity", "as retinyl palmitate", "as retinyl acetate", "as beta-carotene", "mcg RAE"],
       "common_ocr_corrections": ["Retinyl", "Betacarotene"],
+      "accepted_units": ["mcg", "iu"],
+      "suspicious_units": ["mg", "g"],
       "source": "SuppliScan aliases/nrv seed; NIH ODS Vitamin A fact sheet"
     },
     {
@@ -18,6 +20,8 @@
       "forms": ["calcium ascorbate dihydrate", "sodium ascorbate", "magnesium ascorbate", "ascorbic acid"],
       "label_phrases": ["equiv. ascorbic acid", "equiv. Ascorbic Acid", "TOTAL ASCORBIC ACID", "vitamin C supports"],
       "common_ocr_corrections": ["ascorbic", "ascorbat", "dihydrat"],
+      "accepted_units": ["mg", "g"],
+      "suspicious_units": ["mcg", "iu"],
       "source": "SuppliScan aliases/nrv seed and debug corpus"
     },
     {
@@ -27,6 +31,8 @@
       "forms": ["cholecalciferol", "colecalciferol", "ergocalciferol"],
       "label_phrases": ["equiv. vitamin D3", "Each capsule contains", "assists calcium absorption"],
       "common_ocr_corrections": ["Colecalcife", "Colecalciferol"],
+      "accepted_units": ["mcg", "iu"],
+      "suspicious_units": ["mg", "g"],
       "source": "SuppliScan aliases/nrv seed and debug corpus"
     },
     {
@@ -36,6 +42,8 @@
       "forms": ["d-alpha-tocopherol", "dl-alpha-tocopherol", "d-alpha-tocopheryl acetate", "dl-alpha-tocopheryl acetate", "d-alpha-tocopheryl succinate", "alpha tocopherol", "gamma tocopherol", "mixed tocopherols", "alpha tocotrienol", "beta tocotrienol", "gamma tocotrienol", "delta tocotrienol", "tocotrienols"],
       "label_phrases": ["natural vitamin E", "synthetic vitamin E", "alpha-tocopherol equivalents"],
       "common_ocr_corrections": ["tocopherol", "tocotrienol"],
+      "accepted_units": ["mg", "iu"],
+      "suspicious_units": ["mcg", "g"],
       "source": "SuppliScan aliases/nrv seed; NIH ODS Vitamin E fact sheet"
     },
     {
@@ -45,6 +53,8 @@
       "forms": ["menaquinone-4", "menaquinone-7", "menaquinone 4", "menaquinone 7", "phylloquinone", "phytonadione"],
       "label_phrases": ["as MK-7", "as MK-4", "as menaquinone", "as phylloquinone"],
       "common_ocr_corrections": ["menaquinone", "phylloquinone"],
+      "accepted_units": ["mcg"],
+      "suspicious_units": ["mg", "g", "iu"],
       "source": "SuppliScan aliases/nrv seed; NIH ODS Vitamin K fact sheet"
     },
     {
@@ -54,6 +64,8 @@
       "forms": ["thiamine hydrochloride", "thiamine mononitrate", "benfotiamine", "thiamine pyrophosphate", "thiamine tetrahydrofurfuryl disulfide"],
       "label_phrases": ["equiv. Thiamine", "vitamin B1"],
       "common_ocr_corrections": ["Thiamine hydrochlond"],
+      "accepted_units": ["mg"],
+      "suspicious_units": ["mcg", "g", "iu"],
       "source": "SuppliScan aliases/nrv seed and debug corpus"
     },
     {
@@ -63,6 +75,8 @@
       "forms": ["riboflavin", "riboflavin sodium phosphate", "riboflavin-5-phosphate", "riboflavin 5-phosphate", "riboflavin 5 phosphate sodium"],
       "label_phrases": ["equiv. Riboflavin", "vitamin B2"],
       "common_ocr_corrections": ["Ribofiavin", "Riboflavin sodium phosphat"],
+      "accepted_units": ["mg"],
+      "suspicious_units": ["mcg", "g", "iu"],
       "source": "SuppliScan aliases/nrv seed and debug corpus"
     },
     {
@@ -72,6 +86,8 @@
       "forms": ["nicotinamide", "nicotinic acid", "niacinamide", "inositol hexanicotinate", "nicotinamide riboside", "nicotinamide mononucleotide"],
       "label_phrases": ["niacin equivalents", "mg NE", "flush free niacin"],
       "common_ocr_corrections": ["niacinamide"],
+      "accepted_units": ["mg"],
+      "suspicious_units": ["mcg", "g", "iu"],
       "source": "SuppliScan aliases/nrv seed"
     },
     {
@@ -81,15 +97,19 @@
       "forms": ["calcium pantothenate", "d-calcium pantothenate", "pantothenic acid", "dexpanthenol", "panthenol"],
       "label_phrases": ["Equivalent to pantothenate"],
       "common_ocr_corrections": ["pantothenate"],
+      "accepted_units": ["mg"],
+      "suspicious_units": ["mcg", "g", "iu"],
       "source": "SuppliScan aliases/nrv seed and debug corpus"
     },
     {
       "canonical": "Vitamin B6",
       "category": "vitamin",
-      "aliases": ["B6", "Vitamin B-6", "Pyridoxine", "Pyridoxal", "Pyridoxamine", "Pyridoxal-5-Phosphate", "Pyridoxal 5 Phosphate", "P5P", "PLP", "Pyridoxine HCl", "Pyridoxal Phosphate"],
-      "forms": ["pyridoxal 5-phosphate", "pyridoxal-5-phosphate monohydrate", "pyridoxine hydrochloride", "pyridoxine hcl", "pyridoxamine dihydrochloride"],
+      "aliases": ["B6", "Vitamin B-6", "Pyridoxine", "Pyridoxal", "Pyridoxamine", "Pyridoxal-5-Phosphate", "Pyridoxal 5 Phosphate", "P5P", "P-5-P", "PLP", "Pyridoxine HCl", "Pyridoxal Phosphate"],
+      "forms": ["pyridoxal 5-phosphate", "pyridoxal-5-phosphate", "pyridoxal-5-phosphate monohydrate", "pyridoxine hydrochloride", "pyridoxine hcl", "pyridoxamine dihydrochloride", "p5p", "p-5-p", "plp"],
       "label_phrases": ["equiv. Pyridoxine", "vitamin B6"],
       "common_ocr_corrections": ["Pyndoxal", "Pyridoxal"],
+      "accepted_units": ["mg"],
+      "suspicious_units": ["mcg", "g", "iu"],
       "source": "SuppliScan aliases/nrv seed and debug corpus"
     },
     {
@@ -99,6 +119,8 @@
       "forms": ["biotin", "d-biotin"],
       "label_phrases": ["hair skin and nails"],
       "common_ocr_corrections": ["Biotin"],
+      "accepted_units": ["mcg"],
+      "suspicious_units": ["mg", "g", "iu"],
       "source": "SuppliScan aliases/nrv seed and debug corpus"
     },
     {
@@ -108,6 +130,8 @@
       "forms": ["folic acid", "calcium folinate", "folinic acid", "5-methyltetrahydrofolate", "5-methyl-thf", "L-5-methyltetrahydrofolic acid", "levomefolate calcium", "levomefolate glucosamine"],
       "label_phrases": ["equiv. Levomefolic acid", "5-MTHF", "micrograms", "mcg DFE", "dietary folate equivalents"],
       "common_ocr_corrections": ["Levomefolate", "Levomefolic"],
+      "accepted_units": ["mcg"],
+      "suspicious_units": ["mg", "g", "iu"],
       "source": "SuppliScan aliases/nrv seed and debug corpus; NIH ODS Folate fact sheet"
     },
     {
@@ -117,6 +141,8 @@
       "forms": ["methylcobalamin", "mecobalamin", "cyanocobalamin", "hydroxocobalamin", "hydroxycobalamin", "adenosylcobalamin", "5-deoxyadenosylcobalamin", "cobamamide", "dibencozide"],
       "label_phrases": ["vitamin B12", "micrograms", "sublingual B12"],
       "common_ocr_corrections": ["Mecobalamin", "methylcobalamin"],
+      "accepted_units": ["mcg"],
+      "suspicious_units": ["mg", "g", "iu"],
       "source": "SuppliScan aliases/nrv seed and debug corpus; NIH ODS Vitamin B12 fact sheet"
     },
     {
@@ -126,6 +152,8 @@
       "forms": ["magnesium glycinate", "magnesium bisglycinate", "magnesium oxide", "magnesium citrate", "magnesium malate", "magnesium amino acid chelate", "magnesium ascorbate", "magnesium phosphate pentahydrate", "magnesium glycinate dihydrate", "magnesium threonate", "magnesium L-threonate", "magnesium chloride", "magnesium gluconate", "magnesium lactate", "magnesium hydroxide", "magnesium sulfate", "magnesium taurate", "magnesium orotate"],
       "label_phrases": ["providing elemental magnesium", "TOTAL ELEMENTAL MAGNESIUM", "total elemental magnesium"],
       "common_ocr_corrections": ["elemice", "manee", "in itsp magnesium elemental"],
+      "accepted_units": ["mg"],
+      "suspicious_units": ["mcg", "g", "iu"],
       "source": "SuppliScan form quality seed and debug corpus; NIH ODS Magnesium fact sheet"
     },
     {
@@ -135,6 +163,8 @@
       "forms": ["zinc citrate", "zinc picolinate", "zinc glycinate", "zinc bisglycinate", "zinc oxide", "zinc sulfate", "zinc acetate", "zinc gluconate", "zinc monomethionine", "zinc amino acid chelate"],
       "label_phrases": ["equiv. zinc", "Equivalent to zinc", "as amino acid chelate"],
       "common_ocr_corrections": ["zinc", "Zine"],
+      "accepted_units": ["mg"],
+      "suspicious_units": ["mcg", "g", "iu"],
       "source": "SuppliScan aliases/form quality seed and debug corpus; NIH ODS Zinc fact sheet"
     },
     {
@@ -144,6 +174,8 @@
       "forms": ["iron glycinate", "iron bisglycinate", "iron (II) glycinate", "ferrous bisglycinate", "ferrous fumarate", "ferrous sulfate", "ferrous gluconate", "ferric citrate", "ferric sulfate", "carbonyl iron", "iron polymaltose"],
       "label_phrases": ["equiv. iron", "not for the treatment of iron deficiency"],
       "common_ocr_corrections": ["Ferrochel", "Iron II glycinate"],
+      "accepted_units": ["mg"],
+      "suspicious_units": ["mcg", "g", "iu"],
       "source": "SuppliScan aliases/nrv seed and debug corpus; NIH ODS Iron fact sheet"
     },
     {
@@ -153,6 +185,8 @@
       "forms": ["calcium carbonate", "calcium citrate", "calcium phosphate", "calcium gluconate", "calcium lactate", "calcium glycinate", "calcium ascorbate", "calcium pantothenate", "calcium hydroxyapatite", "microcrystalline hydroxyapatite"],
       "label_phrases": ["assists calcium absorption", "elemental calcium"],
       "common_ocr_corrections": ["Calcium"],
+      "accepted_units": ["mg"],
+      "suspicious_units": ["mcg", "g", "iu"],
       "source": "SuppliScan aliases/nrv seed; NIH ODS Calcium fact sheet"
     },
     {
@@ -162,6 +196,8 @@
       "forms": ["selenomethionine", "l-selenomethionine", "sodium selenite", "sodium selenate", "selenium-enriched yeast", "selenium yeast", "selenium glycinate", "methylselenocysteine"],
       "label_phrases": ["as selenomethionine"],
       "common_ocr_corrections": ["Selenomethionine"],
+      "accepted_units": ["mcg"],
+      "suspicious_units": ["mg", "g", "iu"],
       "source": "SuppliScan aliases/nrv seed; NIH ODS Selenium fact sheet"
     },
     {
@@ -171,6 +207,8 @@
       "forms": ["copper glycinate", "copper bisglycinate", "copper gluconate", "copper citrate", "cupric sulfate", "cupric sulfate monohydrate", "copper sulfate"],
       "label_phrases": ["Equivalent to copper"],
       "common_ocr_corrections": ["Cupric sulfate"],
+      "accepted_units": ["mg", "mcg"],
+      "suspicious_units": ["g", "iu"],
       "source": "SuppliScan aliases/nrv seed and debug corpus"
     },
     {
@@ -180,6 +218,8 @@
       "forms": ["choline bitartrate", "choline citrate", "phosphatidylcholine", "lecithin", "citicoline", "cdp-choline", "alpha-gpc", "alpha gpc", "choline alfoscerate", "glycerophosphocholine"],
       "label_phrases": ["equiv. choline", "provides choline", "as phosphatidylcholine"],
       "common_ocr_corrections": ["Choline", "Citicoline", "Alpha GPC"],
+      "accepted_units": ["mg"],
+      "suspicious_units": ["mcg", "g", "iu"],
       "source": "SuppliScan nrv seed; NIH ODS Choline fact sheet"
     },
     {
@@ -189,6 +229,8 @@
       "forms": ["calcium phosphate", "dicalcium phosphate", "tricalcium phosphate", "potassium phosphate", "sodium phosphate", "magnesium phosphate"],
       "label_phrases": ["equiv. phosphorus", "as phosphate", "phosphorus as phosphate"],
       "common_ocr_corrections": ["Phosphorous", "Phosphate"],
+      "accepted_units": ["mg"],
+      "suspicious_units": ["mcg", "g", "iu"],
       "source": "SuppliScan nrv seed; NIH ODS vitamin/mineral reference"
     },
     {
@@ -198,6 +240,8 @@
       "forms": ["potassium iodide", "sodium iodide", "kelp", "kelp powder", "kelp extract", "iodine from kelp"],
       "label_phrases": ["equiv. iodine", "as potassium iodide", "from kelp"],
       "common_ocr_corrections": ["Iodine", "lodine", "lodide"],
+      "accepted_units": ["mcg"],
+      "suspicious_units": ["mg", "g", "iu"],
       "source": "SuppliScan nrv seed; NIH ODS Iodine fact sheet"
     },
     {
@@ -207,6 +251,8 @@
       "forms": ["sodium molybdate", "ammonium molybdate", "molybdenum amino acid chelate", "molybdenum glycinate"],
       "label_phrases": ["equiv. molybdenum", "as sodium molybdate"],
       "common_ocr_corrections": ["Molybdenum", "Molybdate"],
+      "accepted_units": ["mcg"],
+      "suspicious_units": ["mg", "g", "iu"],
       "source": "SuppliScan nrv seed; NIH ODS vitamin/mineral reference"
     },
     {
@@ -216,6 +262,8 @@
       "forms": ["chromium picolinate", "chromium nicotinate", "chromium polynicotinate", "chromium chloride", "chromium histidinate", "chromium amino acid chelate", "high-chromium yeast", "gtf chromium"],
       "label_phrases": ["equiv. chromium", "glucose tolerance factor", "GTF chromium"],
       "common_ocr_corrections": ["Chromium", "Chronium"],
+      "accepted_units": ["mcg"],
+      "suspicious_units": ["mg", "g", "iu"],
       "source": "SuppliScan nrv seed; NIH ODS Chromium fact sheet"
     },
     {
@@ -225,6 +273,8 @@
       "forms": ["potassium citrate", "potassium gluconate", "potassium chloride", "potassium phosphate", "potassium bicarbonate", "potassium iodide"],
       "label_phrases": ["equiv. potassium", "as potassium citrate", "as potassium chloride"],
       "common_ocr_corrections": ["Potassium"],
+      "accepted_units": ["mg"],
+      "suspicious_units": ["mcg", "g", "iu"],
       "source": "SuppliScan nrv seed; NIH ODS vitamin/mineral reference"
     },
     {

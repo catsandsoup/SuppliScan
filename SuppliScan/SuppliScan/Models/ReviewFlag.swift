@@ -23,6 +23,8 @@ nonisolated enum ReviewFlag: String, Codable, Hashable, CaseIterable, Sendable {
     case decimalCommaNormalised  // European "12,5" normalised to "12.5"
     case servingMultiplied       // amount adjusted by serving size multiplier
     case canonicalNameInferred   // name matched via alias, not exact match
+    case unitUnexpected          // unit is unusual for the canonical nutrient
+    case unitImplausible         // unit is clinically unlikely for the canonical nutrient
 }
 
 nonisolated extension ReviewFlag {
@@ -43,6 +45,8 @@ nonisolated extension ReviewFlag {
         case .decimalCommaNormalised: "Decimal comma normalised"
         case .servingMultiplied:      "Serving adjusted"
         case .canonicalNameInferred:  "Name inferred via alias"
+        case .unitUnexpected:         "Unit needs review"
+        case .unitImplausible:        "Unit likely wrong"
         }
     }
 }

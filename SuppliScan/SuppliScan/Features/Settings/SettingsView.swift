@@ -6,6 +6,8 @@ import SwiftUI
 struct SettingsView: View {
     @AppStorage("defaultStandard") private var defaultStandard: ReferenceStandard = .au
     @AppStorage("defaultDemographicKey") private var defaultDemographicKey: String = Demographic.defaultAdult.key
+    @AppStorage("showOCRConfidence") private var showOCRConfidence = true
+    @AppStorage("requireReviewBeforeAnalysis") private var requireReviewBeforeAnalysis = true
     @Environment(AppDependencies.self) private var dependencies
 
     @State private var showDeleteConfirm = false
@@ -18,6 +20,15 @@ struct SettingsView: View {
 
             Section("Default Profile") {
                 DemographicPickerView(selectedKey: $defaultDemographicKey)
+            }
+
+            Section {
+                Toggle("Show OCR confidence", isOn: $showOCRConfidence)
+                Toggle("Require review before analysis", isOn: $requireReviewBeforeAnalysis)
+            } header: {
+                Text("Review & OCR")
+            } footer: {
+                Text("Review settings affect how parsed label rows are shown before clinical analysis.")
             }
 
             Section("Data") {
@@ -40,7 +51,8 @@ struct SettingsView: View {
 
             Section("About") {
                 LabeledContent("Version", value: Bundle.main.appVersionString)
-                LabeledContent("Reference Data", value: "NHMRC 2023 · NIH/FDA · EFSA")
+                LabeledContent("NRV sources", value: "NHMRC 2023 · NIH/FDA · EFSA")
+                LabeledContent("Clinical use", value: "Practitioner reference")
                 Text(LabelAnalysis.disclaimer)
                     .font(.caption)
                     .foregroundStyle(.secondary)

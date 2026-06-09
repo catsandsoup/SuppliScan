@@ -65,6 +65,11 @@ nonisolated extension ServingUnit {
     }
 
     func pluralised(for quantity: Double) -> String {
-        quantity == 1 ? displayName : "\(displayName)s"
+        switch self {
+        case .gram, .ml, .unknown:
+            displayName
+        case .capsule, .tablet, .teaspoon, .tablespoon, .sachet, .scoop:
+            quantity == 1 ? displayName : "\(displayName)s"
+        }
     }
 }

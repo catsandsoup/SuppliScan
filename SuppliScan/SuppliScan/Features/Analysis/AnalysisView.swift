@@ -10,12 +10,16 @@ struct AnalysisView: View {
     let analysis: LabelAnalysis
 
     @Environment(NavigationRouter.self) private var router
-    @State private var activeTab: AnalysisTab = .summary
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var activeTab: AnalysisTab = .nutrients
     @State private var ulWarningTriggered = false
 
     var body: some View {
         VStack(spacing: 0) {
             productHeader
+            ClinicalSnapshotView(analysis: analysis)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
             internalTabBar
             tabContent
         }
@@ -90,7 +94,7 @@ struct AnalysisView: View {
                 .tag(AnalysisTab.interactions)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
-        .animation(.easeInOut(duration: 0.22), value: activeTab)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.22), value: activeTab)
     }
 }
 
@@ -109,6 +113,7 @@ enum AnalysisTab: String, CaseIterable, Identifiable {
 
 private struct SummaryTabView: View {
     let analysis: LabelAnalysis
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var appeared = false
 
     var body: some View {
@@ -117,13 +122,13 @@ private struct SummaryTabView: View {
                 ReportSummaryCardView(analysis: analysis)
                     .opacity(appeared ? 1 : 0)
                     .offset(y: appeared ? 0 : 10)
-                    .animation(.spring(response: 0.40, dampingFraction: 0.80), value: appeared)
+                    .animation(entranceAnimation, value: appeared)
 
                 if analysis.flags.hasAnyFlags {
                     FlagBannerView(flags: analysis.flags)
                         .opacity(appeared ? 1 : 0)
                         .offset(y: appeared ? 0 : 10)
-                        .animation(.spring(response: 0.40, dampingFraction: 0.80).delay(0.07), value: appeared)
+                        .animation(entranceAnimation?.delay(0.07), value: appeared)
                 }
 
                 HStack(spacing: 6) {
@@ -136,18 +141,106 @@ private struct SummaryTabView: View {
                 }
                 .padding(.horizontal, 4)
                 .opacity(appeared ? 1 : 0)
-                .animation(.spring(response: 0.40, dampingFraction: 0.80).delay(0.14), value: appeared)
+                .animation(entranceAnimation?.delay(0.14), value: appeared)
 
                 DisclaimerView(text: analysis.disclaimer)
                     .opacity(appeared ? 1 : 0)
-                    .animation(.easeOut(duration: 0.35).delay(0.20), value: appeared)
+                    .animation(reduceMotion ? nil : .easeOut(duration: 0.35).delay(0.20), value: appeared)
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 16)
         }
         .onAppear {
-            withAnimation { appeared = true }
+            if reduceMotion {
+                appeared = true
+            } else {
+                withAnimation { appeared = true }
+            }
         }
+    }
+
+    private var entranceAnimation: Animation? {
+        reduceMotion ? nil : .spring(response: 0.40, dampingFraction: 0.80)
+    }
+}
+
+// MARK: - Clinical Snapshot
+
+private struct ClinicalSnapshotView: View {
+    let analysis: LabelAnalysis
+
+    private var highestRDIAnalysis: NutrientAnalysis? {
+        analysis.nutrientAnalyses
+            .filter { $0.rdiPercent != nil }
+            .max { ($0.rdiPercent ?? 0) < ($1.rdiPercent ?? 0) }
+    }
+
+    private var interactionCount: Int {
+        analysis.flags.nutrientInteractions.count + analysis.flags.medicationInteractions.count
+    }
+
+    private var ulText: String {
+        if !analysis.flags.nutrientsAboveUL.isEmpty {
+            "Above UL"
+        } else if !analysis.flags.nutrientsAtUL.isEmpty {
+            "Near UL"
+        } else {
+            "Within UL"
+        }
+    }
+
+    private var ulColor: Color {
+        if !analysis.flags.nutrientsAboveUL.isEmpty { return AppTheme.Color.critical }
+        if !analysis.flags.nutrientsAtUL.isEmpty { return AppTheme.Color.warning }
+        return AppTheme.Color.success
+    }
+
+    var body: some View {
+        HStack(spacing: 10) {
+            SnapshotItem(
+                title: "Peak RDI",
+                value: highestRDIAnalysis?.rdiPercentString ?? "-",
+                color: highestRDIAnalysis?.rdiColor ?? .secondary
+            )
+
+            Divider()
+                .frame(height: 28)
+
+            SnapshotItem(title: "Safety", value: ulText, color: ulColor)
+
+            Divider()
+                .frame(height: 28)
+
+            SnapshotItem(
+                title: "Interactions",
+                value: interactionCount == 0 ? "None" : interactionCount.formatted(),
+                color: interactionCount == 0 ? AppTheme.Color.success : AppTheme.Color.warning
+            )
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+        .accessibilityElement(children: .combine)
+    }
+}
+
+private struct SnapshotItem: View {
+    let title: String
+    let value: String
+    let color: Color
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
+            Text(value)
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(color)
+                .lineLimit(1)
+                .minimumScaleFactor(0.75)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -179,13 +272,15 @@ private struct NutrientsTabView: View {
                 ScrollView {
                     LazyVStack(spacing: 0) {
                         ForEach(Array(filteredAnalyses.enumerated()), id: \.element.id) { index, nutrientAnalysis in
-                            NutrientAnalysisRowView(analysis: nutrientAnalysis, index: index)
-                                .padding(.horizontal, 16)
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    rowTapCount += 1
-                                    router.navigate(to: .nutrientDetail(nutrientAnalysis))
-                                }
+                            Button {
+                                rowTapCount += 1
+                                router.navigate(to: .nutrientDetail(nutrientAnalysis))
+                            } label: {
+                                NutrientAnalysisRowView(analysis: nutrientAnalysis, index: index)
+                                    .padding(.horizontal, 16)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityHint("Shows nutrient detail")
                             Divider()
                                 .padding(.leading, 16)
                         }
@@ -206,6 +301,7 @@ private struct NutrientsTabView: View {
 private struct DetailsTabView: View {
     let analysis: LabelAnalysis
     let router: NavigationRouter
+    @State private var rowTapCount = 0
 
     private var withFormQuality: [NutrientAnalysis] {
         analysis.nutrientAnalyses.filter { $0.formQuality != nil }
@@ -213,28 +309,34 @@ private struct DetailsTabView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 24) {
+            LazyVStack(alignment: .leading, spacing: 18) {
                 if !withFormQuality.isEmpty {
-                    Button {
-                        router.navigate(to: .formsAndPotency(withFormQuality))
-                    } label: {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Forms & Potency")
-                                    .font(.headline)
-                                    .foregroundStyle(.primary)
-                                Text("\(withFormQuality.count) nutrient\(withFormQuality.count == 1 ? "" : "s") assessed")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                    ReportSectionHeader("Forms & Potency")
+
+                    VStack(spacing: 0) {
+                        ForEach(withFormQuality) { nutrientAnalysis in
+                            Button {
+                                rowTapCount += 1
+                                router.navigate(to: .nutrientDetail(nutrientAnalysis))
+                            } label: {
+                                FormPotencyRowView(analysis: nutrientAnalysis)
+                                    .padding(.horizontal, 14)
+                                    .padding(.vertical, 4)
                             }
-                            Spacer()
-                            Image(systemName: "chevron.right")
-                                .foregroundStyle(.secondary)
+                            .buttonStyle(.plain)
+                            .accessibilityHint("Shows nutrient detail")
+
+                            if nutrientAnalysis.id != withFormQuality.last?.id {
+                                Divider()
+                                    .padding(.leading, 70)
+                            }
                         }
-                        .padding(14)
-                        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
                     }
-                    .buttonStyle(.plain)
+                    .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+
+                    Text("Potency is based on absorption and bioavailability evidence from published research.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
 
                 if analysis.hasHerbals {
@@ -266,6 +368,7 @@ private struct DetailsTabView: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 16)
         }
+        .sensoryFeedback(.selection, trigger: rowTapCount)
     }
 }
 
@@ -290,7 +393,7 @@ private struct InteractionsTabView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 0) {
+            LazyVStack(alignment: .leading, spacing: 12) {
 
                 // Found interactions
                 if totalInteractionCount > 0 {
@@ -301,7 +404,7 @@ private struct InteractionsTabView: View {
                         color: AppTheme.Color.warning
                     )
                     .padding(.horizontal, 16)
-                    .padding(.top, 16)
+                    .padding(.top, 12)
                     .padding(.bottom, 8)
 
                     ForEach(flags.nutrientInteractions) { interaction in
@@ -336,7 +439,7 @@ private struct InteractionsTabView: View {
                         color: AppTheme.Color.success
                     )
                     .padding(.horizontal, 16)
-                    .padding(.top, totalInteractionCount > 0 ? 16 : 16)
+                    .padding(.top, totalInteractionCount > 0 ? 12 : 12)
                     .padding(.bottom, 8)
 
                     ForEach(noInteractionNutrients) { nutrient in

@@ -2,6 +2,7 @@
 // SuppliScan
 
 import SwiftUI
+import OSLog
 
 @Observable
 @MainActor
@@ -15,6 +16,7 @@ final class ReviewViewModel {
     var pendingAnalysis: LabelAnalysis?
     var isAnalysing = false
     var analysisError: Error?
+    var selectedEntryID: UUID?
 
     typealias AnalyseAction = @Sendable ([LabelEntry], ServingSize, ReferenceStandard, Demographic, String) async throws -> LabelAnalysis
     typealias PersistAction = @Sendable (LabelAnalysis, ReferenceStandard, Demographic) async -> Void
@@ -33,9 +35,30 @@ final class ReviewViewModel {
         self.selectedStandard = ReferenceStandard(rawValue: storedStandard) ?? .au
         self.selectedDemographicKey = UserDefaults.standard.string(forKey: "defaultDemographicKey")
             ?? Demographic.defaultAdult.key
+
+        Self.logReviewFlags(entries, context: "initial-review")
     }
 
-    var hasConfirmedEntries: Bool { !entries.isEmpty }
+    var hasConfirmedEntries: Bool {
+        !entries.filter { ReviewEntryClassifier.status(for: $0) != .otherLabelText }.isEmpty
+    }
+
+    var presentations: [ReviewEntryPresentation] {
+        ReviewEntryClassifier.presentations(for: entries)
+    }
+
+    var blockingReviewCount: Int {
+        presentations.count { $0.status == .needsReview }
+    }
+
+    var suggestedProductName: String {
+        ReviewEntryClassifier.suggestedProductName(from: entries)
+    }
+
+    var effectiveProductName: String {
+        let trimmed = productName.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? suggestedProductName : trimmed
+    }
 
     func configure(analyseAction: @escaping AnalyseAction, persistAction: @escaping PersistAction) {
         self.analyseAction = analyseAction
@@ -49,8 +72,9 @@ final class ReviewViewModel {
         isAnalysing = true
         analysisError = nil
 
-        let capturedEntries = entries
-        let capturedProductName = productName
+        let capturedEntries = entries.filter { ReviewEntryClassifier.status(for: $0) != .otherLabelText }
+        Self.logReviewFlags(capturedEntries, context: "analysis-request")
+        let capturedProductName = effectiveProductName
         let capturedServing = servingSize
         let capturedStandard = selectedStandard
         let demographic = Demographic.all.first { $0.key == selectedDemographicKey } ?? .defaultAdult
@@ -84,5 +108,30 @@ final class ReviewViewModel {
 
     func delete(at offsets: IndexSet) {
         entries.remove(atOffsets: offsets)
+    }
+
+    func delete(entryID: UUID) {
+        entries.removeAll { $0.id == entryID }
+        if selectedEntryID == entryID {
+            selectedEntryID = nil
+        }
+    }
+
+    func confirm(entryID: UUID) {
+        guard let index = entries.firstIndex(where: { $0.id == entryID }) else { return }
+        entries[index] = ReviewEntryClassifier.confirmed(entries[index])
+        selectedEntryID = nil
+    }
+
+    func presentation(for id: UUID?) -> ReviewEntryPresentation? {
+        guard let id else { return nil }
+        return presentations.first { $0.id == id }
+    }
+
+    private static func logReviewFlags(_ entries: [LabelEntry], context: String) {
+        for entry in entries where !entry.reviewFlags.isEmpty {
+            let flags = entry.reviewFlags.map(\.rawValue).joined(separator: ",")
+            Logger.parser.debug("Review flags context=\(context, privacy: .public) entryID=\(entry.id.uuidString, privacy: .public) flags=\(flags, privacy: .public)")
+        }
     }
 }

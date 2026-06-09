@@ -18,31 +18,35 @@ struct FlagBannerView: View {
     private var flagItems: [FlagItem] {
         var items: [FlagItem] = []
         if !flags.nutrientsAboveUL.isEmpty {
+            let count = flags.nutrientsAboveUL.count
             items.append(FlagItem(
                 icon: "exclamationmark.triangle.fill",
                 color: AppTheme.Color.critical,
-                message: "\(flags.nutrientsAboveUL.count) nutrient\(flags.nutrientsAboveUL.count == 1 ? "" : "s") exceed the Tolerable Upper Intake Level"
+                message: "\(count) nutrient\(count == 1 ? "" : "s") \(count == 1 ? "exceeds" : "exceed") the Tolerable Upper Intake Level"
             ))
         }
         if !flags.nutrientsAtUL.isEmpty {
+            let count = flags.nutrientsAtUL.count
             items.append(FlagItem(
                 icon: "exclamationmark.circle.fill",
                 color: AppTheme.Color.warning,
-                message: "\(flags.nutrientsAtUL.count) nutrient\(flags.nutrientsAtUL.count == 1 ? "" : "s") approaching the Upper Intake Level"
+                message: "\(count) nutrient\(count == 1 ? "" : "s") \(count == 1 ? "is" : "are") approaching the Upper Intake Level"
             ))
         }
         if !flags.lowBioavailabilityForms.isEmpty {
+            let count = flags.lowBioavailabilityForms.count
             items.append(FlagItem(
                 icon: "arrow.down.circle.fill",
                 color: AppTheme.Color.warning,
-                message: "\(flags.lowBioavailabilityForms.count) nutrient\(flags.lowBioavailabilityForms.count == 1 ? "" : "s") use low-bioavailability forms"
+                message: "\(count) nutrient\(count == 1 ? "" : "s") \(count == 1 ? "uses" : "use") low-bioavailability forms"
             ))
         }
         if !flags.aiInferredForms.isEmpty {
+            let count = flags.aiInferredForms.count
             items.append(FlagItem(
                 icon: "sparkles",
                 color: .purple,
-                message: "\(flags.aiInferredForms.count) form quality rating\(flags.aiInferredForms.count == 1 ? "" : "s") are AI-inferred"
+                message: "\(count) form quality rating\(count == 1 ? "" : "s") \(count == 1 ? "needs" : "need") source review"
             ))
         }
         if !flags.unresolvedEntries.isEmpty {

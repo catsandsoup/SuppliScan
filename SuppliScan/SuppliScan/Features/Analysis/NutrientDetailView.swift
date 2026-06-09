@@ -9,6 +9,7 @@ import SwiftUI
 struct NutrientDetailView: View {
     let analysis: NutrientAnalysis
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var appeared = false
 
     var body: some View {
@@ -29,7 +30,7 @@ struct NutrientDetailView: View {
                 if let rdi = analysis.rdiPercent {
                     VStack(alignment: .leading, spacing: 4) {
                         Text((rdi / 100).formatted(.percent.precision(.fractionLength(0))))
-                            .font(.system(size: 52, weight: .bold, design: .rounded))
+                            .font(.system(.largeTitle, design: .rounded, weight: .bold))
                             .foregroundStyle(analysis.rdiColor)
                             .contentTransition(.numericText())
                         Text("of Recommended Dietary Intake")
@@ -37,7 +38,7 @@ struct NutrientDetailView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    RDIProgressBar(rdiPercent: rdi, appeared: appeared)
+                    RDIProgressBar(rdiPercent: rdi, appeared: appeared, reduceMotion: reduceMotion)
                 }
 
                 // Stats table
@@ -72,8 +73,12 @@ struct NutrientDetailView: View {
         .navigationTitle(analysis.entry.canonicalName)
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            withAnimation(.spring(response: 0.50, dampingFraction: 0.75)) {
+            if reduceMotion {
                 appeared = true
+            } else {
+                withAnimation(.spring(response: 0.50, dampingFraction: 0.75)) {
+                    appeared = true
+                }
             }
         }
     }
@@ -94,6 +99,7 @@ struct NutrientDetailView: View {
 private struct RDIProgressBar: View {
     let rdiPercent: Double
     let appeared: Bool
+    let reduceMotion: Bool
 
     // Scale: 0 – 150% RDI rendered across full width
     private let maxScale: Double = 150
@@ -134,7 +140,7 @@ private struct RDIProgressBar: View {
                     Capsule()
                         .fill(fillColor)
                         .frame(width: w * fillFraction, height: 8)
-                        .animation(.spring(response: 0.70, dampingFraction: 0.75), value: fillFraction)
+                        .animation(reduceMotion ? nil : .spring(response: 0.70, dampingFraction: 0.75), value: fillFraction)
 
                     // 100% RDI tick mark
                     Rectangle()

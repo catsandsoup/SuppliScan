@@ -7,10 +7,11 @@ import SwiftUI
 struct FormPotencyRowView: View {
     let analysis: NutrientAnalysis
 
+    @ViewBuilder
     var body: some View {
-        guard let quality = analysis.formQuality else { return AnyView(EmptyView()) }
-        let name = analysis.entry.canonicalName
-        return AnyView(content(quality: quality, canonicalName: name))
+        if let quality = analysis.formQuality {
+            content(quality: quality, canonicalName: analysis.entry.canonicalName)
+        }
     }
 
     private func content(quality: FormQuality, canonicalName: String) -> some View {
@@ -58,22 +59,15 @@ struct NutrientAvatarView: View {
         AppTheme.Color.nutrientAvatarBackground(for: canonicalName)
     }
 
-    private var fontSize: CGFloat {
-        switch abbreviation.count {
-        case 1:    return 20
-        case 2:    return 16
-        case 3:    return 13
-        default:   return 11
-        }
-    }
-
     var body: some View {
         ZStack {
             Circle()
                 .fill(bgColor)
                 .frame(width: size, height: size)
             Text(abbreviation)
-                .font(.system(size: fontSize, weight: .bold, design: .rounded))
+                .font(.caption.weight(.bold))
+                .fontDesign(.rounded)
+                .minimumScaleFactor(0.65)
                 .foregroundStyle(.white)
         }
     }

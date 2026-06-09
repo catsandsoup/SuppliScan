@@ -33,6 +33,24 @@ struct NutritionLexiconTests {
         #expect(aliases["alpha gpc"] == "Choline")
         #expect(aliases["gtf chromium"] == "Chromium")
         #expect(aliases["sodium iodide"] == "Iodine")
+        #expect(aliases["p 5 p"] == "Vitamin B6")
+    }
+
+    @Test func lexiconProvidesFormAndUnitSemanticProfiles() throws {
+        let lexicon = try NutritionLexicon.load()
+        let forms = lexicon.formsByVariant
+        let profiles = lexicon.semanticProfilesByCanonical
+
+        #expect(forms["cholecalciferol"] == "cholecalciferol")
+        #expect(forms["p 5 p"] == "p-5-p")
+
+        let vitaminB12 = try #require(profiles["vitamin b12"])
+        #expect(vitaminB12.acceptedUnits == [.mcg])
+        #expect(vitaminB12.suspiciousUnits.contains(.mg))
+
+        let magnesium = try #require(profiles["magnesium"])
+        #expect(magnesium.acceptedUnits == [.mg])
+        #expect(magnesium.suspiciousUnits.contains(.mcg))
     }
 
     @Test func lexiconCoversEveryAustralianNRVNutrient() throws {

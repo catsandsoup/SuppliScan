@@ -16,9 +16,8 @@ struct HistoryView: View {
     @State private var searchText = ""
     @State private var deleteCount = 0
 
-    private var filteredRecords: [ScanRecord] {
-        searchText.isEmpty ? records
-            : records.filter { $0.productName.localizedCaseInsensitiveContains(searchText) }
+    private var filteredRecords: [HistoryRecordPresentation] {
+        viewModel.presentations(from: records, searchText: searchText)
     }
 
     var body: some View {
@@ -36,8 +35,8 @@ struct HistoryView: View {
             } else {
                 List {
                     ForEach(filteredRecords) { record in
-                        ScanHistoryRowView(
-                            record: ScanRecordSummary(record: record),
+                        HistoryRecordRowView(
+                            record: record,
                             isLoading: viewModel.loadingRecordID == record.id
                         ) {
                             viewModel.openRecord(id: record.id)
@@ -59,6 +58,7 @@ struct HistoryView: View {
         .navigationTitle("History")
         .navigationBarTitleDisplayMode(.large)
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
+        .searchToolbarBehavior(.minimize)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 if !records.isEmpty { EditButton() }
@@ -81,6 +81,80 @@ struct HistoryView: View {
         .onChange(of: viewModel.pendingDestination) {
             guard let destination = viewModel.consumePendingDestination() else { return }
             router.navigate(to: destination)
+        }
+    }
+}
+
+private struct HistoryRecordRowView: View {
+    let record: HistoryRecordPresentation
+    var isLoading = false
+    let onTap: () -> Void
+
+    var body: some View {
+        Button(action: onTap) {
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(record.title)
+                        .font(.headline)
+                        .foregroundStyle(.primary)
+
+                    Text("\(record.referenceStandard) · \(record.createdAt.formatted(date: .abbreviated, time: .omitted))")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+
+                    if !record.statusBadges.isEmpty {
+                        HStack(spacing: 6) {
+                            badges
+                        }
+                    }
+                }
+
+                Spacer()
+
+                if isLoading {
+                    ProgressView()
+                        .controlSize(.small)
+                } else {
+                    Image(systemName: "chevron.right")
+                        .font(.subheadline)
+                        .foregroundStyle(.tertiary)
+                        .accessibilityHidden(true)
+                }
+            }
+            .padding(.vertical, 6)
+            .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+        .disabled(isLoading)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityHint("Opens the saved clinical report")
+    }
+
+    @ViewBuilder
+    private var badges: some View {
+        ForEach(record.statusBadges, id: \.self) { badge in
+            Text(badge)
+                .font(.caption.weight(.semibold))
+                .padding(.horizontal, 8)
+                .padding(.vertical, 3)
+                .background(badgeColor(for: badge).opacity(0.12), in: Capsule())
+                .foregroundStyle(badgeColor(for: badge))
+        }
+    }
+
+    private var accessibilityLabel: String {
+        let badges = record.statusBadges.joined(separator: ", ")
+        return badges.isEmpty
+            ? "\(record.title), \(record.referenceStandard)"
+            : "\(record.title), \(record.referenceStandard), \(badges)"
+    }
+
+    private func badgeColor(for badge: String) -> Color {
+        switch badge {
+        case "Above UL": AppTheme.Color.critical
+        case "Needs review", "Interactions": AppTheme.Color.warning
+        case "Verified": AppTheme.Color.success
+        default: .secondary
         }
     }
 }

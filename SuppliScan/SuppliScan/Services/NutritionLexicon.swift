@@ -42,6 +42,24 @@ nonisolated struct NutritionLexicon: Decodable, Hashable, Sendable {
         }
     }
 
+    var formsByVariant: [String: String] {
+        entries.reduce(into: [:]) { result, entry in
+            for form in entry.forms {
+                result[Self.normalizedKey(form)] = form
+            }
+        }
+    }
+
+    var semanticProfilesByCanonical: [String: NutritionSemanticProfile] {
+        entries.reduce(into: [:]) { result, entry in
+            result[Self.normalizedKey(entry.canonical)] = NutritionSemanticProfile(
+                canonical: entry.canonical,
+                acceptedUnits: Set(entry.acceptedUnits),
+                suspiciousUnits: Set(entry.suspiciousUnits)
+            )
+        }
+    }
+
     private static func cleanVocabularyTerm(_ value: String) -> String {
         value
             .precomposedStringWithCanonicalMapping
@@ -66,6 +84,8 @@ nonisolated struct NutritionLexiconEntry: Decodable, Hashable, Sendable {
     let forms: [String]
     let labelPhrases: [String]
     let commonOCRCorrections: [String]
+    let acceptedUnits: [NutrientUnit]
+    let suspiciousUnits: [NutrientUnit]
     let source: String
 
     enum CodingKeys: String, CodingKey {
@@ -75,8 +95,29 @@ nonisolated struct NutritionLexiconEntry: Decodable, Hashable, Sendable {
         case forms
         case labelPhrases = "label_phrases"
         case commonOCRCorrections = "common_ocr_corrections"
+        case acceptedUnits = "accepted_units"
+        case suspiciousUnits = "suspicious_units"
         case source
     }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        canonical = try container.decode(String.self, forKey: .canonical)
+        category = try container.decode(NutritionLexiconCategory.self, forKey: .category)
+        aliases = try container.decodeIfPresent([String].self, forKey: .aliases) ?? []
+        forms = try container.decodeIfPresent([String].self, forKey: .forms) ?? []
+        labelPhrases = try container.decodeIfPresent([String].self, forKey: .labelPhrases) ?? []
+        commonOCRCorrections = try container.decodeIfPresent([String].self, forKey: .commonOCRCorrections) ?? []
+        acceptedUnits = try container.decodeIfPresent([NutrientUnit].self, forKey: .acceptedUnits) ?? []
+        suspiciousUnits = try container.decodeIfPresent([NutrientUnit].self, forKey: .suspiciousUnits) ?? []
+        source = try container.decode(String.self, forKey: .source)
+    }
+}
+
+nonisolated struct NutritionSemanticProfile: Hashable, Sendable {
+    let canonical: String
+    let acceptedUnits: Set<NutrientUnit>
+    let suspiciousUnits: Set<NutrientUnit>
 }
 
 nonisolated enum NutritionLexiconCategory: String, Decodable, Hashable, Sendable {

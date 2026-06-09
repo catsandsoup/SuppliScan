@@ -166,6 +166,29 @@ Authoritative source priority:
 - Add nutrient-specific unit validity.
 - Add provenance display and persistence for reference data used in a report.
 
+## Implemented Semantic Compendium Slice
+
+`nutrition_lexicon.json` now carries the first structured compendium fields:
+
+- `accepted_units`: label units expected for the canonical nutrient.
+- `suspicious_units`: units that should be surfaced for review instead of
+  silently accepted.
+- `forms`: variants that should be preserved as nutrient forms when the label
+  names the form directly, such as `P-5-P` or `cholecalciferol`.
+
+Parser behavior:
+
+- A form alias can canonicalize to the parent nutrient while preserving the form.
+- A parsed nutrient whose unit conflicts with the compendium receives a review
+  flag.
+- The flag is advisory. The parser does not auto-correct `mg` to `mcg`, because
+  clinical correction without user confirmation is unsafe.
+
+This is the correct first compendium use case. Vision OCR still receives only
+label-safe custom words. Serum units, lab markers, prescription-only metabolites,
+and broad clinical prose should stay out of `customWords` unless real label
+fixtures prove they improve recognition.
+
 ## Apple Research Notes
 
 Apple's current Vision guidance supports this architecture:

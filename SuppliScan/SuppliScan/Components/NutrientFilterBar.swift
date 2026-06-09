@@ -9,7 +9,7 @@ struct NutrientFilterBar: View {
     @State private var filterTapCount = 0
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
+        ScrollView(.horizontal) {
             HStack(spacing: 8) {
                 ForEach(NutrientCategory.allCases) { category in
                     FilterChip(
@@ -24,6 +24,7 @@ struct NutrientFilterBar: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 8)
         }
+        .scrollIndicators(.hidden)
         .sensoryFeedback(.selection, trigger: filterTapCount)
     }
 }

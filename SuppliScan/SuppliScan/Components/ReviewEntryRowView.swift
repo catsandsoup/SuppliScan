@@ -6,191 +6,143 @@
 import SwiftUI
 
 struct ReviewEntryRowView: View {
-    let entry: LabelEntry
-    let index: Int
+    let presentation: ReviewEntryPresentation
     let isEditing: Bool
-    let onUpdate: (LabelEntry) -> Void
-
-    @State private var showFlagSheet = false
-    @State private var selectedFlag: ReviewFlag?
-
-    var body: some View {
-        Group {
-            switch entry {
-            case .nutrient(let n):
-                NutrientReviewRow(
-                    entry: n,
-                    index: index,
-                    isEditing: isEditing,
-                    onFlagTap: { flag in
-                        selectedFlag = flag
-                        showFlagSheet = true
-                    }
-                )
-            case .herbal(let h):
-                HerbalReviewRow(entry: h, isEditing: isEditing)
-            case .probiotic(let p):
-                ProbioticReviewRow(entry: p, isEditing: isEditing)
-            case .unresolved(let r):
-                UnresolvedReviewRow(line: r)
-            }
-        }
-        .sheet(isPresented: $showFlagSheet) {
-            if let flag = selectedFlag {
-                FlagExplanationSheet(flag: flag)
-                    .presentationDetents([.fraction(0.35)])
-            }
-        }
-    }
-}
-
-// MARK: - Nutrient Row
-
-private struct NutrientReviewRow: View {
-    let entry: NutrientEntry
-    let index: Int
-    let isEditing: Bool
-    let onFlagTap: (ReviewFlag) -> Void
+    let onOpenDetails: () -> Void
+    let onConfirm: () -> Void
+    let onDelete: () -> Void
 
     var body: some View {
-        HStack(alignment: .center, spacing: 8) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(entry.displayName)
-                    .font(.subheadline)
-                if let form = entry.form {
-                    Text("as \(form)")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            Spacer()
-
-            if let amount = entry.amount {
-                Text("\(amount.formatted()) \(entry.unit.rawValue)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            } else {
-                Text("—")
-                    .font(.subheadline)
-                    .foregroundStyle(.tertiary)
-            }
-
-            // Flag badges
-            ForEach(entry.reviewFlags, id: \.self) { flag in
-                Button {
-                    onFlagTap(flag)
-                } label: {
-                    Image(systemName: "flag.fill")
-                        .font(.caption)
-                        .foregroundStyle(AppTheme.Color.warning)
-                }
-                .buttonStyle(.plain)
-            }
-        }
-        .padding(.vertical, 8)
-        .opacity(isEditing ? 0.8 : 1.0)
-        .animation(.easeOut(duration: 0.2).delay(Double(index) * 0.03), value: isEditing)
-    }
-}
-
-// MARK: - Herbal Row
-
-private struct HerbalReviewRow: View {
-    let entry: HerbalEntry
-    let isEditing: Bool
-
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(entry.latinName)
-                    .font(.subheadline.italic())
-                if let common = entry.commonName {
-                    Text(common)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-            Spacer()
-            if let amount = entry.extractAmount, let unit = entry.extractUnit {
-                Text("\(amount.formatted()) \(unit.rawValue)")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(.vertical, 8)
-    }
-}
-
-// MARK: - Probiotic Row
-
-private struct ProbioticReviewRow: View {
-    let entry: ProbioticEntry
-    let isEditing: Bool
-
-    var body: some View {
-        HStack {
-            Text("\(entry.genus) \(entry.species)")
-                .font(.subheadline.italic())
-            Spacer()
-            if let cfu = entry.cfuBillions {
-                Text("\(cfu.formatted()) B CFU")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-            }
-        }
-        .padding(.vertical, 8)
-    }
-}
-
-// MARK: - Unresolved Row
-
-private struct UnresolvedReviewRow: View {
-    let line: RawLine
-
-    var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "questionmark.circle")
-                .foregroundStyle(AppTheme.Color.unresolved)
-            Text(line.text)
+        HStack(alignment: .center, spacing: 10) {
+            Image(systemName: presentation.status.systemImage)
                 .font(.subheadline)
-                .foregroundStyle(.primary)
-            Spacer()
-            Text("Needs review")
-                .font(.caption)
-                .foregroundStyle(AppTheme.Color.unresolved)
+                .foregroundStyle(statusColor)
+                .frame(width: 24)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(presentation.title)
+                    .font(.subheadline)
+                    .foregroundStyle(.primary)
+                if let subtitle = presentation.subtitle {
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                if !presentation.reviewReasons.isEmpty {
+                    Text(presentation.reviewReasons.joined(separator: " · "))
+                        .font(.caption)
+                        .foregroundStyle(statusColor)
+                }
+            }
+
+            Spacer(minLength: 8)
+
+            if let amount = presentation.amountText {
+                Text(amount)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .monospacedDigit()
+            }
+
+            if isEditing {
+                Button("Delete Entry", systemImage: "trash", role: .destructive, action: onDelete)
+                    .labelStyle(.iconOnly)
+                    .accessibilityLabel("Delete entry")
+            } else if presentation.status == .needsReview {
+                Button("Review", systemImage: "slider.horizontal.3", action: onOpenDetails)
+                    .labelStyle(.iconOnly)
+                    .accessibilityLabel("Review row")
+            } else if presentation.status == .otherLabelText {
+                Button("Ignore Label Text", systemImage: "eye.slash", action: onDelete)
+                    .labelStyle(.iconOnly)
+                    .accessibilityLabel("Ignore label text")
+            }
         }
         .padding(.vertical, 8)
-        .listRowBackground(AppTheme.Color.unresolved.opacity(0.12))
+        .opacity(isEditing ? 0.86 : 1.0)
+        .contentShape(.rect)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(presentation.accessibilitySummary)
+        .accessibilityHint(accessibilityHint)
+        .accessibilityActions {
+            if presentation.status == .needsReview {
+                Button("Confirm Row", action: onConfirm)
+            }
+            Button("Show Details", action: onOpenDetails)
+            Button("Delete Row", role: .destructive, action: onDelete)
+        }
+    }
+
+    private var statusColor: Color {
+        switch presentation.status {
+        case .confirmed: AppTheme.Color.success
+        case .needsReview: AppTheme.Color.warning
+        case .otherLabelText: .secondary
+        }
+    }
+
+    private var accessibilityHint: String {
+        switch presentation.status {
+        case .confirmed: "Included in analysis"
+        case .needsReview: "Open details to verify or confirm this row"
+        case .otherLabelText: "Not included in analysis"
+        }
     }
 }
 
-// MARK: - Flag Explanation Sheet
-
-private struct FlagExplanationSheet: View {
-    let flag: ReviewFlag
+struct ReviewEntryDetailSheet: View {
+    let presentation: ReviewEntryPresentation
+    let onConfirm: () -> Void
+    let onDelete: () -> Void
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack {
-                Image(systemName: "flag.fill")
-                    .foregroundStyle(AppTheme.Color.warning)
-                Text("Review Note")
-                    .font(.headline)
-                Spacer()
-                Button("Done") { dismiss() }
-                    .font(.subheadline)
+        NavigationStack {
+            List {
+                Section("Parsed Interpretation") {
+                    LabeledContent("Status", value: presentation.status.label)
+                    LabeledContent("Name", value: presentation.title)
+                    if let subtitle = presentation.subtitle {
+                        LabeledContent("Detail", value: subtitle)
+                    }
+                    LabeledContent("Amount", value: presentation.amountText ?? "Not found")
+                }
+
+                if !presentation.reviewReasons.isEmpty {
+                    Section("Needs Checking") {
+                        ForEach(presentation.reviewReasons, id: \.self) { reason in
+                            Label(reason, systemImage: "flag.fill")
+                                .foregroundStyle(AppTheme.Color.warning)
+                        }
+                    }
+                }
+
+                Section {
+                    if presentation.status == .needsReview {
+                        Button("Confirm Row", systemImage: "checkmark.circle", action: confirmAndDismiss)
+                    }
+                    Button("Remove From Analysis", systemImage: "eye.slash", role: .destructive, action: deleteAndDismiss)
+                }
             }
-            .padding(.top, 8)
-
-            Text(flag.explanation)
-                .font(.body)
-                .foregroundStyle(.primary)
-
-            Spacer()
+            .navigationTitle("Review Row")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done", role: .cancel) { dismiss() }
+                }
+            }
         }
-        .padding(.horizontal, 20)
-        .padding(.top, 8)
+    }
+
+    private func confirmAndDismiss() {
+        onConfirm()
+        dismiss()
+    }
+
+    private func deleteAndDismiss() {
+        onDelete()
+        dismiss()
     }
 }
 
@@ -200,17 +152,19 @@ extension ReviewFlag {
         case .amountNotFound: "No numeric amount could be extracted for this entry."
         case .unitUnknown: "The unit for this entry was not recognised."
         case .dualUnit: "Both IU and metric units were present. The metric value was used."
-        case .rangeAmount: "A range was detected (e.g. 100–200 mg). The lower bound was used."
-        case .traceAmount: "A trace amount was indicated. The value has been set to 0."
-        case .subOneAmount: "An amount less than 1 was indicated. The value has been set to 0.5."
-        case .extractEquivalent: "Both extract and active amounts were shown. Please verify."
+        case .rangeAmount: "A dose range was shown. Check the amount before analysis."
+        case .traceAmount: "The label shows a trace amount. Check whether this should count toward the total."
+        case .subOneAmount: "The amount is below 1. Check the label before analysis."
+        case .extractEquivalent: "The label shows a separate active amount. Check that the chosen amount is correct."
         case .proprietaryBlend: "Individual amounts within this blend are unknown."
         case .totalLineAmbiguous: "This appears to be a total line. Confirm it replaces sub-entries."
-        case .iuConversionAssumed: "Vitamin E: synthetic form assumed for IU conversion."
+        case .iuConversionAssumed: "Check the Vitamin E form before relying on this amount."
         case .iuConversionInvalid: "IU is not a valid unit for this nutrient."
-        case .decimalCommaNormalised: "A European decimal comma was normalised (e.g. 12,5 → 12.5)."
+        case .decimalCommaNormalised: "Check the decimal placement against the label."
         case .servingMultiplied: "Amount adjusted by the selected serving size."
-        case .canonicalNameInferred: "Name matched via alias — not an exact match."
+        case .canonicalNameInferred: "Check the nutrient name against the label."
+        case .unitUnexpected: "The unit is unusual for this nutrient. Please verify."
+        case .unitImplausible: "The unit is clinically unlikely for this nutrient. Please verify."
         }
     }
 }

@@ -16,6 +16,7 @@ struct ReviewView: View {
     @State private var viewModel: ReviewViewModel
     @State private var analyseButtonTapped = false
     @State private var analysisSucceeded = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     init(entries: [LabelEntry], extractedServing: ServingSize?) {
         self.entries = entries
@@ -92,7 +93,9 @@ struct ReviewView: View {
                     entries: $viewModel.entries,
                     serving: viewModel.servingSize,
                     isEditing: viewModel.isEditing,
-                    onDelete: viewModel.delete(at:)
+                    selectedEntryID: $viewModel.selectedEntryID,
+                    onConfirm: viewModel.confirm(entryID:),
+                    onDelete: viewModel.delete(entryID:)
                 )
             }
             .padding(.vertical, 16)
@@ -108,6 +111,11 @@ struct ReviewView: View {
                 .font(.subheadline)
                 .submitLabel(.done)
                 .autocorrectionDisabled()
+            if viewModel.productName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                Text("Will save as \(viewModel.suggestedProductName)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
         }
         .padding(12)
         .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10))
@@ -121,6 +129,12 @@ struct ReviewView: View {
             ServingSizeSelectorView(serving: $viewModel.servingSize)
             StandardPickerView(selection: $viewModel.selectedStandard)
             DemographicPickerView(selectedKey: $viewModel.selectedDemographicKey)
+            if viewModel.blockingReviewCount > 0 {
+                Label("\(viewModel.blockingReviewCount) row\(viewModel.blockingReviewCount == 1 ? "" : "s") need review", systemImage: "questionmark.circle.fill")
+                    .font(.caption)
+                    .foregroundStyle(AppTheme.Color.warning)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             analyseButton
         }
         .padding(.horizontal, 16)
@@ -149,7 +163,7 @@ struct ReviewView: View {
         .buttonStyle(.borderedProminent)
         .controlSize(.extraLarge)
         .disabled(!viewModel.hasConfirmedEntries || viewModel.isAnalysing)
-        .animation(.spring(response: 0.3), value: viewModel.isAnalysing)
+        .animation(reduceMotion ? nil : .spring(response: 0.3), value: viewModel.isAnalysing)
         .accessibilityHint("Analyse the scanned label entries")
     }
 }
