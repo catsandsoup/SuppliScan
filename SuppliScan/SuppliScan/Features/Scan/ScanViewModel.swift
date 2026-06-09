@@ -142,6 +142,18 @@ final class ScanViewModel {
         ocrTask = nil
     }
 
+    func reset() {
+        ocrTask?.cancel()
+        ocrTask = nil
+        loadingState = .idle
+        capturedImageData = nil
+        rawText = ""
+        parseResult = ParseResult(entries: [], extractedServing: nil)
+        reviewWarning = nil
+        isShowingError = false
+        pendingDestination = nil
+    }
+
     isolated deinit {
         ocrTask?.cancel()
     }

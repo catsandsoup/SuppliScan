@@ -70,7 +70,7 @@ struct ScanView: View {
             Text(viewModel.loadingState.error?.errorDescription ?? "The label could not be scanned.")
         }
         .onDisappear {
-            viewModel.cancel()
+            viewModel.reset()
             camera.stop()
         }
     }
