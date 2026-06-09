@@ -11,7 +11,7 @@ import SwiftUI
 
 struct ScanView: View {
     @Environment(NavigationRouter.self) private var router
-    @Environment(AppDependencies.self) private var dependencies
+    @Environment(AppDependencies.self) private var dependencies: AppDependencies?
     @Environment(\.openURL) private var openURL
 
     @State private var viewModel = ScanViewModel()
@@ -31,22 +31,30 @@ struct ScanView: View {
         .toolbarBackground(.black.opacity(0.45), for: .navigationBar)
         .sensoryFeedback(.impact(flexibility: .rigid), trigger: captureTriggered)
         .task {
+            guard let dependencies else {
+                print("[SuppliScan] DIAGNOSTIC: ScanView AppDependencies missing from environment")
+                return
+            }
             viewModel.configure(
                 ocrService: dependencies.ocrService,
                 parser: dependencies.parserService
             )
             await camera.requestAndStart()
         }
-        .task(id: selectedItem) {
-            guard let item = selectedItem else { return }
-            do {
-                guard let data = try await item.loadTransferable(type: Data.self) else {
-                    throw AppError.unknown(description: "Photo could not be loaded.")
+        .onChange(of: selectedItem) { _, newItem in
+            guard let newItem else { return }
+            Task {
+                do {
+                    guard let data = try await newItem.loadTransferable(type: Data.self) else {
+                        throw AppError.unknown(description: "Photo could not be loaded.")
+                    }
+                    selectedItem = nil
+                    viewModel.capturedImageData = data
+                    viewModel.processPhotoData(data)
+                } catch {
+                    selectedItem = nil
+                    viewModel.handlePhotoImportFailure(error)
                 }
-                viewModel.capturedImageData = data
-                viewModel.processPhotoData(data)
-            } catch {
-                viewModel.handlePhotoImportFailure(error)
             }
         }
         .onChange(of: viewModel.pendingDestination) {

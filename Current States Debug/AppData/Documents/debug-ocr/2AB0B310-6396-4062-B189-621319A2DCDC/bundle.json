@@ -1,0 +1,152 @@
+{
+  "capturedAt" : "2026-06-08T11:51:27Z",
+  "mergedRows" : [
+    {
+      "confidence" : 0.3,
+      "mergedFromCount" : 1,
+      "text" : "RAnE"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Tel: 02 4655 8711 5\/48 Anderson Rd, Smeaton Grange, 2567 Australia Health Direction Pty Ltd yeast, artificial colours or flavours. Contains sulfites and galactose natural lime flavour. Contains no gluten, wheat, dairy products, Also contains malic acid, acacia, stevia, natural lemon flavour and Zinc (as amino acid chelate) total elemental magnesium 400mg (providing elemental magnesium 24.8mg) Magnesium phosphate pentahydrate (providing elemental magnesium 12.2mg) Magnesium glycinate dihydrate (providing elemental magnesium 13mg) Magnesium ascorbate (providing elemental magnesium 350mg) Magnesium amino acid chelate Taurine Each level metric teaspoon (5g dose) contains:"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "www.cabothealth.com.au"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "5mg 120mg 104mg 210mg 1750mg 1000mg"
+    },
+    {
+      "confidence" : 0.825,
+      "mergedFromCount" : 1,
+      "text" : "in itsp magnesium elemental 400mg"
+    },
+    {
+      "confidence" : 0.3,
+      "mergedFromCount" : 1,
+      "text" : "EXPg"
+    }
+  ],
+  "parserDecisions" : [
+    {
+      "decision" : "unresolved",
+      "rawRow" : "RAnE",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "serving",
+      "rawRow" : "Tel: 02 4655 8711 5\/48 Anderson Rd, Smeaton Grange, 2567 Australia Health Direction Pty Ltd yeast, artificial colours or flavours. Contains sulfites and galactose natural lime flavour. Contains no gluten, wheat, dairy products, Also contains malic acid, acacia, stevia, natural lemon flavour and Zinc (as amino acid chelate) total elemental magnesium 400mg (providing elemental magnesium 24.8mg) Magnesium phosphate pentahydrate (providing elemental magnesium 12.2mg) Magnesium glycinate dihydrate (providing elemental magnesium 13mg) Magnesium ascorbate (providing elemental magnesium 350mg) Magnesium amino acid chelate Taurine Each level metric teaspoon (5g dose) contains:",
+      "reason" : "matches serving-only pattern"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "www.cabothealth.com.au",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "5mg 120mg 104mg 210mg 1750mg 1000mg",
+      "reason" : "name rejected by gatekeeping"
+    },
+    {
+      "amount" : 400,
+      "decision" : "nutrient",
+      "extractedName" : "In Itsp Magnesium",
+      "rawRow" : "in itsp magnesium elemental 400mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "EXPg",
+      "reason" : "no amount found"
+    }
+  ],
+  "rawObservations" : [
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.047567024230957045,
+        "minX" : 0.15012590789879762,
+        "minY" : 0.9303158814565744,
+        "width" : 0.05157260640462241
+      },
+      "confidence" : 0.3,
+      "text" : "RAnE"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.39263734464603717,
+        "minX" : 0.15560874425381424,
+        "minY" : 0.24357264946429136,
+        "width" : 0.6284051365844363
+      },
+      "confidence" : 1,
+      "text" : "Tel: 02 4655 8711 5\/48 Anderson Rd, Smeaton Grange, 2567 Australia Health Direction Pty Ltd yeast, artificial colours or flavours. Contains sulfites and galactose natural lime flavour. Contains no gluten, wheat, dairy products, Also contains malic acid, acacia, stevia, natural lemon flavour and Zinc (as amino acid chelate) total elemental magnesium 400mg (providing elemental magnesium 24.8mg) Magnesium phosphate pentahydrate (providing elemental magnesium 12.2mg) Magnesium glycinate dihydrate (providing elemental magnesium 13mg) Magnesium ascorbate (providing elemental magnesium 350mg) Magnesium amino acid chelate Taurine Each level metric teaspoon (5g dose) contains:"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.21064631652832022,
+        "minX" : 0.1446453094564638,
+        "minY" : 0.2637264968632731,
+        "width" : 0.04003666178385415
+      },
+      "confidence" : 1,
+      "text" : "www.cabothealth.com.au"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.05605003356933591,
+        "minX" : 0.411520982668748,
+        "minY" : 0.2829027723558969,
+        "width" : 0.3326220958465272
+      },
+      "confidence" : 1,
+      "text" : "5mg 120mg 104mg 210mg 1750mg 1000mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.0540421981811523,
+        "minX" : 0.43604650986532517,
+        "minY" : 0.20424357019830475,
+        "width" : 0.13178294968456344
+      },
+      "confidence" : 0.825,
+      "text" : "in itsp magnesium elemental 400mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.01889534950256344,
+        "minX" : 0.6763565892471952,
+        "minY" : 0.19912790673854386,
+        "width" : 0.023255813598632824
+      },
+      "confidence" : 0.3,
+      "text" : "EXPg"
+    }
+  ],
+  "rawText" : "RAnE\nTel: 02 4655 8711 5\/48 Anderson Rd, Smeaton Grange, 2567 Australia Health Direction Pty Ltd yeast, artificial colours or flavours. Contains sulfites and galactose natural lime flavour. Contains no gluten, wheat, dairy products, Also contains malic acid, acacia, stevia, natural lemon flavour and Zinc (as amino acid chelate) total elemental magnesium 400mg (providing elemental magnesium 24.8mg) Magnesium phosphate pentahydrate (providing elemental magnesium 12.2mg) Magnesium glycinate dihydrate (providing elemental magnesium 13mg) Magnesium ascorbate (providing elemental magnesium 350mg) Magnesium amino acid chelate Taurine Each level metric teaspoon (5g dose) contains:\nwww.cabothealth.com.au\n5mg 120mg 104mg 210mg 1750mg 1000mg\nin itsp magnesium elemental 400mg\nEXPg",
+  "scanID" : "2AB0B310-6396-4062-B189-621319A2DCDC"
+}

@@ -1,0 +1,395 @@
+{
+  "capturedAt" : "2026-06-08T11:01:45Z",
+  "mergedRows" : [
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Adults and children over 12 years - Take 1 capsule daily, or as"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Directions for"
+    },
+    {
+      "confidence" : 0.5,
+      "mergedFromCount" : 1,
+      "text" : "support tve absorption of dosry wct."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Iron (II) glycinate (bisglycinate) (Ferrochel™) equiv. iron Each capsule contains: directed by your health professional 24mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Thiamine hydrochlond equiv. Thiamine (vitamin B1) 10mg 12.7mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Riboflavin sodium phosphate equiv. Ribofiavin (vitamin B2) 10mg 14mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Pyndoxal 5-phosphate monohydrate 16mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Levomefolate glucosamine (Quatrefolic®) equiv. Pyridoxine (vitamin B6) 10mg 376 micrograms"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Mecobalamin (co-methylcobalamin)(vitamin B12) ....200 micrograms"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "equiv. Levomefolic acid (5-MTHF) 200 micrograms"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Calcium ascorbate dihydrate 304.3mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Not for the treatment of iron deficiency conditions. Vitamin and mineral equiv. ascorbic acid (vitamin C) 250mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "supplements should not replace a balanced diet."
+    },
+    {
+      "confidence" : 0.3,
+      "mergedFromCount" : 1,
+      "text" : "Pacioso or anticiai oiours"
+    },
+    {
+      "confidence" : 0.3,
+      "mergedFromCount" : 1,
+      "text" : "errochel Eoich Coresain ortsubeidarts."
+    },
+    {
+      "confidence" : 0.3,
+      "mergedFromCount" : 1,
+      "text" : "mrs, taans, rerevats,animal products, gluten,"
+    }
+  ],
+  "parserDecisions" : [
+    {
+      "decision" : "skipped",
+      "rawRow" : "Adults and children over 12 years - Take 1 capsule daily, or as",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Directions for",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "support tve absorption of dosry wct.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Iron (II) glycinate (bisglycinate) (Ferrochel) equiv. iron Each capsule contains: directed by your health professional 24mg",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "amount" : 10,
+      "decision" : "nutrient",
+      "extractedName" : "Thiamine",
+      "rawRow" : "Thiamine hydrochlond equiv. Thiamine (vitamin B1) 10mg 12.7mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 10,
+      "decision" : "nutrient",
+      "extractedName" : "Ribofiavin",
+      "rawRow" : "Riboflavin sodium phosphate equiv. Ribofiavin (vitamin B2) 10mg 14mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 16,
+      "decision" : "nutrient",
+      "extractedName" : "Pyndoxal 5-phosphate Monohydrate",
+      "rawRow" : "Pyndoxal 5-phosphate monohydrate 16mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 10,
+      "decision" : "nutrient",
+      "extractedName" : "Pyridoxine",
+      "rawRow" : "Levomefolate glucosamine (Quatrefolic) equiv. Pyridoxine (vitamin B6) 10mg 376 micrograms",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 200,
+      "decision" : "nutrient",
+      "extractedName" : "Mecobalamin (vitamin B12)",
+      "rawRow" : "Mecobalamin (co-methylcobalamin)(vitamin B12) 200 micrograms equiv. Levomefolic acid (5-MTHF) 200 micrograms",
+      "reason" : "amount match accepted",
+      "unit" : "unknown"
+    },
+    {
+      "amount" : 304.3,
+      "decision" : "nutrient",
+      "extractedName" : "Calcium Ascorbate Dihydrate",
+      "rawRow" : "Calcium ascorbate dihydrate 304.3mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 250,
+      "decision" : "nutrient",
+      "extractedName" : "Ascorbic Acid",
+      "rawRow" : "Not for the treatment of iron deficiency conditions. Vitamin and mineral equiv. ascorbic acid (vitamin C) 250mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "supplements should not replace a balanced diet.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Pacioso or anticiai oiours",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "errochel Eoich Coresain ortsubeidarts.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "mrs, taans, rerevats,animal products, gluten,",
+      "reason" : "no amount found"
+    }
+  ],
+  "rawObservations" : [
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.0237875900268556,
+        "minX" : 0.23027205075027313,
+        "minY" : 0.5986966402969576,
+        "width" : 0.4464205729166667
+      },
+      "confidence" : 1,
+      "text" : "Adults and children over 12 years - Take 1 capsule daily, or as"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487267,
+        "minX" : 0.23255814539766523,
+        "minY" : 0.6119186048145975,
+        "width" : 0.11046510823567707
+      },
+      "confidence" : 1,
+      "text" : "Directions for"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.011627906799316357,
+        "minX" : 0.4437984574995961,
+        "minY" : 0.6250000002340628,
+        "width" : 0.24612402343750006
+      },
+      "confidence" : 0.5,
+      "text" : "support tve absorption of dosry wct."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.04923169596502475,
+        "minX" : 0.2203769070782117,
+        "minY" : 0.5600535817664178,
+        "width" : 0.5005533261826175
+      },
+      "confidence" : 1,
+      "text" : "Iron (II) glycinate (bisglycinate) (Ferrochel™) equiv. iron Each capsule contains: directed by your health professional 24mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.04271470709137226,
+        "minX" : 0.22286822432927564,
+        "minY" : 0.5314131996291307,
+        "width" : 0.5019379766798011
+      },
+      "confidence" : 1,
+      "text" : "Thiamine hydrochlond equiv. Thiamine (vitamin B1) 10mg 12.7mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.051506637253040166,
+        "minX" : 0.21848272164662474,
+        "minY" : 0.49355150235971657,
+        "width" : 0.5140754179174991
+      },
+      "confidence" : 1,
+      "text" : "Riboflavin sodium phosphate equiv. Ribofiavin (vitamin B2) 10mg 14mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.037017914307776234,
+        "minX" : 0.21815479530373424,
+        "minY" : 0.4760634802626025,
+        "width" : 0.5221552822160872
+      },
+      "confidence" : 1,
+      "text" : "Pyndoxal 5-phosphate monohydrate 16mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.047653809967791005,
+        "minX" : 0.2180871982375638,
+        "minY" : 0.44008908579757755,
+        "width" : 0.5241987643292502
+      },
+      "confidence" : 1,
+      "text" : "Levomefolate glucosamine (Quatrefolic®) equiv. Pyridoxine (vitamin B6) 10mg 376 micrograms"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.04048716735839841,
+        "minX" : 0.22190591339207777,
+        "minY" : 0.4046010429270651,
+        "width" : 0.5212376302083334
+      },
+      "confidence" : 1,
+      "text" : "Mecobalamin (co-methylcobalamin)(vitamin B12) ....200 micrograms"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03276176834106448,
+        "minX" : 0.24322347170369524,
+        "minY" : 0.42349107388482454,
+        "width" : 0.3875587158203125
+      },
+      "confidence" : 1,
+      "text" : "equiv. Levomefolic acid (5-MTHF) 200 micrograms"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03602219110164795,
+        "minX" : 0.22386377906001115,
+        "minY" : 0.39004958530221334,
+        "width" : 0.5165314718640475
+      },
+      "confidence" : 1,
+      "text" : "Calcium ascorbate dihydrate 304.3mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.04851987115976619,
+        "minX" : 0.22969377401902694,
+        "minY" : 0.3549334170790084,
+        "width" : 0.5079031168619792
+      },
+      "confidence" : 1,
+      "text" : "Not for the treatment of iron deficiency conditions. Vitamin and mineral equiv. ascorbic acid (vitamin C) 250mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03069357299804687,
+        "minX" : 0.23163338218485477,
+        "minY" : 0.3445205179674813,
+        "width" : 0.35272867838541666
+      },
+      "confidence" : 1,
+      "text" : "supplements should not replace a balanced diet."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.023255813598632824,
+        "minX" : 0.23837209144977897,
+        "minY" : 0.3284883723189006,
+        "width" : 0.18023256429036458
+      },
+      "confidence" : 0.3,
+      "text" : "Pacioso or anticiai oiours"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03707500076293935,
+        "minX" : 0.30119843192149076,
+        "minY" : 0.31455316409367406,
+        "width" : 0.3681953531901041
+      },
+      "confidence" : 0.3,
+      "text" : "errochel Eoich Coresain ortsubeidarts."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03676991271972663,
+        "minX" : 0.38471221088109814,
+        "minY" : 0.33293375237510003,
+        "width" : 0.33366455078124996
+      },
+      "confidence" : 0.3,
+      "text" : "mrs, taans, rerevats,animal products, gluten,"
+    }
+  ],
+  "rawText" : "Adults and children over 12 years - Take 1 capsule daily, or as\nDirections for\nsupport tve absorption of dosry wct.\nIron (II) glycinate (bisglycinate) (Ferrochel™) equiv. iron Each capsule contains: directed by your health professional 24mg\nThiamine hydrochlond equiv. Thiamine (vitamin B1) 10mg 12.7mg\nRiboflavin sodium phosphate equiv. Ribofiavin (vitamin B2) 10mg 14mg\nPyndoxal 5-phosphate monohydrate 16mg\nLevomefolate glucosamine (Quatrefolic®) equiv. Pyridoxine (vitamin B6) 10mg 376 micrograms\nMecobalamin (co-methylcobalamin)(vitamin B12) ....200 micrograms\nequiv. Levomefolic acid (5-MTHF) 200 micrograms\nCalcium ascorbate dihydrate 304.3mg\nNot for the treatment of iron deficiency conditions. Vitamin and mineral equiv. ascorbic acid (vitamin C) 250mg\nsupplements should not replace a balanced diet.\nPacioso or anticiai oiours\nerrochel Eoich Coresain ortsubeidarts.\nmrs, taans, rerevats,animal products, gluten,",
+  "scanID" : "63BEE6FC-712A-4162-A81D-C49777308C06"
+}

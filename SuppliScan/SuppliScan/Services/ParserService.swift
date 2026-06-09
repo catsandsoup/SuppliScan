@@ -124,6 +124,13 @@ nonisolated struct ParserService: Sendable {
                     i += 2
                     continue
                 }
+                // Merge "standardised to contain X Ymg" into the preceding ingredient line so
+                // herbalEntry() can capture it as HerbalStandardisation (otherwise shouldSkip drops it).
+                if amountMatch(in: current) != nil, isStandardisationLine(next) {
+                    result.append(current + " " + next)
+                    i += 2
+                    continue
+                }
             }
 
             result.append(current)
@@ -131,6 +138,15 @@ nonisolated struct ParserService: Sendable {
         }
 
         return result
+    }
+
+    /// True when a line is a herbal standardisation note that should be merged into the preceding ingredient line.
+    private func isStandardisationLine(_ line: String) -> Bool {
+        let lower = line.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return lower.hasPrefix("standardised to")   // AU/UK spelling
+            || lower.hasPrefix("standardized to")   // US spelling
+            || lower.hasPrefix("calc. as")
+            || lower.hasPrefix("calculated as")
     }
 
     /// True when a line is a pure elemental/equiv continuation with no embedded compound name.
@@ -308,8 +324,39 @@ nonisolated struct ParserService: Sendable {
             extractAmount: extractAmount,
             extractUnit: extractUnit,
             dryEquivalentAmount: dryEquivalentAmount,
-            dryEquivalentUnit: dryEquivalentUnit
+            dryEquivalentUnit: dryEquivalentUnit,
+            standardisation: parseStandardisation(from: line)
         )
+    }
+
+    /// Parses a HerbalStandardisation from a line that contains a standardisation clause.
+    /// Handles "standardised/standardized to [contain] COMPOUND AMOUNTunit" and "calc[ulated]. as COMPOUND AMOUNTunit".
+    private func parseStandardisation(from line: String) -> HerbalStandardisation? {
+        let lower = line.lowercased()
+
+        // "standardised/standardized to [contain] silicon 14mg"
+        if let match = firstMatch(
+            in: lower,
+            pattern: #"standardi[sz]ed\s+to\s+(?:contain\s+)?([a-z][a-z\s-]*?)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|g)\b"#
+        ), match.captures.count >= 3 {
+            let compound = match.captures[0].trimmingCharacters(in: .whitespacesAndNewlines)
+            if let amount = Double(match.captures[1]), let unit = NutrientUnit(rawValue: match.captures[2]) {
+                return HerbalStandardisation(compound: compound, calculatedAs: nil, amount: amount, unit: unit)
+            }
+        }
+
+        // "calc. as silybin 140mg" / "calculated as silybin 140mg"
+        if let match = firstMatch(
+            in: lower,
+            pattern: #"calc(?:ulated)?\.?\s+as\s+([a-z][a-z\s-]*?)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|g)\b"#
+        ), match.captures.count >= 3 {
+            let compound = match.captures[0].trimmingCharacters(in: .whitespacesAndNewlines)
+            if let amount = Double(match.captures[1]), let unit = NutrientUnit(rawValue: match.captures[2]) {
+                return HerbalStandardisation(compound: compound, calculatedAs: nil, amount: amount, unit: unit)
+            }
+        }
+
+        return nil
     }
 
     private func nutrientEntry(from line: String) -> NutrientEntry? {

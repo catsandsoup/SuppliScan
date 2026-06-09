@@ -10,7 +10,7 @@ struct ReviewView: View {
     let entries: [LabelEntry]
     let extractedServing: ServingSize?
 
-    @Environment(AppDependencies.self) private var dependencies
+    @Environment(AppDependencies.self) private var dependencies: AppDependencies?
     @Environment(NavigationRouter.self) private var router
     @Environment(AnalysisStore.self) private var analysisStore
 
@@ -47,6 +47,10 @@ struct ReviewView: View {
         .sensoryFeedback(.impact(weight: .medium), trigger: analyseButtonTapped)
         .sensoryFeedback(.success, trigger: analysisSucceeded)
         .onAppear {
+            guard let dependencies else {
+                print("[SuppliScan] DIAGNOSTIC: ReviewView AppDependencies missing from environment")
+                return
+            }
             viewModel.configure(
                 analyseAction: { entries, serving, standard, demographic in
                     try await dependencies.reportService.generateReport(
