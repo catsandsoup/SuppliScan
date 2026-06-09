@@ -19,7 +19,7 @@ struct AnalysisView: View {
             internalTabBar
             tabContent
         }
-        .navigationTitle(analysis.productName.isEmpty ? "Analysis" : analysis.productName)
+        .navigationTitle(analysis.displayTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -43,39 +43,26 @@ struct AnalysisView: View {
     // MARK: - Product header
 
     private var productHeader: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(analysis.productName.isEmpty ? "Supplement Analysis" : analysis.productName)
-                .font(.headline)
-                .lineLimit(1)
-            Text("Analysis for \(analysis.servingSize.selectedQuantity.formatted()) \(analysis.servingSize.unit.pluralised(for: analysis.servingSize.selectedQuantity)) · \(analysis.referenceStandard.rawValue)")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        Text("\(analysis.servingSize.selectedQuantity.formatted()) \(analysis.servingSize.unit.pluralised(for: analysis.servingSize.selectedQuantity)) · \(analysis.referenceStandard.rawValue) · \(analysis.demographic.displayName)")
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
     }
 
     // MARK: - Internal tab bar
 
     @ViewBuilder
     private var internalTabBar: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                ForEach(visibleTabs) { tab in
-                    FilterChip(
-                        label: tab.rawValue,
-                        isSelected: activeTab == tab
-                    ) {
-                        withAnimation(.spring(response: 0.3)) {
-                            activeTab = tab
-                        }
-                    }
-                }
+        Picker("Analysis Section", selection: $activeTab) {
+            ForEach(visibleTabs) { tab in
+                Text(tab.rawValue).tag(tab)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 8)
         }
+        .pickerStyle(.segmented)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 8)
         .background(Color(.systemBackground))
         Divider()
     }
@@ -103,6 +90,7 @@ struct AnalysisView: View {
                 .tag(AnalysisTab.interactions)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
+        .animation(.easeInOut(duration: 0.22), value: activeTab)
     }
 }
 

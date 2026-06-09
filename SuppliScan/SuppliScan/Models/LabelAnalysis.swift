@@ -71,6 +71,10 @@ nonisolated extension LabelAnalysis {
     var hasProbiotics: Bool { !probioticEntries.isEmpty }
     var hasUnresolved: Bool { !unresolvedLines.isEmpty }
 
+    var displayTitle: String {
+        productName.isEmpty ? "Analysis" : productName
+    }
+
     /// Plain-text summary for share sheet.
     var shareText: String {
         let name = productName.isEmpty ? "Supplement" : productName

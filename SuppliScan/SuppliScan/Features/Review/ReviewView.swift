@@ -1,8 +1,8 @@
 // ReviewView.swift
 // SuppliScan
 // User confirms or corrects OCR output before analysis.
-// Analysis auto-triggers on appear. Edit button gives access to corrections.
-// Navigation: pushes AnalysisView within the Scan stack (Option A — no tab switch).
+// Analysis triggers on tap. Edit button gives access to corrections.
+// Navigation: pushes AnalysisView within the Scan stack (back button returns to ReviewView).
 
 import SwiftUI
 
@@ -12,7 +12,6 @@ struct ReviewView: View {
 
     @Environment(AppDependencies.self) private var dependencies: AppDependencies?
     @Environment(NavigationRouter.self) private var router
-    @Environment(AnalysisStore.self) private var analysisStore
 
     @State private var viewModel: ReviewViewModel
     @State private var analyseButtonTapped = false
@@ -52,20 +51,19 @@ struct ReviewView: View {
                 return
             }
             viewModel.configure(
-                analyseAction: { entries, serving, standard, demographic in
+                analyseAction: { entries, serving, standard, demographic, productName in
                     try await dependencies.reportService.generateReport(
                         entries: entries,
                         servingSize: serving,
-                        productName: nil,
+                        productName: productName.isEmpty ? nil : productName,
                         standard: standard,
                         demographic: demographic
                     )
                 },
                 persistAction: { analysis, standard, demographic in
-                    let name = analysis.productName.isEmpty ? "Supplement" : analysis.productName
                     try? await dependencies.persistence.save(
                         analysis: analysis,
-                        productName: name,
+                        productName: analysis.productName,
                         standard: standard,
                         demographic: demographic
                     )
@@ -75,7 +73,6 @@ struct ReviewView: View {
         .onChange(of: viewModel.pendingAnalysis) { _, _ in
             guard let analysis = viewModel.consumePendingAnalysis() else { return }
             analysisSucceeded = true
-            analysisStore.currentAnalysis = analysis
             router.navigate(to: .analysis(analysis))
         }
     }
@@ -85,6 +82,8 @@ struct ReviewView: View {
     private var scrollContent: some View {
         ScrollView {
             VStack(spacing: 16) {
+                productNameField
+
                 if !viewModel.entries.isEmpty {
                     LabelRecognisedBannerView(standard: viewModel.selectedStandard)
                 }
@@ -98,6 +97,21 @@ struct ReviewView: View {
             }
             .padding(.vertical, 16)
         }
+    }
+
+    private var productNameField: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Product Name")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            TextField("e.g. Magnesium Glycinate 400mg", text: $viewModel.productName)
+                .font(.subheadline)
+                .submitLabel(.done)
+                .autocorrectionDisabled()
+        }
+        .padding(12)
+        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10))
+        .padding(.horizontal, 16)
     }
 
     // MARK: - Bottom bar

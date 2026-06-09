@@ -7,6 +7,7 @@ import SwiftUI
 @MainActor
 final class ReviewViewModel {
     var entries: [LabelEntry]
+    var productName: String = ""
     var servingSize: ServingSize
     var selectedStandard: ReferenceStandard
     var selectedDemographicKey: String
@@ -15,7 +16,7 @@ final class ReviewViewModel {
     var isAnalysing = false
     var analysisError: Error?
 
-    typealias AnalyseAction = @Sendable ([LabelEntry], ServingSize, ReferenceStandard, Demographic) async throws -> LabelAnalysis
+    typealias AnalyseAction = @Sendable ([LabelEntry], ServingSize, ReferenceStandard, Demographic, String) async throws -> LabelAnalysis
     typealias PersistAction = @Sendable (LabelAnalysis, ReferenceStandard, Demographic) async -> Void
 
     @ObservationIgnored private var analyseAction: AnalyseAction?
@@ -49,6 +50,7 @@ final class ReviewViewModel {
         analysisError = nil
 
         let capturedEntries = entries
+        let capturedProductName = productName
         let capturedServing = servingSize
         let capturedStandard = selectedStandard
         let demographic = Demographic.all.first { $0.key == selectedDemographicKey } ?? .defaultAdult
@@ -56,7 +58,7 @@ final class ReviewViewModel {
         analysisTask = Task { @MainActor [weak self, analyseAction] in
             defer { self?.isAnalysing = false }
             do {
-                let analysis = try await analyseAction(capturedEntries, capturedServing, capturedStandard, demographic)
+                let analysis = try await analyseAction(capturedEntries, capturedServing, capturedStandard, demographic, capturedProductName)
                 self?.pendingAnalysis = analysis
                 // Persist in a sibling Task — failures don't block navigation
                 if self?.markAnalysisForPersistence(analysis.id) == true {
