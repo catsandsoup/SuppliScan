@@ -263,6 +263,43 @@ Test: Parse "Magnesium 99999999mg" → expect amount=nil, reviewFlags=[.amountNo
 
 ---
 
+## FIXED BUGS (2026-06-09 OCR Audit)
+
+### BUG-F01: ReviewView auto-skip (FIXED)
+Severity: UX
+Description: ReviewView.onAppear called requestAnalysisIfNeeded() which triggered
+analysis immediately. onChange(of: pendingAnalysis) then navigated to AnalysisView
+before the user could review OCR output. Users could never see or correct the Review screen.
+Fix: Removed requestAnalysisIfNeeded() from onAppear. Users tap "Analyse" deliberately.
+Files: ReviewView.swift, ReviewViewModel.swift
+
+### BUG-F02: Section header parsed as probiotic (FIXED)
+Severity: Clinical (wrong entry type)
+Description: "EACH VEGETARIAN CAPSULE CONTAINS: 96 BILLION CFU" was skipped only
+when no amountMatch was found. The fallback amountMatch regex matched "96 BILLION"
+as "96 unknown unit", causing amountMatch != nil and bypassing the skip.
+Fix: ingredientSectionHeaders check is now unconditional (no amountMatch guard).
+Files: ParserService.swift
+
+### BUG-F03: isEquivalentContinuation regex word-boundary error (FIXED)
+Severity: Data quality (merger fails, form info lost)
+Description: Pattern `as\s+\w\b` failed on "(as Selenomethionine)" because \b requires
+a word boundary after single \w char, but "S" is followed by "e" — no boundary.
+"(as Selenomethionine)" was not merged with "Selenium 150mcg", losing form data.
+Fix: Changed to `as\s+\w+` (match full first word of form name).
+Files: ParserService.swift
+
+### BUG-F04: Botanical Latin names parsed as junk nutrients (FIXED)
+Severity: Data quality (entry type wrong)
+Description: Herbal entries (Malus domestica, Equisetum arvense, Silybum marianum etc.)
+were being parsed as NutrientEntry with unrecognised canonical names like
+"Malus Domestica Dry". No herbal parsing existed.
+Fix: Added herbalEntry(from:) with Latin binomial + extract keyword detection.
+Parse loop now tries herbal before nutrient.
+Files: ParserService.swift
+
+---
+
 ## ARTG / Barcode Limitation (Known Infrastructure Gap)
 
 BUG-ARTG01: No public AU supplement barcode → ingredients API

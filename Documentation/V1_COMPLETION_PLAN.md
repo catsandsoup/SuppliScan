@@ -1,10 +1,66 @@
 # SuppliScan V1 Completion Plan
 
-Last updated: 2026-06-08
+Last updated: 2026-06-09
 
 ---
 
 ## Session Progress Log
+
+### 2026-06-09 — OCR Audit and Parser Hardening
+
+**What was done (2 sessions):**
+
+**Session A — Auto-skip bug + initial parser fixes**
+
+1. **Fixed ReviewView auto-skip.** `ReviewView.onAppear` was calling `requestAnalysisIfNeeded()` which auto-triggered analysis immediately. The `onChange(of: viewModel.pendingAnalysis)` then navigated away before the user could review the OCR output. Fixed by removing the auto-trigger. Users now see the Review screen and tap "Analyse" deliberately. Dead code `requestAnalysisIfNeeded()` also removed from ReviewViewModel.
+
+2. **Systematic OCR audit.** All 6 training JSON files in `TrainingData/` analysed. A standalone audit script (`/tmp/parser_audit.swift`) was written to test parser logic against known OCR text patterns for 9 supplement labels.
+
+3. **Multiple parser fixes applied to `ParserService.swift`:**
+   - `ingredientSectionHeaders` changed from conditional (only skip if no amount found) to unconditional skip — prevented "EACH VEGETARIAN CAPSULE CONTAINS: 96 BILLION CFU" from becoming a probiotic or nutrient entry.
+   - `nonIngredientPhrases` expanded: "also contains", "malic acid", "acacia", "stevia", "natural flavour/flavor", "lemon/lime flavour/flavor", regulatory disclaimers, company-address fragments, expiry codes.
+   - `companyAddressFragments` expanded: state abbreviations (NSW, VIC, QLD, etc.), USA state abbreviations, "manufactured by", "imported by".
+   - `cfuMatch` fallback added: "X Billion / X Million" without explicit "CFU" suffix (handles two-column probiotic labels where CFU only appears in column header).
+   - `abbreviatedProbioticName` added: handles "L. rhamnosus", "B. longum" etc. (abbreviated genera common on multi-strain probiotic labels).
+   - Pattern 5 added to `compoundEquivalentEntry`: "N level scoop provides Xmg NAC" format.
+   - Scoop serving-size detection fixed for "N level scoop" (descriptor word between number and unit).
+   - Single-char prefix + "elemental" guard added to `shouldSkip` for OCR misread of "f elemental magnesium".
+   - `isEquivalentContinuation` updated: added `as\s+\w+` and `from\s+\w+` patterns (needed for "(as Selenomethionine)" — old `\w` was a single char, failed on multi-char form names).
+
+**Session B — Herbal parsing + alias improvements (2026-06-09)**
+
+4. **`isEquivalentContinuation` regex bug fixed.** Pattern `as\s+\w\b` failed on "(as Selenomethionine)" because `\b` requires a word boundary after the single `\w` char, but "S" in "Selenomethionine" is followed by "e" — no boundary. Fixed to `as\s+\w+` (match full first word of form name).
+
+5. **Herbal entry parsing added to `ParserService`.** New `herbalEntry(from:)` function detects:
+   - Latin binomial at start of line (capitalised genus + lowercase species)
+   - Extract/concentrate/tincture keyword in line
+   - Guards against false-positive on nutrient compounds (Calcium, Magnesium, Zinc, etc.)
+   - Extracts `extractAmount`, `dryEquivalentAmount` by splitting on "equiv." keyword
+   - Determines `ExtractType` from keywords (dry concentrate, soft concentrate, dried herb, tincture)
+   - Parse loop now: probiotic → herbal → nutrient → unresolved
+   - `debugDecisions` updated to include herbal entries
+
+6. **`shouldSkip` additions for herbal-related noise lines:**
+   - "standardised to", "standardized to", "calc. as", "calculated as" — prevents standalone standardisation notes becoming junk nutrient entries
+   - "dry equivalent", "fresh equivalent"
+
+7. **`aliases.json` expanded:**
+   - Vitamin B2: "Riboflavin sodium phosphate", "Riboflavin-5-phosphate", "Riboflavin 5-phosphate", "Riboflavin-5-phosphate monohydrate"
+   - Vitamin B6: "Pyridoxal 5-phosphate monohydrate", "Pyridoxamine"
+   - Vitamin B9: "Levomefolic acid", "Levomefolate", "Levomefolate glucosamine", "5-methyltetrahydrofolate", "L-5-methyltetrahydrofolate", "L-5-methyltetrahydrofolic acid"
+   - Copper: "Cupric sulfate", "Cupric sulfate monohydrate", "Copper sulfate"
+
+8. **BUILD SUCCEEDED throughout all changes.**
+
+**What was NOT done (next session must complete):**
+- 8 of 14 training JSON files still missing (quercetin, astaxanthin, omega-3, st marys thistle, saw palmetto, vitamin D, vitamin C+zinc, chlorella). Herbal parser not yet tested on the St Mary's Thistle or Saw Palmetto labels.
+- Herbal standardisation lines on separate OCR rows are skipped (not merged into HerbalEntry). Silicon from Equisetum horsetail will not appear in the report.
+- Simulator visual scan testing not yet done — all fixes are logic-level only (audit script validation, not live app testing).
+- Herbal entries have no NRV/UL data — `ReportService` handles them as pass-through but there is no form quality service for herbal extracts yet.
+- `nrv_au.json`, `nrv_us.json`, `nrv_eu.json` still not written (see Phase 1 below).
+- `ReportService`, `FormQualityService`, `InteractionService` not yet written.
+
+---
 
 ### 2026-06-08 — Reference Data Sourcing
 

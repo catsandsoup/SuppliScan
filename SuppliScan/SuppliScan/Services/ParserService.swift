@@ -65,6 +65,8 @@ nonisolated struct ParserService: Sendable {
 
             if let probiotic = probioticEntry(from: line) {
                 entries.append(.probiotic(probiotic))
+            } else if let herbal = herbalEntry(from: line) {
+                entries.append(.herbal(herbal))
             } else if let nutrient = nutrientEntry(from: line) {
                 entries.append(.nutrient(UnitConversionService.convertIfNeeded(nutrient)))
             } else {
@@ -221,6 +223,93 @@ nonisolated struct ParserService: Sendable {
         let species = match.captures[1].lowercased()
         let strain = match.captures.count > 2 ? normalizedStrain(match.captures[2]) : nil
         return (genus, species, strain)
+    }
+
+    private func herbalEntry(from line: String) -> HerbalEntry? {
+        let lower = line.lowercased()
+
+        // Must contain extract/concentrate/herb keywords — key discriminator from nutrients
+        let herbalKeywords = ["extract", "concentrate", "tincture", "dried herb", "dry herb"]
+        guard herbalKeywords.contains(where: { lower.contains($0) }) else { return nil }
+
+        // Latin binomial: capitalised genus (3+ chars) + lowercase species
+        guard let nameMatch = firstMatch(
+            in: line,
+            pattern: #"^([A-Z][a-z]{2,}\s+[a-z][a-z-]+(?:\s+ssp\.\s+[a-z]+)?)(?:\s+\(([^)]+)\))?"#
+        ) else { return nil }
+
+        let latinName = nameMatch.captures[0]
+        let commonName = nameMatch.captures.count > 1 && !nameMatch.captures[1].isEmpty
+            ? nameMatch.captures[1] : nil
+
+        // Reject nutrient compounds that start with a capitalised word (Calcium citrate etc.)
+        let genus = latinName.split(separator: " ").first.map(String.init) ?? ""
+        let knownNutrientPrefixes: Set<String> = [
+            "Calcium", "Magnesium", "Zinc", "Iron", "Copper", "Sodium", "Potassium",
+            "Riboflavin", "Thiamine", "Pyridoxal", "Levomefolate", "Mecobalamin",
+            "Coenzyme", "Alpha", "Ferrous", "Ferric", "Vitamin", "Chromium",
+        ]
+        guard !knownNutrientPrefixes.contains(genus) else { return nil }
+
+        // Extract type from keywords present in the line
+        let extractType: ExtractType
+        if lower.contains("soft concentrate") || lower.contains("soft extract") {
+            extractType = .softConcentrate
+        } else if lower.contains("dry concentrate") || lower.contains("dry extract")
+                  || lower.contains("dried extract") || lower.contains("fruit extract")
+                  || lower.contains("seed extract") || lower.contains("stem extract")
+                  || lower.contains("leaf extract") || lower.contains("root extract")
+                  || lower.contains("berry extract") || lower.contains("flower extract") {
+            extractType = .dryConcExtract
+        } else if lower.contains("dried herb") || lower.contains("dried powder")
+                  || lower.contains("dry herb") {
+            extractType = .driedHerb
+        } else if lower.contains("tincture") {
+            extractType = .tincture
+        } else {
+            extractType = .unknown
+        }
+
+        // Split on "equiv." to separate extract amount from dry-equivalent amount
+        let equivSplit = line.range(
+            of: #"(?i)\bequiv\.?\b|\bequivalent\b"#,
+            options: .regularExpression
+        )
+
+        let extractAmount: Double?
+        let extractUnit: NutrientUnit?
+        let dryEquivalentAmount: Double?
+        let dryEquivalentUnit: NutrientUnit?
+
+        if let split = equivSplit {
+            let before = String(line[..<split.lowerBound])
+            let after  = String(line[split.upperBound...])
+            let beforeMatch = amountMatch(in: before)
+            let afterMatch  = amountMatch(in: after)
+            extractAmount       = beforeMatch?.amount
+            extractUnit         = beforeMatch?.unit
+            dryEquivalentAmount = afterMatch?.amount
+            dryEquivalentUnit   = afterMatch?.unit
+        } else {
+            let match = amountMatch(in: line)
+            extractAmount       = match?.amount
+            extractUnit         = match?.unit
+            dryEquivalentAmount = nil
+            dryEquivalentUnit   = nil
+        }
+
+        // Require at least an extract amount — bare name lines are not useful
+        guard extractAmount != nil else { return nil }
+
+        return HerbalEntry(
+            latinName: latinName,
+            commonName: commonName,
+            extractType: extractType,
+            extractAmount: extractAmount,
+            extractUnit: extractUnit,
+            dryEquivalentAmount: dryEquivalentAmount,
+            dryEquivalentUnit: dryEquivalentUnit
+        )
     }
 
     private func nutrientEntry(from line: String) -> NutrientEntry? {
@@ -670,6 +759,9 @@ nonisolated struct ParserService: Sendable {
             "not manufactured with", "suitable for vegans", "suitable for vegetarians",
             "100% money back", "money back guarantee", "no added", "no artificial",
             "designed and packed", "packed in australia",
+            // Herbal standardisation notes — captured in HerbalEntry or discarded (not ingredients)
+            "standardised to", "standardized to", "calc. as", "calculated as",
+            "dry equivalent", "fresh equivalent",
         ]
         if nonIngredientPhrases.contains(where: { lower.contains($0) }) {
             return true
@@ -711,8 +803,10 @@ nonisolated struct ParserService: Sendable {
     private func isEquivalentContinuation(_ line: String) -> Bool {
         // Matches standalone form-qualifier lines: "(providing ...)", "(equiv ...)",
         // "(as Selenomethionine)", "(from X)", "(as amino acid chelate)" etc.
+        // Note: `as\s+\w+` not `as\s+\w` — \w alone with trailing \b fails when
+        // the form name continues (e.g. "S" in "Selenomethionine" has no word boundary).
         line.range(
-            of: #"(?i)^\(?\s*(providing|equiv\.?|equivalent(?:\s+to)?|as\s+\w|from\s+\w)\b"#,
+            of: #"(?i)^\(?\s*(providing|equiv\.?|equivalent(?:\s+to)?|as\s+\w+|from\s+\w+)\b"#,
             options: .regularExpression
         ) != nil
     }
@@ -926,6 +1020,14 @@ extension ParserService {
                     reason: "CFU match + scientific name",
                     extractedName: "\(probiotic.genus) \(probiotic.species)",
                     amount: probiotic.cfuBillions, unit: "B CFU"
+                ))
+            } else if let herbal = herbalEntry(from: line) {
+                decisions.append(OCRDebugParserDecision(
+                    rawRow: line, decision: "herbal",
+                    reason: "Latin binomial + extract keyword",
+                    extractedName: herbal.latinName,
+                    amount: herbal.extractAmount,
+                    unit: herbal.extractUnit?.rawValue
                 ))
             } else if let nutrient = nutrientEntry(from: line) {
                 decisions.append(OCRDebugParserDecision(

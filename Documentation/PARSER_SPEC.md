@@ -205,6 +205,87 @@ A flagged uncertain answer is always preferable to a silent wrong one.
 
 ---
 
+## Herbal Entry Parsing
+
+### Rule H1: Latin binomial detection
+A line that contains a recognised herbal extract keyword ("extract", "concentrate",
+"tincture", "dried herb", "dry herb") AND starts with a Latin binomial (capitalised
+genus + lowercase species) is classified as a `HerbalEntry`, not a `NutrientEntry`.
+
+```
+Input:  "Silybum marianum (St Mary's Thistle) dry concentrate 4000mg"
+Output: HerbalEntry(latinName="Silybum marianum", commonName="St Mary's Thistle",
+                    extractType=.dryConcExtract, extractAmount=4000, extractUnit=.mg)
+```
+
+Herbal detection runs BEFORE nutrient detection. If the line starts with a capitalised
+word that is a known nutrient prefix (Calcium, Magnesium, Zinc, Riboflavin, etc.) it is
+NOT treated as herbal, even if it contains the word "extract".
+
+### Rule H2: Dry/fresh equivalent
+When a herbal line is followed by an equivalence continuation line (starting with
+"equiv.", "equivalent"), the two lines are merged by `mergedContinuationLines`.
+The first amount in the merged line becomes `extractAmount`; the amount after the
+"equiv." keyword becomes `dryEquivalentAmount`.
+
+```
+Input (merged): "Malus domestica fruit dry extract 300mg equiv. to fresh fruit 1500mg"
+Output: extractAmount=300mg, dryEquivalentAmount=1500mg
+```
+
+### Rule H3: Standardisation lines are skipped
+Lines beginning with "standardised to", "standardized to", "calc. as", "calculated as"
+are skipped by `shouldSkip`. They are not passed to herbal or nutrient parsing.
+Standardisation data is captured by the herbal entry when it is on the same merged line
+(unusual in practice — most AU labels put it on a separate line).
+
+---
+
+## Two-Column OCR Merging (Real-Device Handling)
+
+### Rule M1: Name-only + amount-only merge
+Vision returns two-column supplement tables as spatially-separated observations.
+The left column (nutrient names) and right column (amounts) become separate lines.
+`mergedTwoColumnLines` merges consecutive pairs where:
+- The first line has no recognisable amount ("name-only")
+- The second line is just an amount, OR starts with an equivalence keyword
+
+```
+Input:  ["Taurine", "1000mg"]
+Output: ["Taurine 1000mg"]
+```
+
+### Rule M2: Continuation line merge
+`mergedContinuationLines` merges a line that has an amount with its following
+equivalence continuation line (starting with "providing", "equiv.", "as", "from")
+when that continuation line is "pure" (no embedded compound name after the closing paren).
+
+```
+Input:  ["Magnesium amino acid chelate 1750mg", "(providing elemental magnesium 350mg)"]
+Output: ["Magnesium amino acid chelate 1750mg (providing elemental magnesium 350mg)"]
+```
+
+### Rule M3: isEquivalentContinuation matching
+A line is an equivalent continuation if it starts with (optional open-paren, optional
+whitespace) followed by: "providing", "equiv.", "equivalent to", "as WORD", "from WORD".
+The "as" and "from" patterns require a full word after them (pattern: `as\s+\w+`, not
+`as\s+\w` which breaks on multi-char form names like "Selenomethionine").
+
+---
+
+## Section Header Skip Rules
+
+Section headers are skipped unconditionally, even when they contain amount-like text.
+This prevents "EACH VEGETARIAN CAPSULE CONTAINS: 96 BILLION CFU" from being parsed
+as a probiotic entry.
+
+Skipped headers:
+- "each tablet contains", "each capsule contains", "each dose contains"
+- "each vegetarian capsule", "each veg capsule", "each softgel contains"
+- "each softcap contains", "each sachet contains", "each scoop contains"
+
+---
+
 ## Known Edge Cases (Corpus to be Expanded)
 
 These are documented from domain knowledge. Test fixtures required for each.

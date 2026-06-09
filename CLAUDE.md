@@ -63,18 +63,27 @@ All 70 installed skills are listed in AGENTS.md § Installed Skills Reference.
 
 ## Current Build State
 
-**Layer 1–4: COMPLETE. BUILD SUCCEEDED.**
+**BUILD SUCCEEDED. Parser hardened against real-world OCR. Services not yet wired.**
 
-| Layer | Status | Files |
+| Layer | Status | Notes |
 |---|---|---|
 | 1 — Models | ✅ Complete | 18 Swift model files in Models/ |
 | 2 — Persistence | ✅ Complete | SuppliScanSchema.swift, PersistenceService.swift |
 | 3 — Navigation | ✅ Complete | AppDestination.swift, NavigationRouter.swift |
-| 4 — App entry + stubs | ✅ Complete | SuppliScanApp.swift, AppDependencies.swift, 5 stub views |
-| 5 — Services | ⚠️ Not started (JSON data files created) | TBD |
-| 6 — Full Views | 🔲 Not started | TBD |
-| 7 — Components | 🔲 Not started | TBD |
-| 8 — Tests | 🔲 Not started | TBD |
+| 4 — App entry + UI shell | ✅ Complete | All Views, ViewModels, Components built |
+| 5 — ParserService | ✅ Hardened | Two-column merge, herbal detection, probiotic abbreviations, isEquivalentContinuation fixed |
+| 6 — Reference Data JSON | ⚠️ Not written | Data sourced in HANDOFF_REFERENCE_DATA.md — needs nrv_au.json |
+| 7 — ReportService | ❌ Not started | Uses LabelAnalysis.placeholder — shows "Pending" UI |
+| 8 — FormQualityService | ❌ Not started | |
+| 9 — Tests | ⚠️ Partial | Parser tests use hand-crafted strings; no real Vision output fixtures |
+
+## Next Session — Pick Up From
+
+Read `Documentation/HANDOFF_PARSER_AUDIT.md` for exact remaining parser work.
+Read `Documentation/HANDOFF_REFERENCE_DATA.md` for Phase 1 reference data (nrv_au.json).
+
+**Highest immediate value: write nrv_au.json from HANDOFF_REFERENCE_DATA.md.**
+This unblocks ReportService → AnalysisView → the app showing real clinical data.
 
 ---
 
