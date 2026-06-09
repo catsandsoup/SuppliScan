@@ -1,0 +1,429 @@
+{
+  "capturedAt" : "2026-06-09T21:15:05Z",
+  "mergedRows" : [
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "\/ Zinc supports prostate and reproductive health in males."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Zinc supports wound healino."
+    },
+    {
+      "confidence" : 0.3,
+      "mergedFromCount" : 1,
+      "text" : "taminsupportboneonnd"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Tood,oras directed by your health professional."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Adults and children over 12 years - Take 1 tablet, one to three times a day, with"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Directions for use:"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Calcium ascorbate dihydrate Each tablet contains: equiv. ascorbic acid (vitamin C) 500mg 605.3mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Sodium ascorbate equiv. ascorbic acid (vitamin C) 500mg 562.4mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Citrus bioflavonoids extrac TOTAL ASCORBIC ACID (VITAMIN C) 1g"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Rutoside (rutin).."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Zinc amino acid chelate equiv. zinc."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "50mg 8mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Hesperidin Contains 78mg of sodium per tablet 5mg 5mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "If symptoms persist, talk to your health professional. Vitamin and mineral"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "supplements should not replace a balanced diet."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Does not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or artificial"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "colours, flavours or preservatives."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "(B) 240984 EXP 05\/26"
+    }
+  ],
+  "parserDecisions" : [
+    {
+      "decision" : "unresolved",
+      "rawRow" : "\/ Zinc supports prostate and reproductive health in males.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Zinc supports wound healino.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "taminsupportboneonnd",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Tood,oras directed by your health professional.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Adults and children over 12 years - Take 1 tablet, one to three times a day, with",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Directions for use:",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Calcium ascorbate dihydrate Each tablet contains: equiv. ascorbic acid (vitamin C) 500mg 605.3mg",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "amount" : 500,
+      "decision" : "nutrient",
+      "extractedName" : "Ascorbic Acid",
+      "rawRow" : "Sodium ascorbate equiv. ascorbic acid (vitamin C) 500mg 562.4mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 1,
+      "decision" : "nutrient",
+      "extractedName" : "Citrus Bioflavonoids Extrac Ascorbic ACID",
+      "rawRow" : "Citrus bioflavonoids extrac TOTAL ASCORBIC ACID (VITAMIN C) 1g",
+      "reason" : "amount match accepted",
+      "unit" : "g"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Rutoside (rutin)..",
+      "reason" : "no amount found"
+    },
+    {
+      "amount" : 50,
+      "decision" : "nutrient",
+      "extractedName" : "Zinc.",
+      "rawRow" : "Zinc amino acid chelate equiv. zinc. 50mg 8mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Hesperidin Contains 78mg of sodium per tablet 5mg 5mg",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "If symptoms persist, talk to your health professional. Vitamin and mineral",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "supplements should not replace a balanced diet.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Does not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or artificial",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "colours, flavours or preservatives.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "(B) 240984 EXP 05\/26",
+      "reason" : "matches non-ingredient skip rule"
+    }
+  ],
+  "rawObservations" : [
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.00749999999999984,
+        "minX" : 0.2906976829413203,
+        "minY" : 0.5900000000242249,
+        "width" : 0.2984496053059896
+      },
+      "confidence" : 1,
+      "text" : "\/ Zinc supports prostate and reproductive health in males."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.004360464572906397,
+        "minX" : 0.3062015486795595,
+        "minY" : 0.5988372095013375,
+        "width" : 0.14534882609049482
+      },
+      "confidence" : 1,
+      "text" : "Zinc supports wound healino."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487378,
+        "minX" : 0.313953495741607,
+        "minY" : 0.6031976744851401,
+        "width" : 0.17248061116536462
+      },
+      "confidence" : 0.3,
+      "text" : "taminsupportboneonnd"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487267,
+        "minX" : 0.2829457424610384,
+        "minY" : 0.5625000001634346,
+        "width" : 0.24806201171875003
+      },
+      "confidence" : 1,
+      "text" : "Tood,oras directed by your health professional."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008999999999999897,
+        "minX" : 0.28488374000348204,
+        "minY" : 0.5710000000542574,
+        "width" : 0.42441857910156255
+      },
+      "confidence" : 1,
+      "text" : "Adults and children over 12 years - Take 1 tablet, one to three times a day, with"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.007267441749572834,
+        "minX" : 0.2868217062613553,
+        "minY" : 0.5813953489471613,
+        "width" : 0.10465116373697919
+      },
+      "confidence" : 1,
+      "text" : "Directions for use:"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03209302317399132,
+        "minX" : 0.27906977481137446,
+        "minY" : 0.5275000000879616,
+        "width" : 0.44573642751721604
+      },
+      "confidence" : 1,
+      "text" : "Calcium ascorbate dihydrate Each tablet contains: equiv. ascorbic acid (vitamin C) 500mg 605.3mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.021802325541213863,
+        "minX" : 0.27713178694825474,
+        "minY" : 0.5072674418472467,
+        "width" : 0.44961239852471574
+      },
+      "confidence" : 1,
+      "text" : "Sodium ascorbate equiv. ascorbic acid (vitamin C) 500mg 562.4mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.02350000011928821,
+        "minX" : 0.27519380942180927,
+        "minY" : 0.48399999984475073,
+        "width" : 0.34302324020861097
+      },
+      "confidence" : 1,
+      "text" : "Citrus bioflavonoids extrac TOTAL ASCORBIC ACID (VITAMIN C) 1g"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.013581117630004913,
+        "minX" : 0.2731945009250705,
+        "minY" : 0.4605059528373233,
+        "width" : 0.09314588419596354
+      },
+      "confidence" : 1,
+      "text" : "Rutoside (rutin).."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.011662790298461845,
+        "minX" : 0.27519380009727784,
+        "minY" : 0.4738372095363883,
+        "width" : 0.19379844156901038
+      },
+      "confidence" : 1,
+      "text" : "Zinc amino acid chelate equiv. zinc."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.023255813776060563,
+        "minX" : 0.686046511242597,
+        "minY" : 0.4723837208735977,
+        "width" : 0.04263565826416016
+      },
+      "confidence" : 1,
+      "text" : "50mg 8mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.034999999979950625,
+        "minX" : 0.2751938021932912,
+        "minY" : 0.43750000013213053,
+        "width" : 0.45348836724418246
+      },
+      "confidence" : 1,
+      "text" : "Hesperidin Contains 78mg of sodium per tablet 5mg 5mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401812,
+        "minX" : 0.2771317929919149,
+        "minY" : 0.425872093173555,
+        "width" : 0.3895348714192708
+      },
+      "confidence" : 1,
+      "text" : "If symptoms persist, talk to your health professional. Vitamin and mineral"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010499999999999954,
+        "minX" : 0.2790697713976955,
+        "minY" : 0.4154999997994535,
+        "width" : 0.2596899210611979
+      },
+      "confidence" : 1,
+      "text" : "supplements should not replace a balanced diet."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010244185924530025,
+        "minX" : 0.28100775527797955,
+        "minY" : 0.4040000001352,
+        "width" : 0.4186046549479167
+      },
+      "confidence" : 1,
+      "text" : "Does not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or artificial"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487267,
+        "minX" : 0.28100775570481556,
+        "minY" : 0.3968023256963804,
+        "width" : 0.1550387573242188
+      },
+      "confidence" : 1,
+      "text" : "colours, flavours or preservatives."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487378,
+        "minX" : 0.4418604688831101,
+        "minY" : 0.380813953603357,
+        "width" : 0.15503875732421873
+      },
+      "confidence" : 1,
+      "text" : "(B) 240984 EXP 05\/26"
+    }
+  ],
+  "rawText" : "\/ Zinc supports prostate and reproductive health in males.\nZinc supports wound healino.\ntaminsupportboneonnd\nTood,oras directed by your health professional.\nAdults and children over 12 years - Take 1 tablet, one to three times a day, with\nDirections for use:\nCalcium ascorbate dihydrate Each tablet contains: equiv. ascorbic acid (vitamin C) 500mg 605.3mg\nSodium ascorbate equiv. ascorbic acid (vitamin C) 500mg 562.4mg\nCitrus bioflavonoids extrac TOTAL ASCORBIC ACID (VITAMIN C) 1g\nRutoside (rutin)..\nZinc amino acid chelate equiv. zinc.\n50mg 8mg\nHesperidin Contains 78mg of sodium per tablet 5mg 5mg\nIf symptoms persist, talk to your health professional. Vitamin and mineral\nsupplements should not replace a balanced diet.\nDoes not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or artificial\ncolours, flavours or preservatives.\n(B) 240984 EXP 05\/26",
+  "scanID" : "C2A39E8D-D834-4E08-A61F-4CFE531DEF15"
+}

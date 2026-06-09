@@ -1,0 +1,654 @@
+{
+  "capturedAt" : "2026-06-09T21:14:23Z",
+  "mergedRows" : [
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Hair Volume is the tablet which supports hair and skin health, maintains a normal volumino."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "which is manufactured in Sweden, contains micronutrients and herbal extracts including app-"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "HAIR, SKIN AND NAILS"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "le extract. Zinc contributes to the maintenance of normal nails and skin. The content of biotin"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "us hair growth, nail health, strength and thickness and works from the inside out. The tablet,"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "the stated dose. Warnings: Keep out of reach of children. Not recommended to use by"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "RECOMMENDED USE"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Adults: Take 1 tablet daily in combination with a meal or a glass of water. Do not exceed"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "and zinc contributeto the maintenance of normal hair."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "tampered with."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "pregnant and lactating women. Do not use if the blister packaging (inner foil) is broken or"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "EACH TABLET CONTAINS"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Dry fruit extract 300 mg equivalent to dry fruit 1500 mg Panicum miliaceum (millet) Malus domestica (apple) Dried seed extract 250 mg equivalent to dry seed 1250 mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Equisetum arvense (horsetail)"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Cysteine (standardised to contain silicon 14 mg) Dried stem extract 200 mg equivalent to dry stem 1000 mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Equivalent to pantothenate 30 mg Zinc oxide Methionine Calcium Pantothenate 32,6 mg 50 mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "60 mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Equivalent to zinc 10 mg Biotin 12,5 mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Equivalent to copper 1 mg Cupric sulfate monohydrate 0,48 mg 4 mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "1300 25 44 03"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "www.newnordic.net.au"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Store below 25°C, in a dry place."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "New Nordic Ltd Pty, Level 20, Tower 2 Darling Park, Sydney NSW 2000"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Imported and distributed by:"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Lot no.\/Expiry date: See base of pack."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "BEAUTY"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "IN&OUT™"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "NEW NORDIC"
+    }
+  ],
+  "parserDecisions" : [
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Hair Volume is the tablet which supports hair and skin health, maintains a normal volumino.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "which is manufactured in Sweden, contains micronutrients and herbal extracts including app-",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "HAIR, SKIN AND NAILS",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "le extract. Zinc contributes to the maintenance of normal nails and skin. The content of biotin",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "us hair growth, nail health, strength and thickness and works from the inside out. The tablet,",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "the stated dose. Warnings: Keep out of reach of children. Not recommended to use by",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "RECOMMENDED USE",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Adults: Take 1 tablet daily in combination with a meal or a glass of water. Do not exceed",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "and zinc contributeto the maintenance of normal hair.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "tampered with.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "pregnant and lactating women. Do not use if the blister packaging (inner foil) is broken or",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "EACH TABLET CONTAINS",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "amount" : 300,
+      "decision" : "herbal",
+      "extractedName" : "Dry fruit",
+      "rawRow" : "Dry fruit extract 300 mg equivalent to dry fruit 1500 mg Panicum miliaceum (millet) Malus domestica (apple) Dried seed extract 250 mg equivalent to dry seed 1250 mg",
+      "reason" : "Latin binomial + extract keyword",
+      "unit" : "mg"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Equisetum arvense (horsetail)",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Cysteine (standardised to contain silicon 14 mg) Dried stem extract 200 mg equivalent to dry stem 1000 mg Equivalent to pantothenate 30 mg Zinc oxide Methionine Calcium Pantothenate 32,6 mg 50 mg",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "amount" : 10,
+      "decision" : "nutrient",
+      "extractedName" : "Zinc",
+      "rawRow" : "60 mg Equivalent to zinc 10 mg Biotin 12,5 mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 1,
+      "decision" : "nutrient",
+      "extractedName" : "Equivalent To Copper",
+      "rawRow" : "Equivalent to copper 1 mg Cupric sulfate monohydrate 0,48 mg 4 mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "1300 25 44 03",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "www.newnordic.net.au",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Store below 25°C, in a dry place.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "New Nordic Ltd Pty, Level 20, Tower 2 Darling Park, Sydney NSW 2000",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Imported and distributed by:",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Lot no.\/Expiry date: See base of pack.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "BEAUTY",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "IN&OUT",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "NEW NORDIC",
+      "reason" : "no amount found"
+    }
+  ],
+  "rawObservations" : [
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401812,
+        "minX" : 0.3197674393261973,
+        "minY" : 0.6773255814002991,
+        "width" : 0.35077518717447914
+      },
+      "confidence" : 1,
+      "text" : "Hair Volume is the tablet which supports hair and skin health, maintains a normal volumino."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.013116409778594962,
+        "minX" : 0.32156738772395194,
+        "minY" : 0.6583418345501701,
+        "width" : 0.35298693847656254
+      },
+      "confidence" : 1,
+      "text" : "which is manufactured in Sweden, contains micronutrients and herbal extracts including app-"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010220930099487324,
+        "minX" : 0.32170542937005403,
+        "minY" : 0.6860000001765703,
+        "width" : 0.12403100585937499
+      },
+      "confidence" : 1,
+      "text" : "HAIR, SKIN AND NAILS"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010499999999999954,
+        "minX" : 0.3217054299077942,
+        "minY" : 0.6509999998304263,
+        "width" : 0.35271317545572917
+      },
+      "confidence" : 1,
+      "text" : "le extract. Zinc contributes to the maintenance of normal nails and skin. The content of biotin"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.009000000000000008,
+        "minX" : 0.32170543179430083,
+        "minY" : 0.6684999997782153,
+        "width" : 0.3546511637369792
+      },
+      "confidence" : 1,
+      "text" : "us hair growth, nail health, strength and thickness and works from the inside out. The tablet,"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.01183370304107667,
+        "minX" : 0.3215989739292895,
+        "minY" : 0.61176125485711,
+        "width" : 0.3529087320963542
+      },
+      "confidence" : 1,
+      "text" : "the stated dose. Warnings: Keep out of reach of children. Not recommended to use by"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008732558250427291,
+        "minX" : 0.3217054290764671,
+        "minY" : 0.6322674419851401,
+        "width" : 0.11821705118815101
+      },
+      "confidence" : 1,
+      "text" : "RECOMMENDED USE"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010500000000000065,
+        "minX" : 0.32170542942329816,
+        "minY" : 0.620499999883909,
+        "width" : 0.3527131754557292
+      },
+      "confidence" : 1,
+      "text" : "Adults: Take 1 tablet daily in combination with a meal or a glass of water. Do not exceed"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.007267441749572723,
+        "minX" : 0.3217054307589429,
+        "minY" : 0.6453488373374229,
+        "width" : 0.2073643391927083
+      },
+      "confidence" : 1,
+      "text" : "and zinc contributeto the maintenance of normal hair."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.007267441749572723,
+        "minX" : 0.3217054269301304,
+        "minY" : 0.5988372094122776,
+        "width" : 0.06007751973470049
+      },
+      "confidence" : 1,
+      "text" : "tampered with."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010499999999999954,
+        "minX" : 0.32170543405326424,
+        "minY" : 0.6044999998216318,
+        "width" : 0.3507751871744792
+      },
+      "confidence" : 1,
+      "text" : "pregnant and lactating women. Do not use if the blister packaging (inner foil) is broken or"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401812,
+        "minX" : 0.33139534690490247,
+        "minY" : 0.5784883721161421,
+        "width" : 0.13565891520182288
+      },
+      "confidence" : 1,
+      "text" : "EACH TABLET CONTAINS"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.034883720684328434,
+        "minX" : 0.3294573662292324,
+        "minY" : 0.5377906977084386,
+        "width" : 0.2248061912827286
+      },
+      "confidence" : 1,
+      "text" : "Dry fruit extract 300 mg equivalent to dry fruit 1500 mg Panicum miliaceum (millet) Malus domestica (apple) Dried seed extract 250 mg equivalent to dry seed 1250 mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008744185924529968,
+        "minX" : 0.33139535372096807,
+        "minY" : 0.5305000001281206,
+        "width" : 0.11627906290690104
+      },
+      "confidence" : 1,
+      "text" : "Equisetum arvense (horsetail)"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.0232558138133383,
+        "minX" : 0.3313953495393975,
+        "minY" : 0.5072674419704171,
+        "width" : 0.22480619940001018
+      },
+      "confidence" : 1,
+      "text" : "Cysteine (standardised to contain silicon 14 mg) Dried stem extract 200 mg equivalent to dry stem 1000 mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03343023221813468,
+        "minX" : 0.3294573625318582,
+        "minY" : 0.47238372105835313,
+        "width" : 0.3294573653673748
+      },
+      "confidence" : 1,
+      "text" : "Equivalent to pantothenate 30 mg Zinc oxide Methionine Calcium Pantothenate 32,6 mg 50 mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487267,
+        "minX" : 0.631782946214751,
+        "minY" : 0.504360465240954,
+        "width" : 0.027131782531738202
+      },
+      "confidence" : 1,
+      "text" : "60 mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.02180232556842543,
+        "minX" : 0.3292771878942563,
+        "minY" : 0.4563953488199811,
+        "width" : 0.32963754095781905
+      },
+      "confidence" : 1,
+      "text" : "Equivalent to zinc 10 mg Biotin 12,5 mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.0247093023025452,
+        "minX" : 0.32945736747239374,
+        "minY" : 0.43750000011498513,
+        "width" : 0.3294573608016771
+      },
+      "confidence" : 1,
+      "text" : "Equivalent to copper 1 mg Cupric sulfate monohydrate 0,48 mg 4 mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487267,
+        "minX" : 0.35077519440447985,
+        "minY" : 0.4113372093204114,
+        "width" : 0.07364340718587242
+      },
+      "confidence" : 1,
+      "text" : "1300 25 44 03"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487267,
+        "minX" : 0.48643411158399946,
+        "minY" : 0.40988372110577964,
+        "width" : 0.12209301757812502
+      },
+      "confidence" : 1,
+      "text" : "www.newnordic.net.au"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008999999999999897,
+        "minX" : 0.31976744388487655,
+        "minY" : 0.37050000004844974,
+        "width" : 0.13565891520182288
+      },
+      "confidence" : 1,
+      "text" : "Store below 25°C, in a dry place."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.009000000000000008,
+        "minX" : 0.3197674505010243,
+        "minY" : 0.3834999997712186,
+        "width" : 0.27713177490234375
+      },
+      "confidence" : 1,
+      "text" : "New Nordic Ltd Pty, Level 20, Tower 2 Darling Park, Sydney NSW 2000"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.005813953399658178,
+        "minX" : 0.3217054284988442,
+        "minY" : 0.3938953489300159,
+        "width" : 0.11434108479817706
+      },
+      "confidence" : 1,
+      "text" : "Imported and distributed by:"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401812,
+        "minX" : 0.31976744498130144,
+        "minY" : 0.36046511641120016,
+        "width" : 0.15503875732421873
+      },
+      "confidence" : 1,
+      "text" : "Lot no.\/Expiry date: See base of pack."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.011627906799316468,
+        "minX" : 0.554263566766594,
+        "minY" : 0.3633720930392953,
+        "width" : 0.08139534505208335
+      },
+      "confidence" : 1,
+      "text" : "BEAUTY"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401812,
+        "minX" : 0.5794573660252456,
+        "minY" : 0.35465116269874875,
+        "width" : 0.08527131652832032
+      },
+      "confidence" : 1,
+      "text" : "IN&OUT™"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.007267441749572723,
+        "minX" : 0.593023257320686,
+        "minY" : 0.3488372093819967,
+        "width" : 0.062015502929687494
+      },
+      "confidence" : 1,
+      "text" : "NEW NORDIC"
+    }
+  ],
+  "rawText" : "Hair Volume is the tablet which supports hair and skin health, maintains a normal volumino.\nwhich is manufactured in Sweden, contains micronutrients and herbal extracts including app-\nHAIR, SKIN AND NAILS\nle extract. Zinc contributes to the maintenance of normal nails and skin. The content of biotin\nus hair growth, nail health, strength and thickness and works from the inside out. The tablet,\nthe stated dose. Warnings: Keep out of reach of children. Not recommended to use by\nRECOMMENDED USE\nAdults: Take 1 tablet daily in combination with a meal or a glass of water. Do not exceed\nand zinc contributeto the maintenance of normal hair.\ntampered with.\npregnant and lactating women. Do not use if the blister packaging (inner foil) is broken or\nEACH TABLET CONTAINS\nDry fruit extract 300 mg equivalent to dry fruit 1500 mg Panicum miliaceum (millet) Malus domestica (apple) Dried seed extract 250 mg equivalent to dry seed 1250 mg\nEquisetum arvense (horsetail)\nCysteine (standardised to contain silicon 14 mg) Dried stem extract 200 mg equivalent to dry stem 1000 mg\nEquivalent to pantothenate 30 mg Zinc oxide Methionine Calcium Pantothenate 32,6 mg 50 mg\n60 mg\nEquivalent to zinc 10 mg Biotin 12,5 mg\nEquivalent to copper 1 mg Cupric sulfate monohydrate 0,48 mg 4 mg\n1300 25 44 03\nwww.newnordic.net.au\nStore below 25°C, in a dry place.\nNew Nordic Ltd Pty, Level 20, Tower 2 Darling Park, Sydney NSW 2000\nImported and distributed by:\nLot no.\/Expiry date: See base of pack.\nBEAUTY\nIN&OUT™\nNEW NORDIC",
+  "scanID" : "543FB2C8-3035-499F-BBFB-5E9C524234F2"
+}

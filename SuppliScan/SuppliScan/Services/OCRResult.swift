@@ -25,15 +25,17 @@ nonisolated struct OCRRecognizedLine: Sendable {
     let text: String
     let confidence: Float
     let region: OCRTextRegion
+    let sourceLineCount: Int
 #if DEBUG
     /// Runner-up candidates from Vision topCandidates(3). Empty in release builds.
     let alternatives: [OCRAlternativeCandidate]
 #endif
 
-    init(text: String, confidence: Float, region: OCRTextRegion) {
+    init(text: String, confidence: Float, region: OCRTextRegion, sourceLineCount: Int = 1) {
         self.text = text
         self.confidence = confidence
         self.region = region
+        self.sourceLineCount = sourceLineCount
 #if DEBUG
         self.alternatives = []
 #endif
@@ -44,11 +46,13 @@ nonisolated struct OCRRecognizedLine: Sendable {
         text: String,
         confidence: Float,
         region: OCRTextRegion,
+        sourceLineCount: Int = 1,
         alternatives: [OCRAlternativeCandidate]
     ) {
         self.text = text
         self.confidence = confidence
         self.region = region
+        self.sourceLineCount = sourceLineCount
         self.alternatives = alternatives
     }
 #endif
@@ -56,13 +60,17 @@ nonisolated struct OCRRecognizedLine: Sendable {
 
 nonisolated extension OCRRecognizedLine: Hashable {
     static func == (lhs: OCRRecognizedLine, rhs: OCRRecognizedLine) -> Bool {
-        lhs.text == rhs.text && lhs.confidence == rhs.confidence && lhs.region == rhs.region
+        lhs.text == rhs.text
+            && lhs.confidence == rhs.confidence
+            && lhs.region == rhs.region
+            && lhs.sourceLineCount == rhs.sourceLineCount
     }
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(text)
         hasher.combine(confidence)
         hasher.combine(region)
+        hasher.combine(sourceLineCount)
     }
 }
 
@@ -73,37 +81,76 @@ nonisolated struct OCRAlternativeCandidate: Hashable, Sendable {
 }
 #endif
 
+nonisolated struct OCRQualityReport: Hashable, Sendable {
+    let recognizedLineCount: Int
+    let parseReadyLineCount: Int
+    let rejectedLowConfidenceLineCount: Int
+    let averageConfidence: Float
+    let hasLowConfidenceText: Bool
+    let hasSupplementLabelSignals: Bool
+}
+
 /// OCR text output and confidence metadata for user review.
 nonisolated struct OCRResult: Hashable, Sendable {
     static let lowConfidenceThreshold: Float = 0.72
+    static let parseConfidenceThreshold: Float = 0.50
 
     let rawText: String
+    let allRecognizedText: String
     let lines: [OCRRecognizedLine]
+    let recognizedLines: [OCRRecognizedLine]
+    let rejectedLines: [OCRRecognizedLine]
+    let quality: OCRQualityReport
 
     var averageConfidence: Float {
-        guard !lines.isEmpty else { return 0 }
-        let total = lines.reduce(Float.zero) { $0 + $1.confidence }
-        return total / Float(lines.count)
+        quality.averageConfidence
     }
 
     var hasLowConfidenceText: Bool {
-        averageConfidence < Self.lowConfidenceThreshold
+        quality.hasLowConfidenceText
+    }
+
+    var hasSupplementLabelSignals: Bool {
+        quality.hasSupplementLabelSignals
     }
 
     init(lines: [OCRRecognizedLine]) {
-        let orderedLines = Self.orderedAndMerged(lines)
+        let recognizedLines = Self.ordered(lines)
+        let parseReadyLines = recognizedLines.filter { $0.confidence >= Self.parseConfidenceThreshold }
+        let orderedLines = Self.orderedAndMerged(parseReadyLines)
+        let rejectedLines = recognizedLines.filter { $0.confidence < Self.parseConfidenceThreshold }
+        let averageConfidence = Self.averageConfidence(for: recognizedLines)
+        let hasLowConfidenceText = averageConfidence < Self.lowConfidenceThreshold
+            || recognizedLines.contains { $0.confidence < Self.lowConfidenceThreshold }
+        let hasSupplementLabelSignals = Self.hasSupplementLabelSignals(in: orderedLines)
+
+        self.recognizedLines = recognizedLines
+        self.rejectedLines = rejectedLines
         self.lines = orderedLines
         self.rawText = orderedLines.map(\.text).joined(separator: "\n")
+        self.allRecognizedText = recognizedLines.map(\.text).joined(separator: "\n")
+        self.quality = OCRQualityReport(
+            recognizedLineCount: recognizedLines.count,
+            parseReadyLineCount: orderedLines.count,
+            rejectedLowConfidenceLineCount: rejectedLines.count,
+            averageConfidence: averageConfidence,
+            hasLowConfidenceText: hasLowConfidenceText,
+            hasSupplementLabelSignals: hasSupplementLabelSignals
+        )
     }
 
-    private static func orderedAndMerged(_ lines: [OCRRecognizedLine]) -> [OCRRecognizedLine] {
-        let sorted = lines.sorted { lhs, rhs in
+    private static func ordered(_ lines: [OCRRecognizedLine]) -> [OCRRecognizedLine] {
+        lines.sorted { lhs, rhs in
             if abs(lhs.region.maxY - rhs.region.maxY) > 0.018 {
                 lhs.region.maxY > rhs.region.maxY
             } else {
                 lhs.region.minX < rhs.region.minX
             }
         }
+    }
+
+    private static func orderedAndMerged(_ lines: [OCRRecognizedLine]) -> [OCRRecognizedLine] {
+        let sorted = ordered(lines)
 
         var rows: [[OCRRecognizedLine]] = []
         for line in sorted {
@@ -122,19 +169,81 @@ nonisolated struct OCRResult: Hashable, Sendable {
                 return orderedRow
             }
 
-            return [mergedRow(orderedRow)]
+            return splitRowIntoParserRows(orderedRow).map(mergedRow)
         }
     }
 
     private static func isAmountOrLeaderFragment(_ line: OCRRecognizedLine) -> Bool {
         let text = line.text.trimmingCharacters(in: .whitespacesAndNewlines)
         if text.range(
-            of: #"(?i)(?:<\s*)?\d+(?:[\.,]\d+)?\s*((?:billion|million)\s+cfu|cfu|mg|mcg|μg|µg|ug|g|iu)\b"#,
+            of: #"(?i)(?:<\s*)?\d+(?:[\.,]\d+)?\s*((?:billion|million)\s+cfu|cfu|mg|mcg|micrograms?|μg|µg|ug|g|iu)\b"#,
             options: .regularExpression
         ) != nil {
             return true
         }
         return text.allSatisfy { $0 == "." || $0 == "·" || $0 == "•" || $0.isWhitespace }
+    }
+
+    private static func containsSupplementAmount(_ text: String) -> Bool {
+        text.range(
+            of: #"(?i)\b\d+(?:[\.,]\d+)?\s*((?:billion|million)\s+cfu|cfu|mg|mcg|micrograms?|μg|µg|ug|g|iu)\b"#,
+            options: .regularExpression
+        ) != nil
+    }
+
+    private static func hasSupplementLabelSignals(in lines: [OCRRecognizedLine]) -> Bool {
+        let joined = lines.map(\.text).joined(separator: " ")
+        let lower = joined.lowercased()
+        var score = lines.reduce(0) { partial, line in
+            partial + (containsSupplementAmount(line.text) ? 1 : 0)
+        }
+
+        let labelKeywords = [
+            "supplement facts", "nutrition information", "active ingredients",
+            "amount per serving", "amount per serve", "each tablet contains",
+            "each capsule contains", "each dose contains", "contains:"
+        ]
+        if labelKeywords.contains(where: { lower.contains($0) }) {
+            score += 2
+        }
+
+        let domainKeywords = [
+            "vitamin", "magnesium", "zinc", "calcium", "selenium", "folate",
+            "probiotic", "lactobacillus", "bifidobacterium", "taurine", "quercetin"
+        ]
+        if domainKeywords.contains(where: { lower.contains($0) }) {
+            score += 1
+        }
+
+        return score >= 2
+    }
+
+    private static func averageConfidence(for lines: [OCRRecognizedLine]) -> Float {
+        guard !lines.isEmpty else { return 0 }
+        let total = lines.reduce(Float.zero) { $0 + $1.confidence }
+        return total / Float(lines.count)
+    }
+
+    private static func splitRowIntoParserRows(_ orderedRow: [OCRRecognizedLine]) -> [[OCRRecognizedLine]] {
+        let nameIndexes = orderedRow.indices.filter { !isAmountOrLeaderFragment(orderedRow[$0]) }
+        let amountIndexes = orderedRow.indices.filter { isAmountOrLeaderFragment(orderedRow[$0]) }
+
+        guard nameIndexes.count > 1, amountIndexes.count > 1 else {
+            return [orderedRow]
+        }
+
+        var segments: [[OCRRecognizedLine]] = []
+        for (position, nameIndex) in nameIndexes.enumerated() {
+            let nextNameIndex = position + 1 < nameIndexes.count ? nameIndexes[position + 1] : orderedRow.endIndex
+            let segment = orderedRow[nameIndex..<nextNameIndex].filter { line in
+                !line.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            }
+            if !segment.isEmpty {
+                segments.append(Array(segment))
+            }
+        }
+
+        return segments.isEmpty ? [orderedRow] : segments
     }
 
     private static func mergedRow(_ row: [OCRRecognizedLine]) -> OCRRecognizedLine {
@@ -158,7 +267,8 @@ nonisolated struct OCRResult: Hashable, Sendable {
                 minY: minY,
                 width: maxX - minX,
                 height: maxY - minY
-            )
+            ),
+            sourceLineCount: row.reduce(0) { $0 + $1.sourceLineCount }
         )
     }
 }

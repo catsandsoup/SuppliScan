@@ -1,0 +1,434 @@
+{
+  "capturedAt" : "2026-06-09T04:34:51Z",
+  "mergedRows" : [
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Го6"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "JUN"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Supports healthy immune system function."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Health indications:"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "health and blood vessel health."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Reduces free radicals formed inthe body."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Supports blood capillary health."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "a day, with food, or as directed by your health professional."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Adults and children over 12 years - Take 1 tablet, one to three times"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Directions for use:"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Each tablet contains:"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Quercetin dihydrate 500mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Rutoside (rutin) Citrus bioflavonoids extract 100mg 50mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Hesperidin Ascorbic acid (vitamin C) 50mg 25mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Contains soya bean products."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Vitamin supplements should not replace a balanced diet."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Does not contain egg, milk, peanut, tree nuts, animal products, gluten, lactose or"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "artificial colours, flavours or preservatives."
+    }
+  ],
+  "parserDecisions" : [
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Го6",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "JUN",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Supports healthy immune system function.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Health indications:",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "health and blood vessel health.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Reduces free radicals formed inthe body.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Supports blood capillary health.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "a day, with food, or as directed by your health professional.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Adults and children over 12 years - Take 1 tablet, one to three times",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Directions for use:",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Each tablet contains:",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "amount" : 500,
+      "decision" : "nutrient",
+      "extractedName" : "Quercetin Dihydrate",
+      "rawRow" : "Quercetin dihydrate 500mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 100,
+      "decision" : "nutrient",
+      "extractedName" : "Rutoside Citrus Bioflavonoids Extract",
+      "rawRow" : "Rutoside (rutin) Citrus bioflavonoids extract 100mg 50mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 50,
+      "decision" : "nutrient",
+      "extractedName" : "Hesperidin Ascorbic Acid",
+      "rawRow" : "Hesperidin Ascorbic acid (vitamin C) 50mg 25mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Contains soya bean products.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Vitamin supplements should not replace a balanced diet.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Does not contain egg, milk, peanut, tree nuts, animal products, gluten, lactose or",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "artificial colours, flavours or preservatives.",
+      "reason" : "matches non-ingredient skip rule"
+    }
+  ],
+  "rawObservations" : [
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.125,
+        "minX" : 0.35852712983625545,
+        "minY" : 0.7950581399025308,
+        "width" : 0.19961240641276035
+      },
+      "confidence" : 1,
+      "text" : "Го6"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.08248666381835945,
+        "minX" : 0.582837716334224,
+        "minY" : 0.7719548194745596,
+        "width" : 0.07495870463053389
+      },
+      "confidence" : 1,
+      "text" : "JUN"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.016272598266601546,
+        "minX" : 0.1296701611548203,
+        "minY" : 0.6097392059512449,
+        "width" : 0.3510896402994791
+      },
+      "confidence" : 1,
+      "text" : "Supports healthy immune system function."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401923,
+        "minX" : 0.1317829520751953,
+        "minY" : 0.6250000001684677,
+        "width" : 0.15697673543294272
+      },
+      "confidence" : 1,
+      "text" : "Health indications:"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010499999999999954,
+        "minX" : 0.13565891868224625,
+        "minY" : 0.6365000001642094,
+        "width" : 0.23255812581380206
+      },
+      "confidence" : 1,
+      "text" : "health and blood vessel health."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.0197862148284913,
+        "minX" : 0.12177045523206054,
+        "minY" : 0.5758163484308039,
+        "width" : 0.3552175699869792
+      },
+      "confidence" : 1,
+      "text" : "Reduces free radicals formed inthe body."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.016011627674102802,
+        "minX" : 0.14922480870155036,
+        "minY" : 0.5930000001835668,
+        "width" : 0.25
+      },
+      "confidence" : 1,
+      "text" : "Supports blood capillary health."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03366752624511726,
+        "minX" : 0.11354881931190206,
+        "minY" : 0.5157815940452019,
+        "width" : 0.4760826822916666
+      },
+      "confidence" : 1,
+      "text" : "a day, with food, or as directed by your health professional."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03127213287353514,
+        "minX" : 0.11384158191282116,
+        "minY" : 0.5331134143500339,
+        "width" : 0.5610716552734375
+      },
+      "confidence" : 1,
+      "text" : "Adults and children over 12 years - Take 1 tablet, one to three times"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.01612790727615354,
+        "minX" : 0.11821705651950098,
+        "minY" : 0.5579999997784637,
+        "width" : 0.16472867838541666
+      },
+      "confidence" : 1,
+      "text" : "Directions for use:"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.021007732391357448,
+        "minX" : 0.11563345638104813,
+        "minY" : 0.49765646575904643,
+        "width" : 0.19507366943359375
+      },
+      "confidence" : 1,
+      "text" : "Each tablet contains:"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.030674418777008272,
+        "minX" : 0.11627907379447523,
+        "minY" : 0.4794999995457776,
+        "width" : 0.5736434069155576
+      },
+      "confidence" : 1,
+      "text" : "Quercetin dihydrate 500mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.046768997268079926,
+        "minX" : 0.11821705483663401,
+        "minY" : 0.44741704896168255,
+        "width" : 0.5717054258733988
+      },
+      "confidence" : 1,
+      "text" : "Rutoside (rutin) Citrus bioflavonoids extract 100mg 50mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.04999130068018354,
+        "minX" : 0.12004946296381028,
+        "minY" : 0.41367148997119807,
+        "width" : 0.567935033723826
+      },
+      "confidence" : 1,
+      "text" : "Hesperidin Ascorbic acid (vitamin C) 50mg 25mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.0213242835998535,
+        "minX" : 0.12553573714814328,
+        "minY" : 0.39662502615217765,
+        "width" : 0.2468550008138021
+      },
+      "confidence" : 1,
+      "text" : "Contains soya bean products."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03574314880371099,
+        "minX" : 0.12689860577774623,
+        "minY" : 0.3777405191287836,
+        "width" : 0.44371557617187496
+      },
+      "confidence" : 1,
+      "text" : "Vitamin supplements should not replace a balanced diet."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.036402366638183525,
+        "minX" : 0.13487034842993428,
+        "minY" : 0.36594827483718817,
+        "width" : 0.5248797200520834
+      },
+      "confidence" : 1,
+      "text" : "Does not contain egg, milk, peanut, tree nuts, animal products, gluten, lactose or"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.024957014083862306,
+        "minX" : 0.13695207241338267,
+        "minY" : 0.35655354054969157,
+        "width" : 0.2823236287434896
+      },
+      "confidence" : 1,
+      "text" : "artificial colours, flavours or preservatives."
+    }
+  ],
+  "rawText" : "Го6\nJUN\nSupports healthy immune system function.\nHealth indications:\nhealth and blood vessel health.\nReduces free radicals formed inthe body.\nSupports blood capillary health.\na day, with food, or as directed by your health professional.\nAdults and children over 12 years - Take 1 tablet, one to three times\nDirections for use:\nEach tablet contains:\nQuercetin dihydrate 500mg\nRutoside (rutin) Citrus bioflavonoids extract 100mg 50mg\nHesperidin Ascorbic acid (vitamin C) 50mg 25mg\nContains soya bean products.\nVitamin supplements should not replace a balanced diet.\nDoes not contain egg, milk, peanut, tree nuts, animal products, gluten, lactose or\nartificial colours, flavours or preservatives.",
+  "scanID" : "27EE5A6C-A718-46D3-9C95-54ACC53C9921"
+}

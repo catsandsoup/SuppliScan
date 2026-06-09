@@ -1,0 +1,339 @@
+{
+  "version": "0.1",
+  "source_note": "Seeded from existing SuppliScan NRV aliases, form_quality terms, PARSER_SPEC edge cases, and Current States Debug OCR corpus. Clinical dose values remain in NRV/UL reference files, not this lexicon.",
+  "entries": [
+    {
+      "canonical": "Vitamin A",
+      "category": "vitamin",
+      "aliases": ["Vit A", "Retinol", "Retinal", "Retinoic Acid", "Retinyl Palmitate", "Retinyl Acetate", "Retinyl Propionate", "Beta-carotene", "Betacarotene", "Beta carotene", "Alpha-carotene", "Cryptoxanthin", "Carotenoids"],
+      "forms": ["preformed vitamin A", "provitamin A", "retinol equivalents", "retinol activity equivalents", "RAE", "retinyl palmitate", "retinyl acetate", "retinyl propionate", "mixed carotenoids"],
+      "label_phrases": ["vitamin A activity", "as retinyl palmitate", "as retinyl acetate", "as beta-carotene", "mcg RAE"],
+      "common_ocr_corrections": ["Retinyl", "Betacarotene"],
+      "source": "SuppliScan aliases/nrv seed; NIH ODS Vitamin A fact sheet"
+    },
+    {
+      "canonical": "Vitamin C",
+      "category": "vitamin",
+      "aliases": ["Vit C", "Vit. C", "Ascorbic Acid", "L-Ascorbic Acid", "Ascorbate", "Ascorbic acid", "Calcium Ascorbate", "Sodium Ascorbate", "Magnesium Ascorbate"],
+      "forms": ["calcium ascorbate dihydrate", "sodium ascorbate", "magnesium ascorbate", "ascorbic acid"],
+      "label_phrases": ["equiv. ascorbic acid", "equiv. Ascorbic Acid", "TOTAL ASCORBIC ACID", "vitamin C supports"],
+      "common_ocr_corrections": ["ascorbic", "ascorbat", "dihydrat"],
+      "source": "SuppliScan aliases/nrv seed and debug corpus"
+    },
+    {
+      "canonical": "Vitamin D",
+      "category": "vitamin",
+      "aliases": ["Vit D", "Vitamin D2", "Vitamin D3", "D2", "D3", "Cholecalciferol", "Colecalciferol", "Ergocalciferol", "Colecalcife"],
+      "forms": ["cholecalciferol", "colecalciferol", "ergocalciferol"],
+      "label_phrases": ["equiv. vitamin D3", "Each capsule contains", "assists calcium absorption"],
+      "common_ocr_corrections": ["Colecalcife", "Colecalciferol"],
+      "source": "SuppliScan aliases/nrv seed and debug corpus"
+    },
+    {
+      "canonical": "Vitamin E",
+      "category": "vitamin",
+      "aliases": ["Vit E", "Tocopherol", "Tocotrienol", "Alpha-Tocopherol", "Mixed Tocopherols", "Mixed Tocotrienols", "Tocopheryl Acetate", "Tocopheryl Succinate"],
+      "forms": ["d-alpha-tocopherol", "dl-alpha-tocopherol", "d-alpha-tocopheryl acetate", "dl-alpha-tocopheryl acetate", "d-alpha-tocopheryl succinate", "alpha tocopherol", "gamma tocopherol", "mixed tocopherols", "alpha tocotrienol", "beta tocotrienol", "gamma tocotrienol", "delta tocotrienol", "tocotrienols"],
+      "label_phrases": ["natural vitamin E", "synthetic vitamin E", "alpha-tocopherol equivalents"],
+      "common_ocr_corrections": ["tocopherol", "tocotrienol"],
+      "source": "SuppliScan aliases/nrv seed; NIH ODS Vitamin E fact sheet"
+    },
+    {
+      "canonical": "Vitamin K",
+      "category": "vitamin",
+      "aliases": ["Vit K", "Vitamin K1", "Vitamin K2", "K1", "K2", "Phylloquinone", "Menaquinone", "Phytonadione", "MK-4", "MK-7", "MK4", "MK7"],
+      "forms": ["menaquinone-4", "menaquinone-7", "menaquinone 4", "menaquinone 7", "phylloquinone", "phytonadione"],
+      "label_phrases": ["as MK-7", "as MK-4", "as menaquinone", "as phylloquinone"],
+      "common_ocr_corrections": ["menaquinone", "phylloquinone"],
+      "source": "SuppliScan aliases/nrv seed; NIH ODS Vitamin K fact sheet"
+    },
+    {
+      "canonical": "Vitamin B1",
+      "category": "vitamin",
+      "aliases": ["B1", "Vitamin B-1", "Thiamine", "Thiamin", "Thiamine Hydrochloride", "Thiamine HCl", "Thiamine Mononitrate", "Benfotiamine", "Thiamine Tetrahydrofurfuryl Disulfide", "TTFD"],
+      "forms": ["thiamine hydrochloride", "thiamine mononitrate", "benfotiamine", "thiamine pyrophosphate", "thiamine tetrahydrofurfuryl disulfide"],
+      "label_phrases": ["equiv. Thiamine", "vitamin B1"],
+      "common_ocr_corrections": ["Thiamine hydrochlond"],
+      "source": "SuppliScan aliases/nrv seed and debug corpus"
+    },
+    {
+      "canonical": "Vitamin B2",
+      "category": "vitamin",
+      "aliases": ["B2", "Vitamin B-2", "Riboflavin", "Ribofiavin", "Riboflavin sodium phosphate", "Riboflavin 5 Phosphate", "R5P"],
+      "forms": ["riboflavin", "riboflavin sodium phosphate", "riboflavin-5-phosphate", "riboflavin 5-phosphate", "riboflavin 5 phosphate sodium"],
+      "label_phrases": ["equiv. Riboflavin", "vitamin B2"],
+      "common_ocr_corrections": ["Ribofiavin", "Riboflavin sodium phosphat"],
+      "source": "SuppliScan aliases/nrv seed and debug corpus"
+    },
+    {
+      "canonical": "Vitamin B3",
+      "category": "vitamin",
+      "aliases": ["B3", "Vitamin B-3", "Niacin", "Niacinamide", "Nicotinamide", "Nicotinic Acid", "Inositol Hexanicotinate", "Nicotinamide Riboside", "Nicotinamide Mononucleotide", "NMN", "NR"],
+      "forms": ["nicotinamide", "nicotinic acid", "niacinamide", "inositol hexanicotinate", "nicotinamide riboside", "nicotinamide mononucleotide"],
+      "label_phrases": ["niacin equivalents", "mg NE", "flush free niacin"],
+      "common_ocr_corrections": ["niacinamide"],
+      "source": "SuppliScan aliases/nrv seed"
+    },
+    {
+      "canonical": "Vitamin B5",
+      "category": "vitamin",
+      "aliases": ["B5", "Vitamin B-5", "Pantothenic Acid", "Pantothenate", "Calcium Pantothenate", "D-Calcium Pantothenate", "Dexpanthenol", "Panthenol"],
+      "forms": ["calcium pantothenate", "d-calcium pantothenate", "pantothenic acid", "dexpanthenol", "panthenol"],
+      "label_phrases": ["Equivalent to pantothenate"],
+      "common_ocr_corrections": ["pantothenate"],
+      "source": "SuppliScan aliases/nrv seed and debug corpus"
+    },
+    {
+      "canonical": "Vitamin B6",
+      "category": "vitamin",
+      "aliases": ["B6", "Vitamin B-6", "Pyridoxine", "Pyridoxal", "Pyridoxamine", "Pyridoxal-5-Phosphate", "Pyridoxal 5 Phosphate", "P5P", "PLP", "Pyridoxine HCl", "Pyridoxal Phosphate"],
+      "forms": ["pyridoxal 5-phosphate", "pyridoxal-5-phosphate monohydrate", "pyridoxine hydrochloride", "pyridoxine hcl", "pyridoxamine dihydrochloride"],
+      "label_phrases": ["equiv. Pyridoxine", "vitamin B6"],
+      "common_ocr_corrections": ["Pyndoxal", "Pyridoxal"],
+      "source": "SuppliScan aliases/nrv seed and debug corpus"
+    },
+    {
+      "canonical": "Vitamin B7",
+      "category": "vitamin",
+      "aliases": ["B7", "Biotin", "d-Biotin", "D-Biotin", "Vitamin H"],
+      "forms": ["biotin", "d-biotin"],
+      "label_phrases": ["hair skin and nails"],
+      "common_ocr_corrections": ["Biotin"],
+      "source": "SuppliScan aliases/nrv seed and debug corpus"
+    },
+    {
+      "canonical": "Vitamin B9",
+      "category": "vitamin",
+      "aliases": ["B9", "Folate", "Folic Acid", "Methylfolate", "L-Methylfolate", "L-5-MTHF", "5-MTHF", "5-Methyl-THF", "5-Methyltetrahydrofolate", "Levomefolate", "Levomefolic acid", "Levomefolate calcium", "Levomefolate glucosamine", "Quatrefolic", "Folinic Acid", "Calcium Folinate"],
+      "forms": ["folic acid", "calcium folinate", "folinic acid", "5-methyltetrahydrofolate", "5-methyl-thf", "L-5-methyltetrahydrofolic acid", "levomefolate calcium", "levomefolate glucosamine"],
+      "label_phrases": ["equiv. Levomefolic acid", "5-MTHF", "micrograms", "mcg DFE", "dietary folate equivalents"],
+      "common_ocr_corrections": ["Levomefolate", "Levomefolic"],
+      "source": "SuppliScan aliases/nrv seed and debug corpus; NIH ODS Folate fact sheet"
+    },
+    {
+      "canonical": "Vitamin B12",
+      "category": "vitamin",
+      "aliases": ["B12", "Cobalamin", "Cobalamins", "Methylcobalamin", "Mecobalamin", "Cyanocobalamin", "Adenosylcobalamin", "Hydroxocobalamin", "Hydroxycobalamin", "Cobamamide", "Dibencozide", "5-deoxyadenosylcobalamin", "co-methylcobalamin"],
+      "forms": ["methylcobalamin", "mecobalamin", "cyanocobalamin", "hydroxocobalamin", "hydroxycobalamin", "adenosylcobalamin", "5-deoxyadenosylcobalamin", "cobamamide", "dibencozide"],
+      "label_phrases": ["vitamin B12", "micrograms", "sublingual B12"],
+      "common_ocr_corrections": ["Mecobalamin", "methylcobalamin"],
+      "source": "SuppliScan aliases/nrv seed and debug corpus; NIH ODS Vitamin B12 fact sheet"
+    },
+    {
+      "canonical": "Magnesium",
+      "category": "mineral",
+      "aliases": ["Mg", "Magnesium", "Mag"],
+      "forms": ["magnesium glycinate", "magnesium bisglycinate", "magnesium oxide", "magnesium citrate", "magnesium malate", "magnesium amino acid chelate", "magnesium ascorbate", "magnesium phosphate pentahydrate", "magnesium glycinate dihydrate", "magnesium threonate", "magnesium L-threonate", "magnesium chloride", "magnesium gluconate", "magnesium lactate", "magnesium hydroxide", "magnesium sulfate", "magnesium taurate", "magnesium orotate"],
+      "label_phrases": ["providing elemental magnesium", "TOTAL ELEMENTAL MAGNESIUM", "total elemental magnesium"],
+      "common_ocr_corrections": ["elemice", "manee", "in itsp magnesium elemental"],
+      "source": "SuppliScan form quality seed and debug corpus; NIH ODS Magnesium fact sheet"
+    },
+    {
+      "canonical": "Zinc",
+      "category": "mineral",
+      "aliases": ["Zn", "Zinc"],
+      "forms": ["zinc citrate", "zinc picolinate", "zinc glycinate", "zinc bisglycinate", "zinc oxide", "zinc sulfate", "zinc acetate", "zinc gluconate", "zinc monomethionine", "zinc amino acid chelate"],
+      "label_phrases": ["equiv. zinc", "Equivalent to zinc", "as amino acid chelate"],
+      "common_ocr_corrections": ["zinc", "Zine"],
+      "source": "SuppliScan aliases/form quality seed and debug corpus; NIH ODS Zinc fact sheet"
+    },
+    {
+      "canonical": "Iron",
+      "category": "mineral",
+      "aliases": ["Fe", "Iron", "Ferrous", "Ferrochel"],
+      "forms": ["iron glycinate", "iron bisglycinate", "iron (II) glycinate", "ferrous bisglycinate", "ferrous fumarate", "ferrous sulfate", "ferrous gluconate", "ferric citrate", "ferric sulfate", "carbonyl iron", "iron polymaltose"],
+      "label_phrases": ["equiv. iron", "not for the treatment of iron deficiency"],
+      "common_ocr_corrections": ["Ferrochel", "Iron II glycinate"],
+      "source": "SuppliScan aliases/nrv seed and debug corpus; NIH ODS Iron fact sheet"
+    },
+    {
+      "canonical": "Calcium",
+      "category": "mineral",
+      "aliases": ["Ca", "Calcium"],
+      "forms": ["calcium carbonate", "calcium citrate", "calcium phosphate", "calcium gluconate", "calcium lactate", "calcium glycinate", "calcium ascorbate", "calcium pantothenate", "calcium hydroxyapatite", "microcrystalline hydroxyapatite"],
+      "label_phrases": ["assists calcium absorption", "elemental calcium"],
+      "common_ocr_corrections": ["Calcium"],
+      "source": "SuppliScan aliases/nrv seed; NIH ODS Calcium fact sheet"
+    },
+    {
+      "canonical": "Selenium",
+      "category": "mineral",
+      "aliases": ["Se", "Selenium"],
+      "forms": ["selenomethionine", "l-selenomethionine", "sodium selenite", "sodium selenate", "selenium-enriched yeast", "selenium yeast", "selenium glycinate", "methylselenocysteine"],
+      "label_phrases": ["as selenomethionine"],
+      "common_ocr_corrections": ["Selenomethionine"],
+      "source": "SuppliScan aliases/nrv seed; NIH ODS Selenium fact sheet"
+    },
+    {
+      "canonical": "Copper",
+      "category": "mineral",
+      "aliases": ["Cu", "Copper"],
+      "forms": ["copper glycinate", "copper bisglycinate", "copper gluconate", "copper citrate", "cupric sulfate", "cupric sulfate monohydrate", "copper sulfate"],
+      "label_phrases": ["Equivalent to copper"],
+      "common_ocr_corrections": ["Cupric sulfate"],
+      "source": "SuppliScan aliases/nrv seed and debug corpus"
+    },
+    {
+      "canonical": "Choline",
+      "category": "other",
+      "aliases": ["Choline", "Choline Bitartrate", "Phosphatidylcholine", "Lecithin", "Citicoline", "CDP-Choline", "Alpha-GPC", "Alpha GPC", "Choline Alfoscerate", "Glycerophosphocholine"],
+      "forms": ["choline bitartrate", "choline citrate", "phosphatidylcholine", "lecithin", "citicoline", "cdp-choline", "alpha-gpc", "alpha gpc", "choline alfoscerate", "glycerophosphocholine"],
+      "label_phrases": ["equiv. choline", "provides choline", "as phosphatidylcholine"],
+      "common_ocr_corrections": ["Choline", "Citicoline", "Alpha GPC"],
+      "source": "SuppliScan nrv seed; NIH ODS Choline fact sheet"
+    },
+    {
+      "canonical": "Phosphorus",
+      "category": "mineral",
+      "aliases": ["P", "Phosphorus", "Phosphorous", "Phosphate", "Phosphates"],
+      "forms": ["calcium phosphate", "dicalcium phosphate", "tricalcium phosphate", "potassium phosphate", "sodium phosphate", "magnesium phosphate"],
+      "label_phrases": ["equiv. phosphorus", "as phosphate", "phosphorus as phosphate"],
+      "common_ocr_corrections": ["Phosphorous", "Phosphate"],
+      "source": "SuppliScan nrv seed; NIH ODS vitamin/mineral reference"
+    },
+    {
+      "canonical": "Iodine",
+      "category": "mineral",
+      "aliases": ["I", "Iodine", "Iodide", "Potassium Iodide", "Sodium Iodide", "Kelp Iodine", "Kelp"],
+      "forms": ["potassium iodide", "sodium iodide", "kelp", "kelp powder", "kelp extract", "iodine from kelp"],
+      "label_phrases": ["equiv. iodine", "as potassium iodide", "from kelp"],
+      "common_ocr_corrections": ["Iodine", "lodine", "lodide"],
+      "source": "SuppliScan nrv seed; NIH ODS Iodine fact sheet"
+    },
+    {
+      "canonical": "Molybdenum",
+      "category": "mineral",
+      "aliases": ["Mo", "Molybdenum", "Molybdate", "Sodium Molybdate", "Ammonium Molybdate"],
+      "forms": ["sodium molybdate", "ammonium molybdate", "molybdenum amino acid chelate", "molybdenum glycinate"],
+      "label_phrases": ["equiv. molybdenum", "as sodium molybdate"],
+      "common_ocr_corrections": ["Molybdenum", "Molybdate"],
+      "source": "SuppliScan nrv seed; NIH ODS vitamin/mineral reference"
+    },
+    {
+      "canonical": "Chromium",
+      "category": "mineral",
+      "aliases": ["Cr", "Chromium", "Chromium Picolinate", "Chromium Nicotinate", "Chromium Polynicotinate", "Chromium Chloride", "Chromium Histidinate", "GTF Chromium"],
+      "forms": ["chromium picolinate", "chromium nicotinate", "chromium polynicotinate", "chromium chloride", "chromium histidinate", "chromium amino acid chelate", "high-chromium yeast", "gtf chromium"],
+      "label_phrases": ["equiv. chromium", "glucose tolerance factor", "GTF chromium"],
+      "common_ocr_corrections": ["Chromium", "Chronium"],
+      "source": "SuppliScan nrv seed; NIH ODS Chromium fact sheet"
+    },
+    {
+      "canonical": "Potassium",
+      "category": "mineral",
+      "aliases": ["K", "Potassium", "Potassium Citrate", "Potassium Gluconate", "Potassium Chloride", "Potassium Iodide"],
+      "forms": ["potassium citrate", "potassium gluconate", "potassium chloride", "potassium phosphate", "potassium bicarbonate", "potassium iodide"],
+      "label_phrases": ["equiv. potassium", "as potassium citrate", "as potassium chloride"],
+      "common_ocr_corrections": ["Potassium"],
+      "source": "SuppliScan nrv seed; NIH ODS vitamin/mineral reference"
+    },
+    {
+      "canonical": "Taurine",
+      "category": "amino_acid",
+      "aliases": ["L-Taurine", "Taurine"],
+      "forms": ["taurine", "l-taurine"],
+      "label_phrases": ["Taurine 1000mg"],
+      "common_ocr_corrections": ["Taurine"],
+      "source": "Debug corpus"
+    },
+    {
+      "canonical": "N-Acetyl Cysteine",
+      "category": "amino_acid",
+      "aliases": ["NAC", "N-Acetylcysteine", "N-Acetyl-L-Cysteine", "Acetyl-L-Cysteine"],
+      "forms": ["n-acetyl cysteine", "n-acetyl-l-cysteine"],
+      "label_phrases": ["provides NAC", "provides N-Acetyl-Cysteine"],
+      "common_ocr_corrections": ["Acetyl Cysteine"],
+      "source": "SuppliScan aliases seed"
+    },
+    {
+      "canonical": "Citrus Bioflavonoids",
+      "category": "bioflavonoid",
+      "aliases": ["Citrus Bioflavonoids", "Citrus Bioflavonoids Extract", "Citrus Bioflavonoid Extract", "Bioflavonoids"],
+      "forms": ["citrus bioflavonoids extract", "bioflavonoids extract"],
+      "label_phrases": ["Citrus bioflavonoids extract"],
+      "common_ocr_corrections": ["bioflavonoids"],
+      "source": "Debug corpus"
+    },
+    {
+      "canonical": "Quercetin",
+      "category": "bioflavonoid",
+      "aliases": ["Quercetin", "Quercetin Dihydrate"],
+      "forms": ["quercetin dihydrate"],
+      "label_phrases": ["Quercetin dihydrate"],
+      "common_ocr_corrections": ["Quercetin"],
+      "source": "Debug corpus"
+    },
+    {
+      "canonical": "Rutin",
+      "category": "bioflavonoid",
+      "aliases": ["Rutin", "Rutoside", "Rutoside (rutin)"],
+      "forms": ["rutin", "rutoside"],
+      "label_phrases": ["Rutoside (rutin)"],
+      "common_ocr_corrections": ["Rutoside"],
+      "source": "Debug corpus"
+    },
+    {
+      "canonical": "Hesperidin",
+      "category": "bioflavonoid",
+      "aliases": ["Hesperidin"],
+      "forms": ["hesperidin"],
+      "label_phrases": ["Hesperidin"],
+      "common_ocr_corrections": ["Hesperidin"],
+      "source": "Debug corpus"
+    },
+    {
+      "canonical": "Astaxanthin",
+      "category": "other",
+      "aliases": ["Astaxanthin", "Haematococcus pluvialis Astaxanthin"],
+      "forms": ["astaxanthin esters", "haematococcus pluvialis extract"],
+      "label_phrases": ["equiv. to Astaxanthin", "Haematococcus pluvialis Astaxanthin esters"],
+      "common_ocr_corrections": ["Hhaematococcus", "Astaxanthin"],
+      "source": "Debug corpus"
+    },
+    {
+      "canonical": "Lactobacillus",
+      "category": "probiotic",
+      "aliases": ["Lactobacillus", "L."],
+      "forms": ["rhamnosus", "paracasei", "casei", "acidophilus", "plantarum", "brevis"],
+      "label_phrases": ["billion CFU", "million CFU", "Lactobacillus rhamnosus GG", "Lactobacillus brevis Lbr-35"],
+      "common_ocr_corrections": ["ramnosus", "rhamnosus"],
+      "source": "Debug corpus and parser probiotic rules"
+    },
+    {
+      "canonical": "Bifidobacterium",
+      "category": "probiotic",
+      "aliases": ["Bifidobacterium", "B."],
+      "forms": ["lactis", "longum", "animalis spp. lactis"],
+      "label_phrases": ["Bifidobacterium lactis BL-04", "Bifidobacterium lactis HN019", "Bifidobacterium lactis Bi-07"],
+      "common_ocr_corrections": ["Bifidobacterium"],
+      "source": "Debug corpus and parser probiotic rules"
+    },
+    {
+      "canonical": "Malus domestica",
+      "category": "botanical",
+      "aliases": ["Apple", "Malus domestica"],
+      "forms": ["dry fruit extract", "dried fruit extract"],
+      "label_phrases": ["equivalent to dry fruit", "Malus domestica (apple)"],
+      "common_ocr_corrections": ["Malus domestica"],
+      "source": "Debug corpus"
+    },
+    {
+      "canonical": "Panicum miliaceum",
+      "category": "botanical",
+      "aliases": ["Millet", "Panicum miliaceum"],
+      "forms": ["dried seed extract", "dry seed extract"],
+      "label_phrases": ["Panicum miliaceum (millet)", "equivalent to dry seed"],
+      "common_ocr_corrections": ["Panicum miliaceum"],
+      "source": "Debug corpus"
+    },
+    {
+      "canonical": "Equisetum arvense",
+      "category": "botanical",
+      "aliases": ["Horsetail", "Equisetum arvense"],
+      "forms": ["dried stem extract", "dry stem extract"],
+      "label_phrases": ["standardised to contain silicon", "Equisetum arvense (horsetail)"],
+      "common_ocr_corrections": ["Equisetum"],
+      "source": "Debug corpus"
+    }
+  ]
+}

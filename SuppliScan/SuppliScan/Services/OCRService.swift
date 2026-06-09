@@ -16,15 +16,30 @@ nonisolated protocol OCRTextRecognizing: Sendable {
 
 /// Runs Vision text recognition off the caller actor.
 nonisolated struct VisionTextRecognizer: OCRTextRecognizing {
+    private let customWords: [String]
+    private let usesLanguageCorrection: Bool
+    private let recognitionRevision: Int
+
+    init(
+        customWords: [String] = Self.defaultCustomWords(),
+        usesLanguageCorrection: Bool = true,
+        recognitionRevision: Int = VNRecognizeTextRequestRevision3
+    ) {
+        self.customWords = customWords
+        self.usesLanguageCorrection = usesLanguageCorrection
+        self.recognitionRevision = recognitionRevision
+    }
+
     @concurrent
     func recognizedLines(in image: CGImage) async throws -> [OCRRecognizedLine] {
         try Task.checkCancellation()
 
         let request = VNRecognizeTextRequest()
         request.recognitionLevel = .accurate
+        request.revision = recognitionRevision
         request.recognitionLanguages = ["en-US"]
-        request.usesLanguageCorrection = false
-        request.customWords = Self.supplementVocabulary
+        request.usesLanguageCorrection = usesLanguageCorrection
+        request.customWords = customWords
         request.minimumTextHeight = 0.015
 
         let handler = VNImageRequestHandler(cgImage: image, options: [:])
@@ -63,6 +78,11 @@ nonisolated struct VisionTextRecognizer: OCRTextRecognizing {
         } ?? []
     }
 
+    private static func defaultCustomWords() -> [String] {
+        let lexiconWords = (try? NutritionLexicon.load().ocrCustomWords) ?? []
+        return Array(Set(supplementVocabulary + lexiconWords)).sorted()
+    }
+
     private static let supplementVocabulary: [String] = [
         "Ascorbic", "ascorbic", "Bioflavonoids", "bioflavonoids",
         "Bifidobacterium", "Lactobacillus", "Lactococcus",
@@ -86,7 +106,7 @@ nonisolated struct OCRService: Sendable {
 
     init(
         recognizer: any OCRTextRecognizing = VisionTextRecognizer(),
-        maxImageDimension: Int = 2_000
+        maxImageDimension: Int = 3_000
     ) {
         self.recognizer = recognizer
         self.maxImageDimension = maxImageDimension
@@ -103,8 +123,16 @@ nonisolated struct OCRService: Sendable {
         let lines = try await recognizer.recognizedLines(in: image)
         let result = OCRResult(lines: lines)
 
-        guard !result.rawText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+        guard !result.allRecognizedText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             throw AppError.ocrNoTextFound
+        }
+
+        guard !result.rawText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw AppError.ocrLowConfidence(recognisedText: result.allRecognizedText)
+        }
+
+        guard result.hasSupplementLabelSignals else {
+            throw AppError.ocrNoSupplementLabelFound
         }
 
         return result

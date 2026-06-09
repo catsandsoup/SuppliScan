@@ -1,0 +1,366 @@
+{
+  "capturedAt" : "2026-06-09T21:16:19Z",
+  "mergedRows" : [
+    {
+      "confidence" : 0.3,
+      "mergedFromCount" : 1,
+      "text" : "Aracted by your hoait prot2 yonal. - Tako 1 capsule daily, or as"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "amin Cto support the absorption of diletary iron."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Thiamine hydrochloride Iron (II) glycinate (bisglycinate) (Ferrochel\") equiv. iron Each capsule contains: equiv. Thiamine (vitamin B1) 10mg 12.7mg 24mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Ribofiavin sodium phosphat equiv. Ribofiavin (vitamin B2) 10mg 14mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Pyridoxal 5-phosphate monohydrate equiv. Pyridoxine (vitamin B6) 10mg 16mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Levomefolate glucosamine (Quatrefolic®) ..."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "equiv. Levomefolic acid (5-MTHF) 200 micrograms"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : ".... 376 micrograms"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Mecobalamin (co-methylcobalamin)(vitamin B12) .... 200 micrograms Calcium ascorbate dihydrat equiv. ascorbic acid (vitamin C) 250mg 304.3mg"
+    },
+    {
+      "confidence" : 0.3,
+      "mergedFromCount" : 1,
+      "text" : "Pactoe or anitia aiours, avours or yreservates, animal products, gluten,"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "aclose or drucidi"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "ot for the treatment of iron deficiency conditions. Vitamin and miner:"
+    },
+    {
+      "confidence" : 0.5,
+      "mergedFromCount" : 1,
+      "text" : "®g Ferrochel Faemorp rattenorho Gubeidiaries."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "ipplements should not replace a balanced die"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "(B) 260711 EXP 09 \/ 2"
+    }
+  ],
+  "parserDecisions" : [
+    {
+      "amount" : 2,
+      "decision" : "nutrient",
+      "extractedName" : "Aracted By Your Hoait Prot",
+      "rawRow" : "Aracted by your hoait prot2 yonal. - Tako 1 capsule daily, or as",
+      "reason" : "amount match accepted",
+      "unit" : "unknown"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "amin Cto support the absorption of diletary iron.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Thiamine hydrochloride Iron (II) glycinate (bisglycinate) (Ferrochel\") equiv. iron Each capsule contains: equiv. Thiamine (vitamin B1) 10mg 12.7mg 24mg",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "amount" : 10,
+      "decision" : "nutrient",
+      "extractedName" : "Ribofiavin",
+      "rawRow" : "Ribofiavin sodium phosphat equiv. Ribofiavin (vitamin B2) 10mg 14mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 10,
+      "decision" : "nutrient",
+      "extractedName" : "Pyridoxine",
+      "rawRow" : "Pyridoxal 5-phosphate monohydrate equiv. Pyridoxine (vitamin B6) 10mg 16mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 200,
+      "decision" : "nutrient",
+      "extractedName" : "Levomefolate Glucosamine Equiv. Levomefolic Acid (5-mthf)",
+      "rawRow" : "Levomefolate glucosamine (Quatrefolic) equiv. Levomefolic acid (5-MTHF) 200 micrograms",
+      "reason" : "amount match accepted",
+      "unit" : "unknown"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "376 micrograms",
+      "reason" : "name rejected by gatekeeping"
+    },
+    {
+      "amount" : 250,
+      "decision" : "nutrient",
+      "extractedName" : "Ascorbic Acid",
+      "rawRow" : "Mecobalamin (co-methylcobalamin)(vitamin B12) 200 micrograms Calcium ascorbate dihydrat equiv. ascorbic acid (vitamin C) 250mg 304.3mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Pactoe or anitia aiours, avours or yreservates, animal products, gluten,",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "aclose or drucidi",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "ot for the treatment of iron deficiency conditions. Vitamin and miner:",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "g Ferrochel Faemorp rattenorho Gubeidiaries.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "ipplements should not replace a balanced die",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "(B) 260711 EXP 09 \/ 2",
+      "reason" : "matches non-ingredient skip rule"
+    }
+  ],
+  "rawObservations" : [
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.017674418449401874,
+        "minX" : 0.3120155079891897,
+        "minY" : 0.6175000001093878,
+        "width" : 0.2693798421223958
+      },
+      "confidence" : 0.3,
+      "text" : "Aracted by your hoait prot2 yonal. - Tako 1 capsule daily, or as"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.009000000000000008,
+        "minX" : 0.4011627998096081,
+        "minY" : 0.6350000002217847,
+        "width" : 0.19186045328776036
+      },
+      "confidence" : 1,
+      "text" : "amin Cto support the absorption of diletary iron."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03343023227468689,
+        "minX" : 0.31201550688943386,
+        "minY" : 0.5857558142360006,
+        "width" : 0.2906976717608785
+      },
+      "confidence" : 1,
+      "text" : "Thiamine hydrochloride Iron (II) glycinate (bisglycinate) (Ferrochel\") equiv. iron Each capsule contains: equiv. Thiamine (vitamin B1) 10mg 12.7mg 24mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.02034883739320026,
+        "minX" : 0.3100775257186061,
+        "minY" : 0.5668604650243301,
+        "width" : 0.294573636588037
+      },
+      "confidence" : 1,
+      "text" : "Ribofiavin sodium phosphat equiv. Ribofiavin (vitamin B2) 10mg 14mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.01903488357426497,
+        "minX" : 0.31007752538362243,
+        "minY" : 0.5479651164838746,
+        "width" : 0.29457363688614724
+      },
+      "confidence" : 1,
+      "text" : "Pyridoxal 5-phosphate monohydrate equiv. Pyridoxine (vitamin B6) 10mg 16mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010209302425384426,
+        "minX" : 0.3081395394039182,
+        "minY" : 0.5377906977762681,
+        "width" : 0.18604650878906254
+      },
+      "confidence" : 1,
+      "text" : "Levomefolate glucosamine (Quatrefolic®) ..."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010499999999999954,
+        "minX" : 0.3236434165524315,
+        "minY" : 0.5275000000948529,
+        "width" : 0.21511627197265631
+      },
+      "confidence" : 1,
+      "text" : "equiv. Levomefolic acid (5-MTHF) 200 micrograms"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.0102093019485473,
+        "minX" : 0.5174418626383462,
+        "minY" : 0.5377906978247177,
+        "width" : 0.08720929972330727
+      },
+      "confidence" : 1,
+      "text" : ".... 376 micrograms"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.027616279119405895,
+        "minX" : 0.3100775220915091,
+        "minY" : 0.4999999999565006,
+        "width" : 0.29263566080729164
+      },
+      "confidence" : 1,
+      "text" : "Mecobalamin (co-methylcobalamin)(vitamin B12) .... 200 micrograms Calcium ascorbate dihydrat equiv. ascorbic acid (vitamin C) 250mg 304.3mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.016011627674102802,
+        "minX" : 0.3158914789974715,
+        "minY" : 0.46800000031074707,
+        "width" : 0.27713177490234375
+      },
+      "confidence" : 0.3,
+      "text" : "Pactoe or anitia aiours, avours or yreservates, animal products, gluten,"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.0030697673559189065,
+        "minX" : 0.3197674423296318,
+        "minY" : 0.4709302326995273,
+        "width" : 0.06395348103841147
+      },
+      "confidence" : 1,
+      "text" : "aclose or drucidi"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.007267441749572723,
+        "minX" : 0.3197674431881613,
+        "minY" : 0.4898255813781206,
+        "width" : 0.27519378662109373
+      },
+      "confidence" : 1,
+      "text" : "ot for the treatment of iron deficiency conditions. Vitamin and miner:"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010197674274444624,
+        "minX" : 0.3197674478873949,
+        "minY" : 0.4593023256832448,
+        "width" : 0.24806201171875003
+      },
+      "confidence" : 0.5,
+      "text" : "®g Ferrochel Faemorp rattenorho Gubeidiaries."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.007500000000000062,
+        "minX" : 0.32170543273704977,
+        "minY" : 0.4825000001003975,
+        "width" : 0.18410852050781257
+      },
+      "confidence" : 1,
+      "text" : "ipplements should not replace a balanced die"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.0045000000000000595,
+        "minX" : 0.37015505039232766,
+        "minY" : 0.45050000006712976,
+        "width" : 0.1356589050292969
+      },
+      "confidence" : 1,
+      "text" : "(B) 260711 EXP 09 \/ 2"
+    }
+  ],
+  "rawText" : "Aracted by your hoait prot2 yonal. - Tako 1 capsule daily, or as\namin Cto support the absorption of diletary iron.\nThiamine hydrochloride Iron (II) glycinate (bisglycinate) (Ferrochel\") equiv. iron Each capsule contains: equiv. Thiamine (vitamin B1) 10mg 12.7mg 24mg\nRibofiavin sodium phosphat equiv. Ribofiavin (vitamin B2) 10mg 14mg\nPyridoxal 5-phosphate monohydrate equiv. Pyridoxine (vitamin B6) 10mg 16mg\nLevomefolate glucosamine (Quatrefolic®) ...\nequiv. Levomefolic acid (5-MTHF) 200 micrograms\n.... 376 micrograms\nMecobalamin (co-methylcobalamin)(vitamin B12) .... 200 micrograms Calcium ascorbate dihydrat equiv. ascorbic acid (vitamin C) 250mg 304.3mg\nPactoe or anitia aiours, avours or yreservates, animal products, gluten,\naclose or drucidi\not for the treatment of iron deficiency conditions. Vitamin and miner:\n®g Ferrochel Faemorp rattenorho Gubeidiaries.\nipplements should not replace a balanced die\n(B) 260711 EXP 09 \/ 2",
+  "scanID" : "13711382-F932-4D6F-B0A3-CE60B7B55486"
+}

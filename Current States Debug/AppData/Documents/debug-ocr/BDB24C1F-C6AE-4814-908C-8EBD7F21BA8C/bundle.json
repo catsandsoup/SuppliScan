@@ -1,0 +1,382 @@
+{
+  "capturedAt" : "2026-06-09T21:16:52Z",
+  "mergedRows" : [
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Each tablet contains:"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "oset Silybum marianum (St Mary's Thistle) ext. dry conc. stand... 300mg Herbal extract equivalent to dry: standardised to contain flavanolignans (calculated as silybin) 200mg derived from dry fruim m................................17159"
+    },
+    {
+      "confidence" : 0.825,
+      "mergedFromCount" : 1,
+      "text" : "Nutrients: Taurine Selenium (as selenomethionine) *......•.•... 500mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Contains no gluten, dairy products, lactose, yeast or"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "........... Ултку"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "This product contains selenium which is toxic in"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "artificial flavours."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "high doses. A daily dose of 150 micrograms for adults"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "of seleniumi rom dietary supplements should not"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "be exceede"
+    },
+    {
+      "confidence" : 0.3,
+      "mergedFromCount" : 1,
+      "text" : "TALETS"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "60"
+    },
+    {
+      "confidence" : 0.3,
+      "mergedFromCount" : 1,
+      "text" : "389.15705"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "S\/45 riderson Rd, Smeatun Gringe, 2567 Australa"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Healia Direction Pty Ltd"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Tel 074655 8711 www..sbotheslth.comau"
+    }
+  ],
+  "parserDecisions" : [
+    {
+      "decision" : "skipped",
+      "rawRow" : "Each tablet contains:",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "oset Silybum marianum (St Mary's Thistle) ext. dry conc. stand 300mg Herbal extract equivalent to dry: standardised to contain flavanolignans (calculated as silybin) 200mg derived from dry fruim m 17159",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "amount" : 500,
+      "decision" : "nutrient",
+      "extractedName" : "Nutrients Taurine Selenium * •.•",
+      "rawRow" : "Nutrients: Taurine Selenium (as selenomethionine) * •.• 500mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Contains no gluten, dairy products, lactose, yeast or",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Ултку",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "This product contains selenium which is toxic in",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "artificial flavours.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "high doses. A daily dose of 150 micrograms for adults",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "of seleniumi rom dietary supplements should not",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "be exceede",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "TALETS",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "60",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "389.15705",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "S\/45 riderson Rd, Smeatun Gringe, 2567 Australa",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Healia Direction Pty Ltd",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Tel 074655 8711 www..sbotheslth.comau",
+      "reason" : "matches non-ingredient skip rule"
+    }
+  ],
+  "rawObservations" : [
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487267,
+        "minX" : 0.39341085207946175,
+        "minY" : 0.5944767442336234,
+        "width" : 0.08139535013834637
+      },
+      "confidence" : 1,
+      "text" : "Each tablet contains:"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.0375638021104614,
+        "minX" : 0.3604651164646829,
+        "minY" : 0.5569361978956775,
+        "width" : 0.2503129876536066
+      },
+      "confidence" : 1,
+      "text" : "oset Silybum marianum (St Mary's Thistle) ext. dry conc. stand... 300mg Herbal extract equivalent to dry: standardised to contain flavanolignans (calculated as silybin) 200mg derived from dry fruim m................................17159"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.024732558021563045,
+        "minX" : 0.3953488379895114,
+        "minY" : 0.5305000001170315,
+        "width" : 0.217802593885904
+      },
+      "confidence" : 0.825,
+      "text" : "Nutrients: Taurine Selenium (as selenomethionine) *......•.•... 500mg"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.013104650974273713,
+        "minX" : 0.39728682610778,
+        "minY" : 0.5188953491065861,
+        "width" : 0.20736433919270836
+      },
+      "confidence" : 1,
+      "text" : "Contains no gluten, dairy products, lactose, yeast or"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.005813952922821164,
+        "minX" : 0.5600775235552172,
+        "minY" : 0.5348837213583568,
+        "width" : 0.05038759358723954
+      },
+      "confidence" : 1,
+      "text" : "........... Ултку"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.013174418449401926,
+        "minX" : 0.397286820572286,
+        "minY" : 0.4969999999827718,
+        "width" : 0.19573642985026046
+      },
+      "confidence" : 1,
+      "text" : "This product contains selenium which is toxic in"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.007499999999999951,
+        "minX" : 0.397286822381513,
+        "minY" : 0.5099999998996025,
+        "width" : 0.0658914693196615
+      },
+      "confidence" : 1,
+      "text" : "artificial flavours."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.01572971343994134,
+        "minX" : 0.39892541084798844,
+        "minY" : 0.48621778810488603,
+        "width" : 0.21002952067057296
+      },
+      "confidence" : 1,
+      "text" : "high doses. A daily dose of 150 micrograms for adults"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.013499999999999956,
+        "minX" : 0.3992248020504028,
+        "minY" : 0.47800000015312016,
+        "width" : 0.19961240641276046
+      },
+      "confidence" : 1,
+      "text" : "of seleniumi rom dietary supplements should not"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487267,
+        "minX" : 0.401162790959132,
+        "minY" : 0.4709302326610123,
+        "width" : 0.044573644002278645
+      },
+      "confidence" : 1,
+      "text" : "be exceede"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.013081395149231012,
+        "minX" : 0.36821705464423127,
+        "minY" : 0.4287790697037275,
+        "width" : 0.02131782913208008
+      },
+      "confidence" : 0.3,
+      "text" : "TALETS"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.017441860198974646,
+        "minX" : 0.372093023400942,
+        "minY" : 0.43895348865051276,
+        "width" : 0.02325581359863277
+      },
+      "confidence" : 1,
+      "text" : "60"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.011627906799316357,
+        "minX" : 0.3682170540183686,
+        "minY" : 0.40697674432320996,
+        "width" : 0.027131782531738258
+      },
+      "confidence" : 0.3,
+      "text" : "389.15705"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.02734268188476563,
+        "minX" : 0.41979023677118266,
+        "minY" : 0.4048991105755986,
+        "width" : 0.2115595092773438
+      },
+      "confidence" : 1,
+      "text" : "S\/45 riderson Rd, Smeatun Gringe, 2567 Australa"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.011686046600341782,
+        "minX" : 0.4205426373247486,
+        "minY" : 0.4199999998952467,
+        "width" : 0.11434108479817706
+      },
+      "confidence" : 1,
+      "text" : "Healia Direction Pty Ltd"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.01910465049743648,
+        "minX" : 0.42054264460846646,
+        "minY" : 0.3995000002805489,
+        "width" : 0.20155037434895828
+      },
+      "confidence" : 1,
+      "text" : "Tel 074655 8711 www..sbotheslth.comau"
+    }
+  ],
+  "rawText" : "Each tablet contains:\noset Silybum marianum (St Mary's Thistle) ext. dry conc. stand... 300mg Herbal extract equivalent to dry: standardised to contain flavanolignans (calculated as silybin) 200mg derived from dry fruim m................................17159\nNutrients: Taurine Selenium (as selenomethionine) *......•.•... 500mg\nContains no gluten, dairy products, lactose, yeast or\n........... Ултку\nThis product contains selenium which is toxic in\nartificial flavours.\nhigh doses. A daily dose of 150 micrograms for adults\nof seleniumi rom dietary supplements should not\nbe exceede\nTALETS\n60\n389.15705\nS\/45 riderson Rd, Smeatun Gringe, 2567 Australa\nHealia Direction Pty Ltd\nTel 074655 8711 www..sbotheslth.comau",
+  "scanID" : "BDB24C1F-C6AE-4814-908C-8EBD7F21BA8C"
+}

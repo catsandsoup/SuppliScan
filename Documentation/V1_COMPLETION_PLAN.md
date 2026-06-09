@@ -6,6 +6,67 @@ Last updated: 2026-06-09
 
 ## Session Progress Log
 
+### 2026-06-09 — HIG Audit + Device Bug Fixes + UI Improvements
+
+**What was done:**
+
+**1. Analysis tab de-duplication (architecture fix)**
+
+`AnalysisRootView` was reading from `AnalysisStore.currentAnalysis` (transient in-flight state), making the Analysis tab display identical content to the AnalysisView pushed in the Scan tab's NavigationStack. Fixed by:
+- `AnalysisRootView`: now reads from `@Query(sort: \ScanRecord.createdAt, order: .reverse)` — shows last **persisted** ScanRecord, independent of the in-flight scan flow
+- `ReviewView`: removed `AnalysisStore` environment; removed `analysisStore.currentAnalysis = analysis` line
+- `RootTabView`: removed `@State private var analysisStore = AnalysisStore()` and `.environment(analysisStore)`
+- `AnalysisStore.swift`: left in place but now unreferenced (dead code, safe to delete later)
+- Architecture: Scan tab = in-workflow result (push nav with back button). Analysis tab = last saved result (always from SwiftData).
+
+**2. Full HIG audit of the UI (17 issues found, 2 fixed this session)**
+
+All 8 HIG principles audited against every View and Component file. Full audit with file:line references logged below. Two highest-priority items implemented:
+
+**Fix #6 — FilterChip → `Picker(.segmented)` in AnalysisView:**
+- The internal tab bar (Summary / Nutrients / Details / Interactions) used `FilterChip` capsule chips in a horizontal ScrollView. FilterChip communicates filtering, not view switching — wrong affordance.
+- Replaced with `Picker("Analysis Section", selection: $activeTab) { ... }.pickerStyle(.segmented)` — standard iOS control for fixed-option view switching.
+- Added `.animation(.easeInOut(duration: 0.22), value: activeTab)` to the paged TabView.
+- Added `LabelAnalysis.displayTitle` computed property (`productName.isEmpty ? "Analysis" : productName`) — removes three inline ternary duplications.
+- Product header: removed redundant product name `Text` (nav bar already shows it via `navigationTitle`); header now shows serving size + standard + demographic only.
+
+**Fix #17 — Product name collection in ReviewView:**
+- History and Analysis tab were showing "Supplement" / "Unnamed Product" for every entry because `ReportService.generateReport(productName:)` was always passed `nil`.
+- `ReviewViewModel`: added `var productName: String = ""`; changed `AnalyseAction` typealias to include `String` parameter; `requestAnalysis()` captures `productName` at tap time and passes it through.
+- `ReviewView`: added `productNameField` (TextField with secondarySystemBackground card) as first item in scroll content, above the recognised banner and facts card. Placeholder: "e.g. Magnesium Glycinate 400mg".
+- Persist closure simplified: `analysis.productName` is now set correctly upstream, so the hardcoded `"Supplement"` fallback is removed.
+
+**3. ScanView reset fix — "Label detected" badge was permanent**
+
+`ScanViewModel.cancel()` only cancelled the OCR task but left `loadingState = .loaded`, `capturedImageData`, `rawText`, and `parseResult` intact. When ScanView re-appeared after popping back from ReviewView/AnalysisView:
+- `scanSucceeded` remained `true` → "Label detected" badge shown instead of viewfinder
+- Stale `capturedImageData` could retrigger navigation
+- Camera stopped (`onDisappear` calls `camera.stop()`) but viewfinder never re-appeared
+
+Fix: added `ScanViewModel.reset()` which clears all stale state (`loadingState = .idle`, `capturedImageData = nil`, `rawText = ""`, `parseResult`, `reviewWarning`, `isShowingError`, `pendingDestination = nil`). `ScanView.onDisappear` now calls `reset()` instead of `cancel()`.
+
+**4. AppDependencies crash hardening (carried from prior context)**
+
+Both `ScanView` and `ReviewView` declare `@Environment(AppDependencies.self) private var dependencies: AppDependencies?` (optional) with `guard let dependencies` checks and print diagnostics. Build confirmed green.
+
+---
+
+**Open HIG issues (ranked, not yet implemented):**
+
+| # | Issue | Severity | File:Line |
+|---|---|---|---|
+| 2 | "Dose Adequacy" in Summary card shows first nutrient's RDI% only — misleading | High | `ReportSummaryCardView.swift:44` |
+| 7 | NutrientAnalysisRowView tappable rows have no chevron (inconsistent with all other rows) | High | `NutrientAnalysisRowView.swift` |
+| 14 | Row progress bar caps at 100%, detail bar uses 0–150% scale — same data, different scale | High | `NutrientAnalysisRowView.swift:94` |
+| 3 | No "Scan Another" CTA from AnalysisView — user must navigate back manually | Medium | `AnalysisView.swift` |
+| 9 | 52pt RDI% uses fixed font size — won't scale with Dynamic Type | Medium | `NutrientDetailView.swift:32` |
+| 10 | FilterChip missing `.accessibilityAddTraits(.isSelected)` when selected | Medium | `FilterChip.swift` |
+| 12 | Details tab visible even when empty (no herbals, no probiotics, no form quality) | Medium | `AnalysisView.swift` |
+| 5 | Settings "Reference Data" label says "NHMRC 2023" — actual source is NHMRC 2006 | Low | `SettingsView.swift:43` |
+| 13 | "Could Not Be Analysed" in Details tab duplicates ReviewView unresolved content | Low | `AnalysisView.swift:272` |
+
+---
+
 ### 2026-06-09 — OCR Audit and Parser Hardening
 
 **What was done (2 sessions):**

@@ -14,6 +14,7 @@ nonisolated enum AppError: LocalizedError, Sendable {
     // MARK: OCR
     case ocrNoTextFound
     case ocrLowConfidence(recognisedText: String)
+    case ocrNoSupplementLabelFound
     case ocrCameraPermissionDenied
 
     // MARK: Parser
@@ -56,6 +57,8 @@ nonisolated extension AppError {
             return "No text found on label. Try better lighting or hold the camera steadier."
         case .ocrLowConfidence:
             return "Some text was hard to read. Please review and correct the extracted nutrients."
+        case .ocrNoSupplementLabelFound:
+            return "No supplement facts panel found. Frame the ingredients or nutrition panel and scan again."
         case .ocrCameraPermissionDenied:
             return "Camera access is needed to scan labels. Enable it in Settings."
         case .parserNoNutrientsExtracted:

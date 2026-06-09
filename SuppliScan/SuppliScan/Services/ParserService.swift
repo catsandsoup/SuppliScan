@@ -27,6 +27,12 @@ nonisolated struct ParserService: Sendable {
             }
         }
 
+        if let lexicon = try? NutritionLexicon.load(bundle: bundle) {
+            for (variant, canonical) in lexicon.aliasesByVariant {
+                aliases[variant] = canonical
+            }
+        }
+
         return ParserService(aliasesByVariant: aliases)
     }
 
@@ -264,6 +270,7 @@ nonisolated struct ParserService: Sendable {
             "Calcium", "Magnesium", "Zinc", "Iron", "Copper", "Sodium", "Potassium",
             "Riboflavin", "Thiamine", "Pyridoxal", "Levomefolate", "Mecobalamin",
             "Coenzyme", "Alpha", "Ferrous", "Ferric", "Vitamin", "Chromium",
+            "Citrus",
         ]
         guard !knownNutrientPrefixes.contains(genus) else { return nil }
 
@@ -337,10 +344,11 @@ nonisolated struct ParserService: Sendable {
         // "standardised/standardized to [contain] silicon 14mg"
         if let match = firstMatch(
             in: lower,
-            pattern: #"standardi[sz]ed\s+to\s+(?:contain\s+)?([a-z][a-z\s-]*?)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|g)\b"#
+            pattern: #"standardi[sz]ed\s+to\s+(?:contain\s+)?([a-z][a-z\s-]*?)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b"#
         ), match.captures.count >= 3 {
             let compound = match.captures[0].trimmingCharacters(in: .whitespacesAndNewlines)
-            if let amount = Double(match.captures[1]), let unit = NutrientUnit(rawValue: match.captures[2]) {
+            if let amount = Double(match.captures[1]) {
+                let unit = unit(from: match.captures[2])
                 return HerbalStandardisation(compound: compound, calculatedAs: nil, amount: amount, unit: unit)
             }
         }
@@ -348,10 +356,11 @@ nonisolated struct ParserService: Sendable {
         // "calc. as silybin 140mg" / "calculated as silybin 140mg"
         if let match = firstMatch(
             in: lower,
-            pattern: #"calc(?:ulated)?\.?\s+as\s+([a-z][a-z\s-]*?)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|g)\b"#
+            pattern: #"calc(?:ulated)?\.?\s+as\s+([a-z][a-z\s-]*?)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b"#
         ), match.captures.count >= 3 {
             let compound = match.captures[0].trimmingCharacters(in: .whitespacesAndNewlines)
-            if let amount = Double(match.captures[1]), let unit = NutrientUnit(rawValue: match.captures[2]) {
+            if let amount = Double(match.captures[1]) {
+                let unit = unit(from: match.captures[2])
                 return HerbalStandardisation(compound: compound, calculatedAs: nil, amount: amount, unit: unit)
             }
         }
@@ -411,7 +420,7 @@ nonisolated struct ParserService: Sendable {
     private func compoundEquivalentEntry(from line: String) -> NutrientEntry? {
         if let match = firstMatch(
             in: line,
-            pattern: #"(?i)^(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\b\s*\(?\s*(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\b\)?"#
+            pattern: #"(?i)^(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b\s*\(?\s*(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b\)?"#
         ) {
             return makeCompoundEquivalentEntry(
                 compoundName: match.captures[0],
@@ -426,7 +435,7 @@ nonisolated struct ParserService: Sendable {
 
         if let match = firstMatch(
             in: line,
-            pattern: #"(?i)^(.+?)\s+(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\b"#
+            pattern: #"(?i)^(.+?)\s+(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b"#
         ) {
             return makeCompoundEquivalentEntry(
                 compoundName: match.captures[0],
@@ -443,7 +452,7 @@ nonisolated struct ParserService: Sendable {
         // e.g. "Magnesium amino acid chelate (providing elemental magnesium 350mg) 1750mg"
         if let match = firstMatch(
             in: line,
-            pattern: #"(?i)^(.+?)\s+\(\s*(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\b\s*\)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\b"#
+            pattern: #"(?i)^(.+?)\s+\(\s*(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b\s*\)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b"#
         ) {
             return makeCompoundEquivalentEntry(
                 compoundName: match.captures[0],
@@ -460,7 +469,7 @@ nonisolated struct ParserService: Sendable {
         // e.g. "(providing elemental magnesium 12.2mg) Magnesium glycinate dihydrate 104mg"
         if let match = firstMatch(
             in: line,
-            pattern: #"(?i)^\(\s*(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\s*\)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g)\b"#
+            pattern: #"(?i)^\(\s*(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\s*\)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b"#
         ) {
             return makeCompoundEquivalentEntry(
                 compoundName: match.captures[3],
@@ -477,7 +486,7 @@ nonisolated struct ParserService: Sendable {
         // e.g. "1 level scoop provides 1g N-Acetyl-Cysteine"
         if let match = firstMatch(
             in: line,
-            pattern: #"(?i)^(.+?)\s+provides\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|μg|µg|ug|g|iu)\b\s+(.+?)$"#
+            pattern: #"(?i)^(.+?)\s+provides\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g|iu)\b\s+(.+?)$"#
         ) {
             return makeCompoundEquivalentEntry(
                 compoundName: match.captures[0],
@@ -606,19 +615,19 @@ nonisolated struct ParserService: Sendable {
 
         if let match = firstMatch(
             in: normalized,
-            pattern: #"(?i)<\s*1\s*(mg|mcg|μg|µg|ug|g|iu)\b"#
+            pattern: #"(?i)<\s*1\s*(mg|mcg|micrograms?|μg|µg|ug|g|iu)\b"#
         ) {
             return AmountMatch(amount: 0.5, unit: unit(from: match.captures[0]), flags: [.subOneAmount], range: match.range)
         }
 
         if normalized.localizedCaseInsensitiveContains("trace"),
-           let match = firstMatch(in: normalized, pattern: #"(?i)\btrace\s*(mg|mcg|μg|µg|ug|g|iu)\b"#) {
+           let match = firstMatch(in: normalized, pattern: #"(?i)\btrace\s*(mg|mcg|micrograms?|μg|µg|ug|g|iu)\b"#) {
             return AmountMatch(amount: 0, unit: unit(from: match.captures[0]), flags: [.traceAmount], range: match.range)
         }
 
         if let match = firstMatch(
             in: normalized,
-            pattern: #"(?i)(\d+(?:[\.,]\d+)?)\s*[-–]\s*\d+(?:[\.,]\d+)?\s*(mg|mcg|μg|µg|ug|g|iu)\b"#
+            pattern: #"(?i)(\d+(?:[\.,]\d+)?)\s*[-–]\s*\d+(?:[\.,]\d+)?\s*(mg|mcg|micrograms?|μg|µg|ug|g|iu)\b"#
         ) {
             var flags: [ReviewFlag] = [.rangeAmount]
             let amount = decimalAmount(match.captures[0], flags: &flags)
@@ -627,7 +636,7 @@ nonisolated struct ParserService: Sendable {
 
         if let match = firstMatch(
             in: normalized,
-            pattern: #"(?i)(\d+(?:[\.,]\d+)?)\s*(mg\s+(?:ne|re|rae|dfe)|mcg|μg|µg|ug|mg|g|iu)\b"#
+            pattern: #"(?i)(\d+(?:[\.,]\d+)?)\s*(mg\s+(?:ne|re|rae|dfe)|mcg|micrograms?|μg|µg|ug|mg|g|iu)\b"#
         ) {
             var flags: [ReviewFlag] = []
             if line[match.range.upperBound...].localizedCaseInsensitiveContains("iu")
@@ -693,7 +702,7 @@ nonisolated struct ParserService: Sendable {
             .replacingOccurrences(of: " ", with: "")
 
         if normalized.hasPrefix("mg") { return .mg }
-        if normalized == "mcg" || normalized == "ug" { return .mcg }
+        if normalized == "mcg" || normalized == "ug" || normalized == "microgram" || normalized == "micrograms" { return .mcg }
         if normalized == "g" { return .g }
         if normalized == "iu" { return .iu }
         return .unknown

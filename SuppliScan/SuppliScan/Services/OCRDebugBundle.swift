@@ -37,6 +37,17 @@ struct OCRDebugMergedRow: Encodable {
     let mergedFromCount: Int
 }
 
+// MARK: - OCR quality
+
+struct OCRDebugQuality: Encodable {
+    let recognizedLineCount: Int
+    let parseReadyLineCount: Int
+    let rejectedLowConfidenceLineCount: Int
+    let averageConfidence: Float
+    let hasLowConfidenceText: Bool
+    let hasSupplementLabelSignals: Bool
+}
+
 // MARK: - Parser decision
 
 struct OCRDebugParserDecision: Encodable {
@@ -54,6 +65,8 @@ struct OCRDebugBundle: Encodable {
     let scanID: String
     let capturedAt: String  // ISO 8601
     let rawText: String
+    let allRecognizedText: String
+    let quality: OCRDebugQuality
     let rawObservations: [OCRDebugObservation]
     let mergedRows: [OCRDebugMergedRow]
     let parserDecisions: [OCRDebugParserDecision]

@@ -31,6 +31,13 @@
     { "canonical": "N-Acetyl Cysteine", "variants": ["NAC", "N-Acetylcysteine", "N-Acetyl-L-Cysteine"] },
     { "canonical": "Alpha Lipoic Acid", "variants": ["ALA", "Lipoic Acid", "Thioctic Acid", "R-Lipoic Acid"] },
     { "canonical": "5-HTP",       "variants": ["5-Hydroxytryptophan", "L-5-Hydroxytryptophan"] },
-    { "canonical": "Choline",     "variants": ["Choline Bitartrate", "CDP-Choline", "Alpha-GPC", "Citicoline", "Choline Citrate", "L-Alpha Glycerylphosphorylcholine"] }
+    { "canonical": "Choline",     "variants": ["Choline Bitartrate", "CDP-Choline", "Alpha-GPC", "Citicoline", "Choline Citrate", "L-Alpha Glycerylphosphorylcholine"] },
+    { "canonical": "Quercetin",   "variants": ["Quercetin Dihydrate", "Quercetin Phytosome"] },
+    { "canonical": "Rutin",       "variants": ["Rutoside", "Rutin Trihydrate", "Rutoside Trihydrate"] },
+    { "canonical": "Hesperidin",  "variants": ["Hesperidin Methyl Chalcone", "Hesperidin Complex"] },
+    { "canonical": "Citrus Bioflavonoids", "variants": ["Citrus Bioflavonoids Extract", "Citrus Bioflavonoid Extract", "Bioflavonoids", "Citrus Bioflavonoids"] },
+    { "canonical": "Taurine",     "variants": ["L-Taurine"] },
+    { "canonical": "Lutein",      "variants": ["FloraGLO Lutein"] },
+    { "canonical": "Lycopene",    "variants": ["Tomato Lycopene"] }
   ]
 }

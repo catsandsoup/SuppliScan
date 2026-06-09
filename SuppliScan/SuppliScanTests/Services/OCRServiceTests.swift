@@ -7,18 +7,37 @@ import Testing
 
 struct OCRServiceTests {
     @Test func returnsLowConfidenceMetadataForReview() async throws {
-        let service = OCRService(recognizer: StubRecognizer(lines: [
+        let result = OCRResult(lines: [
             OCRRecognizedLine(
                 text: "Vitamin D 1000IU",
                 confidence: 0.41,
                 region: OCRTextRegion(minX: 0, minY: 0.7, width: 0.8, height: 0.1)
             )
+        ])
+
+        #expect(result.rawText.isEmpty)
+        #expect(result.allRecognizedText == "Vitamin D 1000IU")
+        #expect(result.hasLowConfidenceText)
+        #expect(result.rejectedLines.count == 1)
+    }
+
+    @Test func throwsWhenOnlyLowConfidenceTextRemains() async throws {
+        let service = OCRService(recognizer: StubRecognizer(lines: [
+            OCRRecognizedLine(
+                text: "Aracted by your hoait prot2 yonal.",
+                confidence: 0.32,
+                region: OCRTextRegion(minX: 0.1, minY: 0.7, width: 0.8, height: 0.1)
+            )
         ]))
 
-        let result = try await service.recognizeText(in: try makeImage())
-
-        #expect(result.rawText == "Vitamin D 1000IU")
-        #expect(result.hasLowConfidenceText)
+        do {
+            _ = try await service.recognizeText(in: try makeImage())
+            Issue.record("Expected low-confidence OCR error")
+        } catch AppError.ocrLowConfidence(let recognisedText) {
+            #expect(recognisedText == "Aracted by your hoait prot2 yonal.")
+        } catch {
+            Issue.record("Unexpected error: \(error)")
+        }
     }
 
     @Test func throwsWhenNoTextIsFound() async throws {
@@ -60,6 +79,30 @@ struct OCRServiceTests {
             Vitamin C 500mg
             Magnesium 300mg
             """)
+    }
+
+    @Test func throwsWhenTextDoesNotLookLikeSupplementLabel() async throws {
+        let service = OCRService(recognizer: StubRecognizer(lines: [
+            OCRRecognizedLine(
+                text: "Clinically researched formula",
+                confidence: 0.96,
+                region: OCRTextRegion(minX: 0.1, minY: 0.7, width: 0.8, height: 0.1)
+            ),
+            OCRRecognizedLine(
+                text: "Recommended by practitioners",
+                confidence: 0.94,
+                region: OCRTextRegion(minX: 0.1, minY: 0.5, width: 0.8, height: 0.1)
+            )
+        ]))
+
+        do {
+            _ = try await service.recognizeText(in: try makeImage())
+            Issue.record("Expected non-label OCR error")
+        } catch AppError.ocrNoSupplementLabelFound {
+            #expect(true)
+        } catch {
+            Issue.record("Unexpected error: \(error)")
+        }
     }
 
     @Test func mergesAmountColumnFragmentsOnSameVisualRow() async throws {
@@ -106,6 +149,45 @@ struct OCRServiceTests {
         let result = try await service.recognizeText(in: try makeImage())
 
         #expect(result.rawText == "Lactobacillus rhamnosus GG 6 billion CFU")
+    }
+
+    @Test func splitsTwoIngredientPairsOnSameVisualRow() async throws {
+        let service = OCRService(recognizer: StubRecognizer(lines: [
+            OCRRecognizedLine(
+                text: "Supplement Facts",
+                confidence: 0.95,
+                region: OCRTextRegion(minX: 0.1, minY: 0.8, width: 0.4, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Magnesium ascorbate",
+                confidence: 0.92,
+                region: OCRTextRegion(minX: 0.08, minY: 0.5, width: 0.28, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "210mg",
+                confidence: 0.91,
+                region: OCRTextRegion(minX: 0.38, minY: 0.502, width: 0.09, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Magnesium glycinate dihydrate",
+                confidence: 0.90,
+                region: OCRTextRegion(minX: 0.55, minY: 0.501, width: 0.28, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "104mg",
+                confidence: 0.90,
+                region: OCRTextRegion(minX: 0.86, minY: 0.503, width: 0.08, height: 0.05)
+            )
+        ]))
+
+        let result = try await service.recognizeText(in: try makeImage())
+
+        #expect(result.rawText == """
+            Supplement Facts
+            Magnesium ascorbate 210mg
+            Magnesium glycinate dihydrate 104mg
+            """)
+        #expect(result.lines.filter { $0.sourceLineCount == 2 }.count == 2)
     }
 }
 

@@ -1,0 +1,356 @@
+{
+  "capturedAt" : "2026-06-09T21:15:52Z",
+  "mergedRows" : [
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "\/Assists calcium absorption. A diet deficient in calcium can lead to"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Supports healthy teeth."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Maintains muscle strength."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Supports immune system health."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Supports bone strength in post menopausal women."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Directions for use:"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Adults and children over 12 years - Take 1 capsule daily, with food, or as"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "osteoporosis in later life."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "directed by your health professional."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Colecalcife. .....................\/ Each capsule contains: equiv. vitamin D3 1000IU 25 micrograms"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Vitamin supplements should not replace a balanced diet."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Contains sulfites."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "artificial colours or flavours."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Does not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "(B) 54076 EXP 09 \/ 28"
+    }
+  ],
+  "parserDecisions" : [
+    {
+      "decision" : "unresolved",
+      "rawRow" : "\/Assists calcium absorption. A diet deficient in calcium can lead to",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Supports healthy teeth.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Maintains muscle strength.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Supports immune system health.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Supports bone strength in post menopausal women.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Directions for use:",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Adults and children over 12 years - Take 1 capsule daily, with food, or as",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "osteoporosis in later life.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "directed by your health professional.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Colecalcife. \/ Each capsule contains: equiv. vitamin D3 1000IU 25 micrograms",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Vitamin supplements should not replace a balanced diet.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Contains sulfites.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "artificial colours or flavours.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Does not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "(B) 54076 EXP 09 \/ 28",
+      "reason" : "matches non-ingredient skip rule"
+    }
+  ],
+  "rawObservations" : [
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.015594996452331533,
+        "minX" : 0.3214469353932064,
+        "minY" : 0.583644101994593,
+        "width" : 0.3202757975260417
+      },
+      "confidence" : 1,
+      "text" : "\/Assists calcium absorption. A diet deficient in calcium can lead to"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487267,
+        "minX" : 0.32364341386617806,
+        "minY" : 0.598837209368861,
+        "width" : 0.12403100585937499
+      },
+      "confidence" : 1,
+      "text" : "Supports healthy teeth."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.011674514770507849,
+        "minX" : 0.3253213151159005,
+        "minY" : 0.6055039221840044,
+        "width" : 0.14207358805338544
+      },
+      "confidence" : 1,
+      "text" : "Maintains muscle strength."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.011384725093841475,
+        "minX" : 0.32726536540233475,
+        "minY" : 0.6132510627103662,
+        "width" : 0.16527257283528646
+      },
+      "confidence" : 1,
+      "text" : "Supports immune system health."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.01200000000000001,
+        "minX" : 0.3275193923238906,
+        "minY" : 0.6189999999515504,
+        "width" : 0.25193796793619794
+      },
+      "confidence" : 1,
+      "text" : "Supports bone strength in post menopausal women."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.011353137969970617,
+        "minX" : 0.3194276299151749,
+        "minY" : 0.566002309985051,
+        "width" : 0.09755229695638018
+      },
+      "confidence" : 1,
+      "text" : "Directions for use:"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.018768009185791024,
+        "minX" : 0.3194416638586642,
+        "minY" : 0.5490322555233235,
+        "width" : 0.3649588216145833
+      },
+      "confidence" : 1,
+      "text" : "Adults and children over 12 years - Take 1 capsule daily, with food, or as"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401812,
+        "minX" : 0.33333333605321125,
+        "minY" : 0.5784883722142526,
+        "width" : 0.11821705118815107
+      },
+      "confidence" : 1,
+      "text" : "osteoporosis in later life."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.011732558250427183,
+        "minX" : 0.3197674377706366,
+        "minY" : 0.5434999999941922,
+        "width" : 0.17829457600911458
+      },
+      "confidence" : 1,
+      "text" : "directed by your health professional."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.03219767426473219,
+        "minX" : 0.3178294616256989,
+        "minY" : 0.5085000001198524,
+        "width" : 0.3740535825667576
+      },
+      "confidence" : 1,
+      "text" : "Colecalcife. .....................\/ Each capsule contains: equiv. vitamin D3 1000IU 25 micrograms"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.014326563358306954,
+        "minX" : 0.3175966073723778,
+        "minY" : 0.48138216807378,
+        "width" : 0.2736673380533854
+      },
+      "confidence" : 1,
+      "text" : "Vitamin supplements should not replace a balanced diet."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.010499999999999954,
+        "minX" : 0.3197674429021317,
+        "minY" : 0.4970000000514363,
+        "width" : 0.08333333333333337
+      },
+      "confidence" : 1,
+      "text" : "Contains sulfites."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.009000000000000008,
+        "minX" : 0.3197674458629834,
+        "minY" : 0.46200000001518193,
+        "width" : 0.11240309651692709
+      },
+      "confidence" : 1,
+      "text" : "artificial colours or flavours."
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.011627906799316357,
+        "minX" : 0.31976745703049286,
+        "minY" : 0.46947674431109765,
+        "width" : 0.34302323404947915
+      },
+      "confidence" : 1,
+      "text" : "Does not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or"
+    },
+    {
+      "alternatives" : [
+
+      ],
+      "boundingBox" : {
+        "height" : 0.007267441749572723,
+        "minX" : 0.40116279166534197,
+        "minY" : 0.4244186047116558,
+        "width" : 0.13953488159179683
+      },
+      "confidence" : 1,
+      "text" : "(B) 54076 EXP 09 \/ 28"
+    }
+  ],
+  "rawText" : "\/Assists calcium absorption. A diet deficient in calcium can lead to\nSupports healthy teeth.\nMaintains muscle strength.\nSupports immune system health.\nSupports bone strength in post menopausal women.\nDirections for use:\nAdults and children over 12 years - Take 1 capsule daily, with food, or as\nosteoporosis in later life.\ndirected by your health professional.\nColecalcife. .....................\/ Each capsule contains: equiv. vitamin D3 1000IU 25 micrograms\nVitamin supplements should not replace a balanced diet.\nContains sulfites.\nartificial colours or flavours.\nDoes not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or\n(B) 54076 EXP 09 \/ 28",
+  "scanID" : "001B3CE0-F94B-40CD-8B9D-DBC57C14CB1C"
+}

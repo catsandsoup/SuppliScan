@@ -47,7 +47,7 @@ final class ScanViewModel {
                 self?.rawText = result.rawText
                 self?.parseResult = parseResult
                 self?.reviewWarning = result.hasLowConfidenceText
-                    ? .ocrLowConfidence(recognisedText: result.rawText)
+                    ? .ocrLowConfidence(recognisedText: result.allRecognizedText)
                     : nil
                 self?.loadingState = .loaded(result)
 
@@ -58,7 +58,16 @@ final class ScanViewModel {
                     scanID: scanID,
                     capturedAt: ISO8601DateFormatter().string(from: Date()),
                     rawText: result.rawText,
-                    rawObservations: result.lines.map { line in
+                    allRecognizedText: result.allRecognizedText,
+                    quality: OCRDebugQuality(
+                        recognizedLineCount: result.quality.recognizedLineCount,
+                        parseReadyLineCount: result.quality.parseReadyLineCount,
+                        rejectedLowConfidenceLineCount: result.quality.rejectedLowConfidenceLineCount,
+                        averageConfidence: result.quality.averageConfidence,
+                        hasLowConfidenceText: result.quality.hasLowConfidenceText,
+                        hasSupplementLabelSignals: result.quality.hasSupplementLabelSignals
+                    ),
+                    rawObservations: result.recognizedLines.map { line in
                         OCRDebugObservation(
                             text: line.text,
                             confidence: line.confidence,
@@ -73,7 +82,13 @@ final class ScanViewModel {
                             }
                         )
                     },
-                    mergedRows: result.lines.map { OCRDebugMergedRow(text: $0.text, confidence: $0.confidence, mergedFromCount: 1) },
+                    mergedRows: result.lines.map {
+                        OCRDebugMergedRow(
+                            text: $0.text,
+                            confidence: $0.confidence,
+                            mergedFromCount: $0.sourceLineCount
+                        )
+                    },
                     parserDecisions: decisions
                 )
                 OCRDebugWriter.write(bundle)

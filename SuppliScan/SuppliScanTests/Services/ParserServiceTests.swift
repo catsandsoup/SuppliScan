@@ -35,6 +35,42 @@ struct ParserServiceTests {
         #expect(entry.reviewFlags.contains(.dualUnit))
     }
 
+    @Test func parsesFullWordMicrogramsAsMcg() throws {
+        let parser = ParserService(aliasesByVariant: ["Levomefolic acid": "Vitamin B9"])
+        let result = parser.parse("Levomefolic acid 200 micrograms")
+
+        guard case .nutrient(let entry)? = result.entries.first else {
+            Issue.record("Expected nutrient entry")
+            return
+        }
+
+        #expect(entry.canonicalName == "Vitamin B9")
+        #expect(entry.amount == 200)
+        #expect(entry.unit == .mcg)
+    }
+
+    @Test func treatsCitrusBioflavonoidsExtractAsNutrientLikeAliasNotHerbal() throws {
+        let parser = ParserService(aliasesByVariant: [
+            "Citrus Bioflavonoids": "Citrus Bioflavonoids",
+            "Citrus Bioflavonoids Extract": "Citrus Bioflavonoids"
+        ])
+        let result = parser.parse("Citrus bioflavonoids extract 50mg")
+
+        #expect(result.entries.contains { entry in
+            if case .herbal = entry { return true }
+            return false
+        } == false)
+
+        guard case .nutrient(let entry)? = result.entries.first else {
+            Issue.record("Expected nutrient-like alias entry")
+            return
+        }
+
+        #expect(entry.canonicalName == "Citrus Bioflavonoids")
+        #expect(entry.amount == 50)
+        #expect(entry.unit == .mg)
+    }
+
     @Test func keepsUnparseableLinesForManualReview() {
         let parser = ParserService()
         let result = parser.parse("Clinically researched formula")

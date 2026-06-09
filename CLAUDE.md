@@ -129,27 +129,31 @@ All 70 installed skills are listed in AGENTS.md § Installed Skills Reference.
 
 ## Current Build State
 
-**BUILD SUCCEEDED. Parser hardened against real-world OCR. Services not yet wired.**
+**BUILD SUCCEEDED. Real device bugs fixed. HIG audit complete. Core scan loop working end-to-end.**
 
 | Layer | Status | Notes |
 |---|---|---|
-| 1 — Models | ✅ Complete | 18 Swift model files in Models/ |
+| 1 — Models | ✅ Complete | 18 Swift model files in Models/; `displayTitle` added to LabelAnalysis |
 | 2 — Persistence | ✅ Complete | SuppliScanSchema.swift, PersistenceService.swift |
-| 3 — Navigation | ✅ Complete | AppDestination.swift, NavigationRouter.swift |
-| 4 — App entry + UI shell | ✅ Complete | All Views, ViewModels, Components built |
+| 3 — Navigation | ✅ Complete | AppDestination.swift, NavigationRouter.swift; AnalysisStore removed |
+| 4 — App entry + UI shell | ✅ HIG-fixed | Product name field, segmented tab bar, de-duped header, ScanView reset |
 | 5 — ParserService | ✅ Hardened | Two-column merge, herbal detection, probiotic abbreviations, isEquivalentContinuation fixed |
-| 6 — Reference Data JSON | ⚠️ Not written | Data sourced in HANDOFF_REFERENCE_DATA.md — needs nrv_au.json |
-| 7 — ReportService | ❌ Not started | Uses LabelAnalysis.placeholder — shows "Pending" UI |
+| 6 — Reference Data JSON | ✅ Written | nrv_au.json — 24 nutrients × 10 demographics (NHMRC 2006) |
+| 7 — ReportService | ✅ Wired | Wired to ReviewView via AppDependencies; calls ReferenceDataService |
 | 8 — FormQualityService | ❌ Not started | |
 | 9 — Tests | ⚠️ Partial | Parser tests use hand-crafted strings; no real Vision output fixtures |
 
 ## Next Session — Pick Up From
 
-Read `Documentation/HANDOFF_PARSER_AUDIT.md` for exact remaining parser work.
-Read `Documentation/HANDOFF_REFERENCE_DATA.md` for Phase 1 reference data (nrv_au.json).
+Read `Documentation/V1_COMPLETION_PLAN.md` § "2026-06-09 HIG Audit + Device Fixes" for the full session log and open issue list.
 
-**Highest immediate value: write nrv_au.json from HANDOFF_REFERENCE_DATA.md.**
-This unblocks ReportService → AnalysisView → the app showing real clinical data.
+**Highest immediate value: remaining HIG issues from the audit (see V1_COMPLETION_PLAN.md).**
+Priority order:
+1. `ReportSummaryCardView.swift:44` — "Dose Adequacy" shows first nutrient's RDI% only; replace with aggregate count
+2. `NutrientAnalysisRowView.swift` — missing chevron on tappable rows; inconsistent with rest of app
+3. `NutrientAnalysisRowView.swift:94` — progress bar caps at 100%, detail bar uses 0–150% scale; unify
+4. `FormQualityService` — the last unimplemented service; blocks form quality data in reports
+5. Simulator visual testing — scan each training image, compare to expected TrainingData/ JSONs
 
 ---
 
