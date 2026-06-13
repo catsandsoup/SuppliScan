@@ -13,36 +13,35 @@ struct ReviewEntryRowView: View {
     let onDelete: () -> Void
 
     var body: some View {
-        HStack(alignment: .center, spacing: 10) {
+        HStack(alignment: .center, spacing: Theme.Space.md) {
             Image(systemName: presentation.status.systemImage)
-                .font(.subheadline)
+                .font(.system(size: Theme.Icon.sm, weight: .semibold))
                 .foregroundStyle(statusColor)
                 .frame(width: 24)
                 .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: 3) {
+            VStack(alignment: .leading, spacing: Theme.Space.xxs) {
                 Text(presentation.title)
-                    .font(.subheadline)
-                    .foregroundStyle(.primary)
+                    .textStyle(.subhead)
+                    .foregroundStyle(.ink)
                 if let subtitle = presentation.subtitle {
                     Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .textStyle(.caption)
+                        .foregroundStyle(.inkTertiary)
                 }
                 if !presentation.reviewReasons.isEmpty {
                     Text(presentation.reviewReasons.joined(separator: " · "))
-                        .font(.caption)
+                        .textStyle(.caption)
                         .foregroundStyle(statusColor)
                 }
             }
 
-            Spacer(minLength: 8)
+            Spacer(minLength: Theme.Space.sm)
 
             if let amount = presentation.amountText {
                 Text(amount)
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                    .monospacedDigit()
+                    .textStyle(.dataLabel)
+                    .foregroundStyle(.inkSecondary)
             }
 
             if isEditing {
@@ -76,9 +75,9 @@ struct ReviewEntryRowView: View {
 
     private var statusColor: Color {
         switch presentation.status {
-        case .confirmed: AppTheme.Color.success
-        case .needsReview: AppTheme.Color.warning
-        case .otherLabelText: .secondary
+        case .confirmed: Theme.Palette.tier1
+        case .needsReview: Theme.Palette.tier3
+        case .otherLabelText: Theme.Palette.inkTertiary
         }
     }
 

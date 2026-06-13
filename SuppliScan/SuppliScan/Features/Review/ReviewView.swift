@@ -1,8 +1,8 @@
 // ReviewView.swift
 // SuppliScan
-// User confirms or corrects OCR output before analysis.
-// Analysis triggers on tap. Edit button gives access to corrections.
-// Navigation: pushes AnalysisView within the Scan stack (back button returns to ReviewView).
+// User confirms or corrects OCR output before analysis. Design-system styled.
+// Pushed within the Scan stack; pushes AnalysisView on analyse. All ViewModel
+// wiring, edit mode, feedback, and navigation preserved.
 
 import SwiftUI
 
@@ -29,15 +29,16 @@ struct ReviewView: View {
 
         VStack(spacing: 0) {
             scrollContent
-            Divider()
             bottomBar
         }
-        .navigationTitle("Review Scan")
+        .background(Theme.Palette.surface.ignoresSafeArea())
+        .navigationTitle("Review")
         .navigationBarTitleDisplayMode(.inline)
+        .tint(Theme.Palette.brand)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(viewModel.isEditing ? "Done" : "Edit") {
-                    withAnimation(.spring(response: 0.3)) {
+                    withAnimation(.dsSnappy) {
                         viewModel.isEditing.toggle()
                     }
                 }
@@ -47,10 +48,7 @@ struct ReviewView: View {
         .sensoryFeedback(.impact(weight: .medium), trigger: analyseButtonTapped)
         .sensoryFeedback(.success, trigger: analysisSucceeded)
         .onAppear {
-            guard let dependencies else {
-                print("[SuppliScan] DIAGNOSTIC: ReviewView AppDependencies missing from environment")
-                return
-            }
+            guard let dependencies else { return }
             viewModel.configure(
                 analyseAction: { entries, serving, standard, demographic, productName in
                     try await dependencies.reportService.generateReport(
@@ -82,11 +80,12 @@ struct ReviewView: View {
 
     private var scrollContent: some View {
         ScrollView {
-            VStack(spacing: 16) {
+            VStack(spacing: Theme.Space.lg) {
                 productNameField
 
                 if !viewModel.entries.isEmpty {
                     LabelRecognisedBannerView(standard: viewModel.selectedStandard)
+                        .padding(.horizontal, Theme.Space.screen)
                 }
 
                 SupplementFactsCardView(
@@ -98,49 +97,62 @@ struct ReviewView: View {
                     onDelete: viewModel.delete(entryID:)
                 )
             }
-            .padding(.vertical, 16)
+            .padding(.top, Theme.Space.md)
+            .padding(.bottom, Theme.Space.lg)
         }
+        .scrollIndicators(.hidden)
     }
 
     private var productNameField: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Product Name")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+        VStack(alignment: .leading, spacing: Theme.Space.sm) {
+            Text("Product name")
+                .textStyle(.eyebrow)
+                .foregroundStyle(.inkTertiary)
             TextField("e.g. Magnesium Glycinate 400mg", text: $viewModel.productName)
-                .font(.subheadline)
+                .textFieldStyle(.ds)
                 .submitLabel(.done)
                 .autocorrectionDisabled()
             if viewModel.productName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
                 Text("Will save as \(viewModel.suggestedProductName)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkTertiary)
             }
         }
-        .padding(12)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10))
-        .padding(.horizontal, 16)
+        .padding(.horizontal, Theme.Space.screen)
     }
 
     // MARK: - Bottom bar
 
     private var bottomBar: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: Theme.Space.md) {
             ServingSizeSelectorView(serving: $viewModel.servingSize)
             StandardPickerView(selection: $viewModel.selectedStandard)
-            DemographicPickerView(selectedKey: $viewModel.selectedDemographicKey)
+            HStack {
+                Text("Profile")
+                    .textStyle(.subhead)
+                    .foregroundStyle(.inkSecondary)
+                Spacer(minLength: Theme.Space.md)
+                DemographicPickerView(selectedKey: $viewModel.selectedDemographicKey)
+            }
             if viewModel.blockingReviewCount > 0 {
-                Label(viewModel.blockingReviewCount == 1 ? "1 row needs review" : "\(viewModel.blockingReviewCount) rows need review", systemImage: "questionmark.circle.fill")
-                    .font(.caption)
-                    .foregroundStyle(AppTheme.Color.warning)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                Label(
+                    viewModel.blockingReviewCount == 1 ? "1 row needs review" : "\(viewModel.blockingReviewCount) rows need review",
+                    systemImage: "questionmark.circle.fill"
+                )
+                .textStyle(.caption)
+                .foregroundStyle(Theme.Palette.tier3)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             analyseButton
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 12)
-        .padding(.bottom, 24)
-        .background(Color(.systemBackground))
+        .padding(.horizontal, Theme.Space.screen)
+        .padding(.top, Theme.Space.lg)
+        .padding(.bottom, Theme.Space.lg)
+        .background(
+            Theme.Palette.surfaceRaised
+                .ignoresSafeArea(edges: .bottom)
+                .overlay(alignment: .top) { HairlineDivider() }
+        )
     }
 
     private var analyseButton: some View {
@@ -148,22 +160,14 @@ struct ReviewView: View {
             analyseButtonTapped.toggle()
             viewModel.requestAnalysis()
         } label: {
-            if viewModel.isAnalysing {
-                HStack(spacing: 8) {
-                    ProgressView()
-                        .tint(.white)
-                    Text("Analysing…")
-                }
-                .frame(maxWidth: .infinity)
-            } else {
-                Text(viewModel.pendingAnalysis == nil ? "Analyse" : "Re-Analyse")
-                    .frame(maxWidth: .infinity)
-            }
+            DSLoadingLabel(
+                title: viewModel.pendingAnalysis == nil ? "Analyse" : "Re-analyse",
+                isLoading: viewModel.isAnalysing
+            )
         }
-        .buttonStyle(.borderedProminent)
-        .controlSize(.extraLarge)
+        .buttonStyle(.dsPrimary)
         .disabled(!viewModel.hasConfirmedEntries || viewModel.isAnalysing)
-        .animation(reduceMotion ? nil : .spring(response: 0.3), value: viewModel.isAnalysing)
+        .animation(reduceMotion ? nil : .dsSnappy, value: viewModel.isAnalysing)
         .accessibilityHint("Analyse the scanned label entries")
     }
 }

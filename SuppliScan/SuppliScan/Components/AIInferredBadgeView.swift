@@ -6,16 +6,16 @@ import SwiftUI
 
 struct AIInferredBadgeView: View {
     var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: Theme.Space.xs) {
             Circle()
-                .fill(Color.purple)
+                .fill(Theme.Palette.aiInferred)
                 .frame(width: 6, height: 6)
             Text("Estimate")
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(Color.purple)
+                .textStyle(.caption)
+                .foregroundStyle(Theme.Palette.aiInferred)
         }
-        .padding(.horizontal, 8)
-        .padding(.vertical, 3)
-        .background(Color.purple.opacity(0.12), in: Capsule())
+        .padding(.horizontal, Theme.Space.sm)
+        .padding(.vertical, Theme.Space.xxs)
+        .background(Theme.Palette.aiInferred.opacity(0.14), in: Capsule())
     }
 }

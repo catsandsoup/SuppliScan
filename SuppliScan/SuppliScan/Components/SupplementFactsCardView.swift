@@ -1,6 +1,6 @@
 // SupplementFactsCardView.swift
 // SuppliScan
-// OCR-reproduced supplement facts card — faithful label recreation in ReviewView.
+// OCR-reproduced supplement facts card — a faithful label facsimile, on design tokens.
 
 import SwiftUI
 
@@ -18,41 +18,41 @@ struct SupplementFactsCardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Header
             Text("Supplement Facts")
-                .font(.system(.title2, design: .default, weight: .black))
-                .padding(.bottom, 4)
+                .font(.system(.title2, design: .default, weight: .heavy))
+                .foregroundStyle(.ink)
+                .padding(.bottom, Theme.Space.xs)
 
             Text("Serving Size: \(serving.selectedQuantity.formatted()) \(serving.unit.pluralised(for: serving.selectedQuantity))")
-                .font(.subheadline)
+                .textStyle(.subhead)
+                .foregroundStyle(.ink)
             Text("Servings Per Container: —")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .textStyle(.caption)
+                .foregroundStyle(.inkTertiary)
 
             Rectangle()
-                .frame(height: 6)
-                .foregroundStyle(Color(.label))
-                .padding(.vertical, 8)
+                .frame(height: 5)
+                .foregroundStyle(.ink)
+                .padding(.vertical, Theme.Space.sm)
 
-            // Column headers
             HStack {
                 Text("Amount Per Serving")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkSecondary)
                 Spacer()
                 Text("%DV")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkSecondary)
             }
-            .padding(.bottom, 4)
+            .padding(.bottom, Theme.Space.xs)
 
-            Divider()
+            HairlineDivider()
 
             ForEach(ReviewEntryStatus.allCases, id: \.self) { status in
                 let rows = presentations.filter { $0.status == status }
                 if !rows.isEmpty {
                     ReviewSectionHeader(status: status, count: rows.count)
-                        .padding(.top, status == .confirmed ? 8 : 14)
+                        .padding(.top, status == .confirmed ? Theme.Space.sm : Theme.Space.lg)
 
                     ForEach(rows) { presentation in
                         ReviewEntryRowView(
@@ -62,16 +62,16 @@ struct SupplementFactsCardView: View {
                             onConfirm: { onConfirm(presentation.id) },
                             onDelete: { onDelete(presentation.id) }
                         )
-                        Divider()
+                        HairlineDivider()
                     }
                 }
             }
         }
-        .padding(16)
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: Color(.label).opacity(0.08), radius: 8, x: 0, y: 2)
-        .padding(.horizontal, 16)
+        .padding(Theme.Space.lg)
+        .background(.surfaceRaised, in: Theme.roundedRect(Theme.Radius.card))
+        .overlay(Theme.roundedRect(Theme.Radius.card).strokeBorder(.hairline, lineWidth: 1))
+        .elevation(.card)
+        .padding(.horizontal, Theme.Space.screen)
         .sheet(item: selectedPresentationBinding) { presentation in
             ReviewEntryDetailSheet(
                 presentation: presentation,
@@ -96,26 +96,26 @@ private struct ReviewSectionHeader: View {
     let count: Int
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: Theme.Space.sm) {
             Image(systemName: status.systemImage)
                 .foregroundStyle(color)
                 .accessibilityHidden(true)
             Text(status.sectionTitle)
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .textStyle(.eyebrow)
+                .foregroundStyle(.inkTertiary)
             Spacer()
             Text(count.formatted())
-                .font(.caption.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .textStyle(.dataLabel)
+                .foregroundStyle(.inkSecondary)
         }
         .accessibilityElement(children: .combine)
     }
 
     private var color: Color {
         switch status {
-        case .confirmed: AppTheme.Color.success
-        case .needsReview: AppTheme.Color.warning
-        case .otherLabelText: .secondary
+        case .confirmed: Theme.Palette.tier1
+        case .needsReview: Theme.Palette.tier3
+        case .otherLabelText: Theme.Palette.inkTertiary
         }
     }
 }

@@ -61,7 +61,21 @@ struct RootTabView: View {
             GlassTabBar(items: items, selection: $selectedTab)
                 .padding(.horizontal, Theme.Space.xl)
                 .padding(.bottom, Theme.Space.xs)
+                .offset(y: tabBarVisible ? 0 : 160)
+                .opacity(tabBarVisible ? 1 : 0)
+                .animation(.dsPrimary, value: tabBarVisible)
                 .ignoresSafeArea(.keyboard, edges: .bottom)
+        }
+    }
+
+    /// The tab bar hides while the active tab has pushed a detail screen (report, review,
+    /// nutrient detail) — standard iOS behaviour, and it frees the bottom for action bars.
+    private var tabBarVisible: Bool {
+        switch selectedTab {
+        case .home:     return homeRouter.path.isEmpty
+        case .scan:     return scanRouter.path.isEmpty
+        case .history:  return historyRouter.path.isEmpty
+        case .settings: return true
         }
     }
 

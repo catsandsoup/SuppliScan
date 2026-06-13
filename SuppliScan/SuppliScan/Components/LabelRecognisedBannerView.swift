@@ -1,37 +1,38 @@
 // LabelRecognisedBannerView.swift
 // SuppliScan
-// Green checkmark + "Label recognised" + standard — shown at top of ReviewView.
+// Success banner shown at the top of ReviewView once OCR recognises a label.
 
 import SwiftUI
 
 struct LabelRecognisedBannerView: View {
     let standard: ReferenceStandard
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isVisible = false
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: Theme.Space.md) {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(Color(.systemGreen))
-                .font(.title3)
+                .foregroundStyle(Theme.Palette.tier1)
+                .font(.system(size: Theme.Icon.md, weight: .semibold))
             VStack(alignment: .leading, spacing: 2) {
-                Text("Label Recognised")
-                    .font(.subheadline.weight(.semibold))
-                Text("\(standard.rawValue) Label")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                Text("Label recognised")
+                    .textStyle(.subhead)
+                    .foregroundStyle(.ink)
+                Text("\(standard.rawValue) reference standard")
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkTertiary)
             }
             Spacer()
         }
-        .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .background(Color(.systemGreen).opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
-        .padding(.horizontal, 16)
+        .padding(.horizontal, Theme.Space.lg)
+        .padding(.vertical, Theme.Space.md)
+        .background(Theme.Palette.tier1.opacity(0.10), in: Theme.roundedRect(Theme.Radius.md))
+        .overlay(Theme.roundedRect(Theme.Radius.md).strokeBorder(Theme.Palette.tier1.opacity(0.18), lineWidth: 1))
         .opacity(isVisible ? 1 : 0)
         .offset(y: isVisible ? 0 : 12)
         .onAppear {
-            withAnimation(.spring(response: 0.45, dampingFraction: 0.70)) {
-                isVisible = true
-            }
+            guard !reduceMotion else { isVisible = true; return }
+            withAnimation(.dsGentle) { isVisible = true }
         }
     }
 }
