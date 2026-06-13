@@ -10,23 +10,24 @@ enum AppTheme {
     // MARK: - Colors
 
     enum Color {
-        // RDI safety spectrum
-        static let rdiSafe    = SwiftUI.Color(.systemGreen)
-        static let rdiWarning = SwiftUI.Color(.systemOrange)
-        static let rdiDanger  = SwiftUI.Color(.systemRed)
-        static let rdiNoData  = SwiftUI.Color(.secondaryLabel)
+        // RDI safety spectrum — bridged to the new design-system tier palette so every
+        // existing colour usage upgrades cohesively. (Migrating call sites to Theme.Palette.)
+        static let rdiSafe    = Theme.Palette.tier1
+        static let rdiWarning = Theme.Palette.tier3
+        static let rdiDanger  = Theme.Palette.tier4
+        static let rdiNoData  = Theme.Palette.inkTertiary
 
         // Tier badges (bioavailability / form quality)
-        static let tier1 = SwiftUI.Color(.systemGreen)
-        static let tier2 = SwiftUI.Color(.systemYellow)
-        static let tier3 = SwiftUI.Color(.systemOrange)
-        static let tier4 = SwiftUI.Color(.systemRed)
+        static let tier1 = Theme.Palette.tier1
+        static let tier2 = Theme.Palette.tier2
+        static let tier3 = Theme.Palette.tier3
+        static let tier4 = Theme.Palette.tier4
 
         // Status
-        static let success    = SwiftUI.Color(.systemGreen)
-        static let warning    = SwiftUI.Color(.systemOrange)
-        static let critical   = SwiftUI.Color(.systemRed)
-        static let unresolved = SwiftUI.Color(.systemYellow)
+        static let success    = Theme.Palette.tier1
+        static let warning    = Theme.Palette.tier3
+        static let critical   = Theme.Palette.tier4
+        static let unresolved = Theme.Palette.tier2
 
         // Camera chrome
         static let scanChrome = SwiftUI.Color.white

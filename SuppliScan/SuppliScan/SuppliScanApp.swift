@@ -36,12 +36,40 @@ struct SuppliScanApp: App {
             RootTabView()
                 .environment(dependencies)
                 .task {
+                    #if DEBUG
+                    seedSampleDataIfRequested()
+                    #endif
                     await dependencies.load()
                 }
         }
         // Inject for @Query reads in Views (HistoryView, HomeView)
         .modelContainer(container)
     }
+
+    #if DEBUG
+    /// Seeds one sample scan for simulator verification when launched with `-seedSample`.
+    /// No-op unless the argument is present and the store is empty. Never in release builds.
+    @MainActor
+    private func seedSampleDataIfRequested() {
+        guard ProcessInfo.processInfo.arguments.contains("-seedSample") else { return }
+        let context = container.mainContext
+        let existing = (try? context.fetchCount(FetchDescriptor<ScanRecord>())) ?? 0
+        guard existing == 0 else { return }
+        let analysis = SampleData.analysis
+        guard let data = try? analysis.encoded() else { return }
+        let record = ScanRecord(
+            id: analysis.id,
+            createdAt: analysis.createdAt,
+            productName: analysis.productName,
+            referenceStandard: analysis.referenceStandard.rawValue,
+            demographicKey: analysis.demographic.key,
+            reportData: data,
+            schemaVersion: LabelAnalysis.currentSchemaVersion
+        )
+        context.insert(record)
+        try? context.save()
+    }
+    #endif
 
     // MARK: - Container Init
 
