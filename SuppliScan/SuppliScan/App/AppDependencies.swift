@@ -25,10 +25,14 @@ final class AppDependencies {
     let interactionService: InteractionService
     let reportService: ReportService
 
+    /// Source-backed reference encyclopedia (Library tab). Built once from bundled JSON.
+    let libraryCatalog: LibraryCatalog
+
     init(container: ModelContainer) {
         self.persistence = PersistenceService(modelContainer: container)
         self.ocrService = OCRService()
         self.parserService = (try? ParserService.makeDefault()) ?? ParserService()
+        self.libraryCatalog = (try? LibraryCatalog.load()) ?? .empty
 
         let ref = ReferenceDataService()
         let form = FormQualityService()

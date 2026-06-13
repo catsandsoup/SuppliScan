@@ -17,4 +17,5 @@ enum AppDestination: Hashable, Sendable {
     case nutrientDetail(NutrientAnalysis)
     case formsAndPotency([NutrientAnalysis])
     case history
+    case libraryEntry(LibraryEntry)
 }

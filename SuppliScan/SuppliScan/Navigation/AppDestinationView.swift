@@ -20,6 +20,8 @@ struct AppDestinationView: View {
             FormsAndPotencyView(analyses: analyses)
         case .history:
             HistoryView()
+        case .libraryEntry(let entry):
+            LibraryEntryDetailView(entry: entry)
         }
     }
 }

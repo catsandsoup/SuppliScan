@@ -17,10 +17,11 @@ struct RootTabView: View {
     @State private var selectedTab: AppTab = .initial
     @State private var homeRouter = NavigationRouter()
     @State private var scanRouter = NavigationRouter()
+    @State private var libraryRouter = NavigationRouter()
     @State private var historyRouter = NavigationRouter()
 
     enum AppTab: Hashable {
-        case home, scan, history, settings
+        case home, scan, library, history, settings
 
         /// Default selected tab. DEBUG builds honour a `-startTab <name>` launch argument
         /// so the simulator can open directly to any tab for verification. No effect in release.
@@ -30,6 +31,7 @@ struct RootTabView: View {
             if let i = args.firstIndex(of: "-startTab"), i + 1 < args.count {
                 switch args[i + 1] {
                 case "scan":     return .scan
+                case "library":  return .library
                 case "history":  return .history
                 case "settings": return .settings
                 default:         return .home
@@ -43,6 +45,7 @@ struct RootTabView: View {
     private let items: [GlassTabBarItem<AppTab>] = [
         .init(tab: .home,     title: "Home",     icon: "house"),
         .init(tab: .scan,     title: "Scan",     icon: "camera.viewfinder"),
+        .init(tab: .library,  title: "Library",  icon: "books.vertical"),
         .init(tab: .history,  title: "History",  icon: "clock.arrow.circlepath"),
         .init(tab: .settings, title: "Settings", icon: "gearshape")
     ]
@@ -54,6 +57,7 @@ struct RootTabView: View {
             ZStack {
                 tabContainer(.home) { homeTab }
                 tabContainer(.scan) { scanTab }
+                tabContainer(.library) { libraryTab }
                 tabContainer(.history) { historyTab }
                 tabContainer(.settings) { settingsTab }
             }
@@ -74,6 +78,7 @@ struct RootTabView: View {
         switch selectedTab {
         case .home:     return homeRouter.path.isEmpty
         case .scan:     return scanRouter.path.isEmpty
+        case .library:  return libraryRouter.path.isEmpty
         case .history:  return historyRouter.path.isEmpty
         case .settings: return true
         }
@@ -113,6 +118,16 @@ struct RootTabView: View {
                 }
         }
         .environment(scanRouter)
+    }
+
+    private var libraryTab: some View {
+        NavigationStack(path: Bindable(libraryRouter).path) {
+            LibraryView()
+                .navigationDestination(for: AppDestination.self) { dest in
+                    AppDestinationView(destination: dest)
+                }
+        }
+        .environment(libraryRouter)
     }
 
     private var historyTab: some View {
