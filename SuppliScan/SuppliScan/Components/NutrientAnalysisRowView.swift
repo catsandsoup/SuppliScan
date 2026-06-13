@@ -1,7 +1,7 @@
 // NutrientAnalysisRowView.swift
 // SuppliScan
-// Nutrient row: large bold RDI% on the right, name + form + dose on the left,
-// animated progress bar below, UL context as small caption.
+// Nutrient row: name + form + dose on the left, large monospaced RDI% on the right,
+// a token progress bar, and UL context. Restyled to the design system.
 
 import SwiftUI
 
@@ -9,93 +9,82 @@ struct NutrientAnalysisRowView: View {
     let analysis: NutrientAnalysis
     let index: Int
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var appeared = false
 
     private var rdiPercent: Double { analysis.rdiPercent ?? 0 }
     private var rdiColor: Color { analysis.rdiColor }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack(alignment: .top, spacing: 12) {
+        VStack(alignment: .leading, spacing: Theme.Space.sm) {
+            HStack(alignment: .top, spacing: Theme.Space.md) {
                 nutrientInfo
-                Spacer(minLength: 8)
+                Spacer(minLength: Theme.Space.sm)
                 rdiDisplay
             }
-            .padding(.top, 14)
-
             progressBar
-                .padding(.top, 10)
-
             ulCaption
-                .padding(.top, 5)
-                .padding(.bottom, 14)
         }
+        .padding(.vertical, Theme.Space.md)
+        .contentShape(.rect)
         .opacity(appeared ? 1 : 0)
-        .offset(y: appeared ? 0 : 6)
+        .offset(y: appeared ? 0 : 8)
         .onAppear {
-            let delay = Double(min(index, 8)) * 0.05
-            withAnimation(.spring(response: 0.40, dampingFraction: 0.80).delay(delay)) {
-                appeared = true
-            }
+            guard !reduceMotion else { appeared = true; return }
+            let delay = Double(min(index, 8)) * Theme.Motion.stagger
+            withAnimation(.dsGentle.delay(delay)) { appeared = true }
         }
     }
-
-    // MARK: - Left column
 
     private var nutrientInfo: some View {
-        VStack(alignment: .leading, spacing: 3) {
+        VStack(alignment: .leading, spacing: Theme.Space.xxs) {
             Text(analysis.entry.displayName)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.primary)
-
+                .textStyle(.headline)
+                .foregroundStyle(.ink)
             if let form = analysis.entry.form {
                 Text("as \(form)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkTertiary)
             }
-
             Text(analysis.doseString)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .textStyle(.caption)
+                .foregroundStyle(.inkSecondary)
+                .monospacedDigit()
         }
     }
-
-    // MARK: - Right column — large RDI%
 
     private var rdiDisplay: some View {
-        VStack(alignment: .trailing, spacing: 1) {
+        VStack(alignment: .trailing, spacing: 0) {
             if analysis.rdiPercent != nil {
                 Text(analysis.rdiPercentString)
-                    .font(.title3.weight(.bold))
+                    .textStyle(.stat)
                     .foregroundStyle(rdiColor)
-                    .monospacedDigit()
-                Text("RDI")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(rdiColor.opacity(0.70))
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                Text("of RDI")
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkTertiary)
             } else {
                 Text("—")
-                    .font(.title3.weight(.bold))
-                    .foregroundStyle(.tertiary)
+                    .textStyle(.stat)
+                    .foregroundStyle(.inkTertiary)
             }
         }
     }
-
-    // MARK: - Progress bar
 
     private var progressBar: some View {
         GeometryReader { geo in
             ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 3)
-                    .fill(rdiColor.opacity(0.12))
+                Capsule()
+                    .fill(rdiColor.opacity(0.14))
                     .frame(height: 6)
-                RoundedRectangle(cornerRadius: 3)
+                Capsule()
                     .fill(rdiColor)
                     .frame(
                         width: appeared ? geo.size.width * min(rdiPercent / 100.0, 1.0) : 0,
                         height: 6
                     )
                     .animation(
-                        .easeOut(duration: 0.55).delay(Double(index) * 0.06),
+                        reduceMotion ? nil : .dsGentle.delay(Double(min(index, 8)) * Theme.Motion.stagger),
                         value: appeared
                     )
             }
@@ -103,29 +92,20 @@ struct NutrientAnalysisRowView: View {
         .frame(height: 6)
     }
 
-    // MARK: - UL caption
-
     @ViewBuilder
     private var ulCaption: some View {
         if let ulStr = analysis.ulPercentString, let ulRef = analysis.ulReferenceString {
-            Text("UL: \(ulRef) · \(ulStr) of upper limit")
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
+            Text("UL \(ulRef) · \(ulStr) of upper limit")
+                .textStyle(.caption)
+                .foregroundStyle(.inkTertiary)
+                .monospacedDigit()
         } else if let ulStr = analysis.ulPercentString {
             Text("\(ulStr) of upper limit")
-                .font(.caption2)
-                .foregroundStyle(.tertiary)
-        } else if let badges = formBadges, !badges.isEmpty {
-            HStack(spacing: 4) {
-                ForEach(badges, id: \.self) { badge in
-                    TierBadgeView(tier: badge)
-                }
-            }
+                .textStyle(.caption)
+                .foregroundStyle(.inkTertiary)
+                .monospacedDigit()
+        } else if let quality = analysis.formQuality {
+            TierBadgeView(tier: quality.tier)
         }
-    }
-
-    private var formBadges: [FormTier]? {
-        guard let quality = analysis.formQuality else { return nil }
-        return [quality.tier]
     }
 }

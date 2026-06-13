@@ -1,8 +1,8 @@
 // AnalysisView.swift
 // SuppliScan
-// Primary deliverable screen — renders a LabelAnalysis in full.
-// Four internal tabs: Summary, Nutrients, Details, Interactions.
-// Disclaimer shown on every tab per clinical rules.
+// Primary deliverable screen — renders a LabelAnalysis in full on the design system.
+// Custom header + snapshot + segmented internal tabs (Summary/Nutrients/Details/Interactions).
+// Disclaimer shown on every tab per clinical rules. Logic/navigation unchanged.
 
 import SwiftUI
 
@@ -14,27 +14,36 @@ struct AnalysisView: View {
     @State private var activeTab: AnalysisTab = .nutrients
     @State private var ulWarningTriggered = false
 
+    /// Bottom inset so scrolling content clears the floating glass tab bar.
+    static let tabBarClearance: CGFloat = 96
+
     var body: some View {
         VStack(spacing: 0) {
-            productHeader
+            header
             ClinicalSnapshotView(analysis: analysis)
-                .padding(.horizontal, 16)
-                .padding(.bottom, 8)
+                .padding(.horizontal, Theme.Space.screen)
+                .padding(.bottom, Theme.Space.md)
             internalTabBar
+                .padding(.horizontal, Theme.Space.screen)
+                .padding(.bottom, Theme.Space.sm)
             tabContent
         }
-        .navigationTitle(analysis.displayTitle)
-        .navigationBarTitleDisplayMode(.inline)
+        .screenBackground()
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 ShareLink(
                     item: analysis.shareText,
                     subject: Text(analysis.productName.isEmpty ? "SuppliScan Analysis" : analysis.productName)
                 ) {
-                    Label("Share", systemImage: "square.and.arrow.up")
+                    Image(systemName: "square.and.arrow.up")
+                        .font(.system(size: Theme.Icon.md, weight: .semibold))
+                        .foregroundStyle(.brand)
                 }
             }
         }
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .navigationTitle("")
+        .navigationBarTitleDisplayMode(.inline)
         .sensoryFeedback(.warning, trigger: ulWarningTriggered)
         .sensoryFeedback(.selection, trigger: activeTab)
         .onAppear {
@@ -44,39 +53,42 @@ struct AnalysisView: View {
         }
     }
 
-    // MARK: - Product header
+    // MARK: - Header
 
-    private var productHeader: some View {
-        Text("\(analysis.servingSize.selectedQuantity.formatted()) \(analysis.servingSize.unit.pluralised(for: analysis.servingSize.selectedQuantity)) · \(analysis.referenceStandard.rawValue) · \(analysis.demographic.displayName)")
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
+    private var header: some View {
+        VStack(alignment: .leading, spacing: Theme.Space.xs) {
+            Text("Analysis")
+                .textStyle(.eyebrow)
+                .foregroundStyle(.brand)
+            Text(analysis.displayTitle)
+                .textStyle(.display)
+                .foregroundStyle(.ink)
+                .lineLimit(2)
+            Text(metaLine)
+                .textStyle(.subhead)
+                .foregroundStyle(.inkSecondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, Theme.Space.screen)
+        .padding(.top, Theme.Space.xs)
+        .padding(.bottom, Theme.Space.lg)
+    }
+
+    private var metaLine: String {
+        let qty = analysis.servingSize.selectedQuantity
+        let unit = analysis.servingSize.unit.pluralised(for: qty)
+        return "\(qty.formatted()) \(unit) · \(analysis.referenceStandard.rawValue) · \(analysis.demographic.displayName)"
     }
 
     // MARK: - Internal tab bar
 
-    @ViewBuilder
     private var internalTabBar: some View {
-        Picker("Analysis Section", selection: $activeTab) {
-            ForEach(visibleTabs) { tab in
-                Text(tab.rawValue).tag(tab)
-            }
-        }
-        .pickerStyle(.segmented)
-        .padding(.horizontal, 16)
-        .padding(.vertical, 8)
-        .background(Color(.systemBackground))
-        Divider()
+        SegmentedPicker(options: visibleTabs, selection: $activeTab) { $0.rawValue }
     }
 
     private var visibleTabs: [AnalysisTab] {
         AnalysisTab.allCases.filter { tab in
-            if tab == .interactions {
-                return analysis.flags.hasAnyInteractions
-            }
-            return true
+            tab == .interactions ? analysis.flags.hasAnyInteractions : true
         }
     }
 
@@ -94,74 +106,19 @@ struct AnalysisView: View {
                 .tag(AnalysisTab.interactions)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
-        .animation(reduceMotion ? nil : .easeInOut(duration: 0.22), value: activeTab)
+        .animation(reduceMotion ? nil : .dsPrimary, value: activeTab)
     }
 }
 
 // MARK: - AnalysisTab
 
-enum AnalysisTab: String, CaseIterable, Identifiable {
+enum AnalysisTab: String, CaseIterable, Identifiable, Hashable {
     case summary = "Summary"
     case nutrients = "Nutrients"
     case details = "Details"
     case interactions = "Interactions"
 
     var id: String { rawValue }
-}
-
-// MARK: - Summary Tab
-
-private struct SummaryTabView: View {
-    let analysis: LabelAnalysis
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var appeared = false
-
-    var body: some View {
-        ScrollView {
-            LazyVStack(alignment: .leading, spacing: 16) {
-                ReportSummaryCardView(analysis: analysis)
-                    .opacity(appeared ? 1 : 0)
-                    .offset(y: appeared ? 0 : 10)
-                    .animation(entranceAnimation, value: appeared)
-
-                if analysis.flags.hasAnyFlags {
-                    FlagBannerView(flags: analysis.flags)
-                        .opacity(appeared ? 1 : 0)
-                        .offset(y: appeared ? 0 : 10)
-                        .animation(entranceAnimation?.delay(0.07), value: appeared)
-                }
-
-                HStack(spacing: 6) {
-                    Image(systemName: "info.circle")
-                        .foregroundStyle(.secondary)
-                        .font(.caption)
-                    Text("Analysis based on \(analysis.servingSize.selectedQuantity.formatted()) \(analysis.servingSize.unit.pluralised(for: analysis.servingSize.selectedQuantity))")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.horizontal, 4)
-                .opacity(appeared ? 1 : 0)
-                .animation(entranceAnimation?.delay(0.14), value: appeared)
-
-                DisclaimerView(text: analysis.disclaimer)
-                    .opacity(appeared ? 1 : 0)
-                    .animation(reduceMotion ? nil : .easeOut(duration: 0.35).delay(0.20), value: appeared)
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 16)
-        }
-        .onAppear {
-            if reduceMotion {
-                appeared = true
-            } else {
-                withAnimation { appeared = true }
-            }
-        }
-    }
-
-    private var entranceAnimation: Animation? {
-        reduceMotion ? nil : .spring(response: 0.40, dampingFraction: 0.80)
-    }
 }
 
 // MARK: - Clinical Snapshot
@@ -180,47 +137,42 @@ private struct ClinicalSnapshotView: View {
     }
 
     private var ulText: String {
-        if !analysis.flags.nutrientsAboveUL.isEmpty {
-            "Above UL"
-        } else if !analysis.flags.nutrientsAtUL.isEmpty {
-            "Near UL"
-        } else {
-            "Within UL"
-        }
+        if !analysis.flags.nutrientsAboveUL.isEmpty { "Above UL" }
+        else if !analysis.flags.nutrientsAtUL.isEmpty { "Near UL" }
+        else { "Within UL" }
     }
 
     private var ulColor: Color {
-        if !analysis.flags.nutrientsAboveUL.isEmpty { return AppTheme.Color.critical }
-        if !analysis.flags.nutrientsAtUL.isEmpty { return AppTheme.Color.warning }
-        return AppTheme.Color.success
+        if !analysis.flags.nutrientsAboveUL.isEmpty { return Theme.Palette.tier4 }
+        if !analysis.flags.nutrientsAtUL.isEmpty { return Theme.Palette.tier3 }
+        return Theme.Palette.tier1
     }
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(alignment: .top, spacing: Theme.Space.md) {
             SnapshotItem(
                 title: "Peak RDI",
-                value: highestRDIAnalysis?.rdiPercentString ?? "-",
-                color: highestRDIAnalysis?.rdiColor ?? .secondary
+                value: highestRDIAnalysis?.rdiPercentString ?? "—",
+                color: highestRDIAnalysis?.rdiColor ?? Theme.Palette.inkTertiary
             )
-
-            Divider()
-                .frame(height: 28)
-
+            snapshotDivider
             SnapshotItem(title: "Safety", value: ulText, color: ulColor)
-
-            Divider()
-                .frame(height: 28)
-
+            snapshotDivider
             SnapshotItem(
                 title: "Interactions",
                 value: interactionCount == 0 ? "None" : interactionCount.formatted(),
-                color: interactionCount == 0 ? AppTheme.Color.success : AppTheme.Color.warning
+                color: interactionCount == 0 ? Theme.Palette.tier1 : Theme.Palette.tier3
             )
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+        .padding(Theme.Space.lg)
+        .dsSurface()
         .accessibilityElement(children: .combine)
+    }
+
+    private var snapshotDivider: some View {
+        Rectangle()
+            .fill(.hairline)
+            .frame(width: 1, height: 34)
     }
 }
 
@@ -230,17 +182,74 @@ private struct SnapshotItem: View {
     let color: Color
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: Theme.Space.xs) {
             Text(title)
-                .font(.caption2.weight(.semibold))
-                .foregroundStyle(.secondary)
+                .textStyle(.eyebrow)
+                .foregroundStyle(.inkTertiary)
             Text(value)
-                .font(.subheadline.weight(.semibold))
+                .textStyle(.stat)
                 .foregroundStyle(color)
                 .lineLimit(1)
-                .minimumScaleFactor(0.75)
+                .minimumScaleFactor(0.7)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+// MARK: - Summary Tab
+
+private struct SummaryTabView: View {
+    let analysis: LabelAnalysis
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var appeared = false
+
+    var body: some View {
+        ScrollView {
+            LazyVStack(alignment: .leading, spacing: Theme.Space.lg) {
+                ReportSummaryCardView(analysis: analysis)
+                    .modifier(EntranceModifier(appeared: appeared, index: 0, reduceMotion: reduceMotion))
+
+                if analysis.flags.hasAnyFlags {
+                    FlagBannerView(flags: analysis.flags)
+                        .modifier(EntranceModifier(appeared: appeared, index: 1, reduceMotion: reduceMotion))
+                }
+
+                HStack(spacing: Theme.Space.xs) {
+                    Image(systemName: "info.circle")
+                        .foregroundStyle(.inkTertiary)
+                        .font(.system(size: Theme.Icon.xs, weight: .semibold))
+                    Text("Analysis based on \(analysis.servingSize.selectedQuantity.formatted()) \(analysis.servingSize.unit.pluralised(for: analysis.servingSize.selectedQuantity))")
+                        .textStyle(.caption)
+                        .foregroundStyle(.inkTertiary)
+                }
+                .modifier(EntranceModifier(appeared: appeared, index: 2, reduceMotion: reduceMotion))
+
+                DisclaimerView(text: analysis.disclaimer)
+                    .modifier(EntranceModifier(appeared: appeared, index: 3, reduceMotion: reduceMotion))
+            }
+            .padding(.horizontal, Theme.Space.screen)
+            .padding(.top, Theme.Space.sm)
+            .padding(.bottom, AnalysisView.tabBarClearance)
+        }
+        .scrollIndicators(.hidden)
+        .onAppear {
+            if reduceMotion { appeared = true } else { withAnimation { appeared = true } }
+        }
+    }
+}
+
+/// Staggered fade+rise entrance.
+private struct EntranceModifier: ViewModifier {
+    let appeared: Bool
+    let index: Int
+    let reduceMotion: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(appeared ? 1 : 0)
+            .offset(y: appeared ? 0 : 10)
+            .animation(reduceMotion ? nil : .dsGentle.delay(Double(index) * Theme.Motion.stagger), value: appeared)
     }
 }
 
@@ -260,7 +269,6 @@ private struct NutrientsTabView: View {
     var body: some View {
         VStack(spacing: 0) {
             NutrientFilterBar(selection: $filter)
-            Divider()
 
             if analysis.nutrientAnalyses.isEmpty {
                 ContentUnavailableView(
@@ -276,20 +284,31 @@ private struct NutrientsTabView: View {
                                 rowTapCount += 1
                                 router.navigate(to: .nutrientDetail(nutrientAnalysis))
                             } label: {
-                                NutrientAnalysisRowView(analysis: nutrientAnalysis, index: index)
-                                    .padding(.horizontal, 16)
+                                HStack(spacing: Theme.Space.sm) {
+                                    NutrientAnalysisRowView(analysis: nutrientAnalysis, index: index)
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: Theme.Icon.xs, weight: .semibold))
+                                        .foregroundStyle(.inkFaint)
+                                }
+                                .padding(.horizontal, Theme.Space.lg)
                             }
                             .buttonStyle(.plain)
                             .accessibilityHint("Shows nutrient detail")
-                            Divider()
-                                .padding(.leading, 16)
-                        }
 
-                        NutrientFootnoteView()
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 16)
+                            if nutrientAnalysis.id != filteredAnalyses.last?.id {
+                                HairlineDivider(leadingInset: Theme.Space.lg)
+                            }
+                        }
                     }
+                    .dsSurface()
+                    .padding(.horizontal, Theme.Space.screen)
+
+                    NutrientFootnoteView()
+                        .padding(.horizontal, Theme.Space.screen)
+                        .padding(.vertical, Theme.Space.lg)
+                        .padding(.bottom, AnalysisView.tabBarClearance)
                 }
+                .scrollIndicators(.hidden)
                 .sensoryFeedback(.selection, trigger: rowTapCount)
             }
         }
@@ -309,65 +328,81 @@ private struct DetailsTabView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 18) {
+            LazyVStack(alignment: .leading, spacing: Theme.Space.lg) {
                 if !withFormQuality.isEmpty {
                     ReportSectionHeader("Forms & Potency")
 
-                    VStack(spacing: 0) {
+                    LazyVStack(spacing: 0) {
                         ForEach(withFormQuality) { nutrientAnalysis in
                             Button {
                                 rowTapCount += 1
                                 router.navigate(to: .nutrientDetail(nutrientAnalysis))
                             } label: {
-                                FormPotencyRowView(analysis: nutrientAnalysis)
-                                    .padding(.horizontal, 14)
-                                    .padding(.vertical, 4)
+                                HStack(spacing: Theme.Space.sm) {
+                                    FormPotencyRowView(analysis: nutrientAnalysis)
+                                    Image(systemName: "chevron.right")
+                                        .font(.system(size: Theme.Icon.xs, weight: .semibold))
+                                        .foregroundStyle(.inkFaint)
+                                }
+                                .padding(.horizontal, Theme.Space.lg)
+                                .padding(.vertical, Theme.Space.sm)
                             }
                             .buttonStyle(.plain)
                             .accessibilityHint("Shows nutrient detail")
 
                             if nutrientAnalysis.id != withFormQuality.last?.id {
-                                Divider()
-                                    .padding(.leading, 70)
+                                HairlineDivider(leadingInset: 64)
                             }
                         }
                     }
-                    .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
+                    .dsSurface()
 
-                    Text("Potency is based on absorption and bioavailability evidence from published research.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text("Potency reflects absorption and bioavailability evidence from published research.")
+                        .textStyle(.caption)
+                        .foregroundStyle(.inkTertiary)
                 }
 
                 if analysis.hasHerbals {
                     ReportSectionHeader("Herbal Extracts")
-                    ForEach(analysis.herbalEntries, id: \.id) { HerbalRowView(entry: $0) }
+                    VStack(alignment: .leading, spacing: Theme.Space.md) {
+                        ForEach(analysis.herbalEntries, id: \.id) { HerbalRowView(entry: $0) }
+                    }
+                    .dsCard()
                 }
 
                 if analysis.hasProbiotics {
                     ReportSectionHeader("Probiotics")
-                    if let total = analysis.totalCFUBillions {
-                        Text("\(total.formatted()) Billion CFU total")
-                            .font(.title2.bold())
+                    VStack(alignment: .leading, spacing: Theme.Space.md) {
+                        if let total = analysis.totalCFUBillions {
+                            Text("\(total.formatted()) Billion CFU total")
+                                .textStyle(.title)
+                                .foregroundStyle(.ink)
+                                .monospacedDigit()
+                        }
+                        ForEach(analysis.probioticEntries.filter { !$0.isTotalLine }, id: \.id) {
+                            ProbioticRowView(entry: $0)
+                        }
+                        Text("No NRV reference values established for probiotic strains.")
+                            .textStyle(.caption)
+                            .foregroundStyle(.inkTertiary)
                     }
-                    ForEach(analysis.probioticEntries.filter { !$0.isTotalLine }, id: \.id) {
-                        ProbioticRowView(entry: $0)
-                    }
-                    Text("No NRV reference values established for probiotic strains.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    .dsCard()
                 }
 
                 if analysis.hasUnresolved {
                     ReportSectionHeader("Could Not Be Analysed")
-                    ForEach(analysis.unresolvedLines, id: \.id) { UnresolvedLineView(line: $0) }
+                    VStack(alignment: .leading, spacing: Theme.Space.sm) {
+                        ForEach(analysis.unresolvedLines, id: \.id) { UnresolvedLineView(line: $0) }
+                    }
                 }
 
                 DisclaimerView(text: analysis.disclaimer)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 16)
+            .padding(.horizontal, Theme.Space.screen)
+            .padding(.top, Theme.Space.sm)
+            .padding(.bottom, AnalysisView.tabBarClearance)
         }
+        .scrollIndicators(.hidden)
         .sensoryFeedback(.selection, trigger: rowTapCount)
     }
 }
@@ -393,19 +428,14 @@ private struct InteractionsTabView: View {
 
     var body: some View {
         ScrollView {
-            LazyVStack(alignment: .leading, spacing: 12) {
-
-                // Found interactions
+            LazyVStack(alignment: .leading, spacing: Theme.Space.md) {
                 if totalInteractionCount > 0 {
                     InteractionSectionHeader(
-                        title: "Potential Interactions Found",
+                        title: "Potential Interactions",
                         count: totalInteractionCount,
                         icon: "exclamationmark.triangle.fill",
-                        color: AppTheme.Color.warning
+                        color: Theme.Palette.tier3
                     )
-                    .padding(.horizontal, 16)
-                    .padding(.top, 12)
-                    .padding(.bottom, 8)
 
                     ForEach(flags.nutrientInteractions) { interaction in
                         InteractionRowView(
@@ -414,8 +444,6 @@ private struct InteractionsTabView: View {
                             effect: interaction.effect,
                             recommendation: interaction.recommendation
                         )
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 10)
                     }
 
                     ForEach(flags.medicationInteractions) { interaction in
@@ -425,38 +453,39 @@ private struct InteractionsTabView: View {
                             effect: interaction.effect,
                             recommendation: interaction.recommendation
                         )
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 10)
                     }
                 }
 
-                // No-interaction nutrients
                 if !noInteractionNutrients.isEmpty {
                     InteractionSectionHeader(
                         title: "No Known Interactions",
                         count: noInteractionNutrients.count,
                         icon: "checkmark.circle.fill",
-                        color: AppTheme.Color.success
+                        color: Theme.Palette.tier1
                     )
-                    .padding(.horizontal, 16)
-                    .padding(.top, totalInteractionCount > 0 ? 12 : 12)
-                    .padding(.bottom, 8)
+                    .padding(.top, totalInteractionCount > 0 ? Theme.Space.sm : 0)
 
-                    ForEach(noInteractionNutrients) { nutrient in
-                        NoInteractionRowView(analysis: nutrient)
-                            .padding(.horizontal, 16)
-                            .padding(.bottom, 8)
+                    VStack(spacing: 0) {
+                        ForEach(Array(noInteractionNutrients.enumerated()), id: \.element.id) { index, nutrient in
+                            NoInteractionRowView(analysis: nutrient)
+                                .padding(.horizontal, Theme.Space.lg)
+                            if nutrient.id != noInteractionNutrients.last?.id {
+                                HairlineDivider(leadingInset: 60)
+                            }
+                        }
                     }
+                    .dsSurface()
                 }
 
                 DisclaimerView(
                     text: "Interactions listed are based on published clinical evidence. Individual responses vary. Always consult a healthcare professional before adjusting supplement or medication regimens."
                 )
-                .padding(.horizontal, 16)
-                .padding(.top, 16)
-                .padding(.bottom, 24)
             }
+            .padding(.horizontal, Theme.Space.screen)
+            .padding(.top, Theme.Space.sm)
+            .padding(.bottom, AnalysisView.tabBarClearance)
         }
+        .scrollIndicators(.hidden)
     }
 }
 
@@ -469,25 +498,25 @@ private struct InteractionSectionHeader: View {
     let color: Color
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: Theme.Space.sm) {
             Image(systemName: icon)
                 .foregroundStyle(color)
-                .font(.subheadline)
+                .font(.system(size: Theme.Icon.sm, weight: .semibold))
             Text(title)
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(.primary)
+                .textStyle(.headline)
+                .foregroundStyle(.ink)
             Spacer()
             Text("\(count)")
-                .font(.caption.weight(.bold))
-                .foregroundStyle(.white)
-                .padding(.horizontal, 9)
-                .padding(.vertical, 4)
-                .background(color, in: Capsule())
+                .textStyle(.dataLabel)
+                .foregroundStyle(color)
+                .padding(.horizontal, Theme.Space.sm)
+                .padding(.vertical, Theme.Space.xxs)
+                .background(color.opacity(0.14), in: Capsule())
         }
     }
 }
 
-// MARK: - Interaction row (with participant avatars)
+// MARK: - Interaction row
 
 private struct InteractionRowView: View {
     let participants: [String]
@@ -497,40 +526,39 @@ private struct InteractionRowView: View {
 
     private var severityColor: Color {
         switch severity {
-        case .low:      AppTheme.Color.success
-        case .moderate: AppTheme.Color.warning
-        case .high:     AppTheme.Color.critical
+        case .low:      Theme.Palette.tier1
+        case .moderate: Theme.Palette.tier3
+        case .high:     Theme.Palette.tier4
         }
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 6) {
+        VStack(alignment: .leading, spacing: Theme.Space.md) {
+            HStack(spacing: Theme.Space.sm) {
                 participantAvatars
                 Spacer()
                 Text(severity.displayLabel)
-                    .font(.caption.weight(.bold))
+                    .textStyle(.dataLabel)
                     .foregroundStyle(severityColor)
-                    .padding(.horizontal, 9)
-                    .padding(.vertical, 4)
-                    .background(severityColor.opacity(0.12), in: Capsule())
+                    .padding(.horizontal, Theme.Space.sm)
+                    .padding(.vertical, Theme.Space.xxs)
+                    .background(severityColor.opacity(0.14), in: Capsule())
             }
 
             Text(effect)
-                .font(.subheadline)
-                .foregroundStyle(.primary)
+                .textStyle(.subhead)
+                .foregroundStyle(.ink)
 
-            HStack(alignment: .top, spacing: 6) {
+            HStack(alignment: .top, spacing: Theme.Space.sm) {
                 Image(systemName: "lightbulb.fill")
-                    .font(.caption)
-                    .foregroundStyle(.yellow)
+                    .font(.system(size: Theme.Icon.xs, weight: .semibold))
+                    .foregroundStyle(Theme.Palette.tier2)
                 Text(recommendation)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkSecondary)
             }
         }
-        .padding(14)
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 14))
+        .dsCard()
     }
 
     @ViewBuilder
@@ -538,19 +566,14 @@ private struct InteractionRowView: View {
         HStack(spacing: -8) {
             ForEach(participants.prefix(3), id: \.self) { name in
                 NutrientAvatarView(canonicalName: name, size: 32)
-                    .overlay(Circle().stroke(Color(.systemBackground), lineWidth: 2))
+                    .overlay(Circle().strokeBorder(Theme.Palette.surfaceRaised, lineWidth: 2))
             }
         }
-        if participants.count > 1 {
-            Image(systemName: "plus")
-                .font(.caption2.weight(.bold))
-                .foregroundStyle(.secondary)
-                .padding(.leading, 12)
-        }
         Text(participants.joined(separator: " + "))
-            .font(.caption.weight(.semibold))
-            .foregroundStyle(.primary)
+            .textStyle(.subhead)
+            .foregroundStyle(.ink)
             .lineLimit(1)
+            .padding(.leading, Theme.Space.xs)
     }
 }
 
@@ -560,22 +583,22 @@ private struct NoInteractionRowView: View {
     let analysis: NutrientAnalysis
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Theme.Space.md) {
             NutrientAvatarView(canonicalName: analysis.entry.canonicalName, size: 36)
-            VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: Theme.Space.xxs) {
                 Text(analysis.entry.displayName)
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.primary)
+                    .textStyle(.subhead)
+                    .foregroundStyle(.ink)
                 Text("No known interactions")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkTertiary)
             }
             Spacer()
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(AppTheme.Color.success.opacity(0.70))
-                .font(.subheadline)
+                .foregroundStyle(Theme.Palette.tier1.opacity(0.7))
+                .font(.system(size: Theme.Icon.sm, weight: .semibold))
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Theme.Space.md)
     }
 }
 
@@ -584,8 +607,8 @@ private struct NoInteractionRowView: View {
 private struct NutrientFootnoteView: View {
     var body: some View {
         Text("RDI = Recommended Dietary Intake  ·  UL = Tolerable Upper Intake Level")
-            .font(.caption)
-            .foregroundStyle(.tertiary)
+            .textStyle(.caption)
+            .foregroundStyle(.inkTertiary)
             .multilineTextAlignment(.center)
             .frame(maxWidth: .infinity)
     }

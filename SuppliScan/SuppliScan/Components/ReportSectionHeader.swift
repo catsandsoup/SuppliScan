@@ -1,6 +1,6 @@
 // ReportSectionHeader.swift
 // SuppliScan
-// Section title + Divider — used in scroll contexts instead of List Section headers.
+// Section title used in scroll contexts (Details tab) instead of List Section headers.
 
 import SwiftUI
 
@@ -12,12 +12,10 @@ struct ReportSectionHeader: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.headline)
-                .foregroundStyle(.primary)
-            Divider()
-        }
-        .padding(.bottom, 4)
+        Text(title)
+            .textStyle(.title)
+            .foregroundStyle(.ink)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, Theme.Space.sm)
     }
 }

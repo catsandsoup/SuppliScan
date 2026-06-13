@@ -1,6 +1,6 @@
 // FilterChip.swift
 // SuppliScan
-// Pill-shaped selection chip — used in AnalysisInternalTabBar and NutrientFilterBar.
+// Pill-shaped selection chip — used in NutrientFilterBar. Design-system styled.
 
 import SwiftUI
 
@@ -12,16 +12,13 @@ struct FilterChip: View {
     var body: some View {
         Button(action: action) {
             Text(label)
-                .font(.subheadline.weight(isSelected ? .semibold : .regular))
-                .padding(.horizontal, 14)
-                .padding(.vertical, 7)
-                .background(
-                    isSelected ? Color.accentColor : Color(.tertiarySystemFill),
-                    in: Capsule()
-                )
-                .foregroundStyle(isSelected ? Color.white : Color.primary)
+                .textStyle(.subhead)
+                .foregroundStyle(isSelected ? Color.onBrand : Color.inkSecondary)
+                .padding(.horizontal, Theme.Space.md)
+                .padding(.vertical, Theme.Space.sm)
+                .background(isSelected ? Color.brand : Color.surfaceSunken, in: Capsule())
         }
         .buttonStyle(.plain)
-        .animation(.spring(response: 0.25, dampingFraction: 0.75), value: isSelected)
+        .animation(.dsSnappy, value: isSelected)
     }
 }
