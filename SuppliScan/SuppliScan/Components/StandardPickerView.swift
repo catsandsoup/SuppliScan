@@ -1,6 +1,7 @@
 // StandardPickerView.swift
 // SuppliScan
-// Segmented AU/US/EU picker — reused in ReviewView and SettingsView.
+// AU/US/EU reference-standard selector — reused in ReviewView and SettingsView.
+// Custom sliding-pill segmented control (design system), not a stock Picker.
 
 import SwiftUI
 
@@ -8,12 +9,9 @@ struct StandardPickerView: View {
     @Binding var selection: ReferenceStandard
 
     var body: some View {
-        Picker("Reference Standard", selection: $selection) {
-            ForEach(ReferenceStandard.allCases, id: \.self) {
-                Text($0.rawValue).tag($0)
-            }
+        SegmentedPicker(options: ReferenceStandard.allCases, selection: $selection) {
+            $0.rawValue
         }
-        .pickerStyle(.segmented)
         .accessibilityLabel("Reference standard for nutritional values")
     }
 }

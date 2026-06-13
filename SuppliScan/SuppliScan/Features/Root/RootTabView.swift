@@ -1,10 +1,10 @@
 // RootTabView.swift
 // SuppliScan
 //
-// App root — 4-tab container.
-// Each tab owns an independent NavigationRouter and NavigationStack.
-// Scan tab: push-navigates to AnalysisView after analysis (back returns to ReviewView).
-// Analysis tab: shows the last persisted ScanRecord via @Query in AnalysisRootView.
+// App root — custom 4-tab container with a floating Liquid-Glass tab bar.
+// Each tab owns an independent NavigationRouter + NavigationStack, kept alive across
+// tab switches (state preserved) and cross-faded. Replaces the stock TabView chrome
+// without changing navigation behaviour.
 
 import SwiftUI
 
@@ -12,31 +12,69 @@ import SwiftUI
 struct RootTabView: View {
     @Environment(AppDependencies.self) private var dependencies
 
-    @State private var selectedTab: AppTab = .scan
+    @State private var selectedTab: AppTab = .initial
     @State private var scanRouter = NavigationRouter()
     @State private var analysisRouter = NavigationRouter()
     @State private var historyRouter = NavigationRouter()
 
-    enum AppTab {
+    enum AppTab: Hashable {
         case scan, analysis, history, settings
+
+        /// Default selected tab. DEBUG builds honour a `-startTab <name>` launch argument
+        /// so the simulator can open directly to any tab for verification. No effect in release.
+        static var initial: AppTab {
+            #if DEBUG
+            let args = ProcessInfo.processInfo.arguments
+            if let i = args.firstIndex(of: "-startTab"), i + 1 < args.count {
+                switch args[i + 1] {
+                case "analysis": return .analysis
+                case "history":  return .history
+                case "settings": return .settings
+                default:         return .scan
+                }
+            }
+            #endif
+            return .scan
+        }
     }
 
+    private let items: [GlassTabBarItem<AppTab>] = [
+        .init(tab: .scan,     title: "Scan",     icon: "camera.viewfinder"),
+        .init(tab: .analysis, title: "Analysis", icon: "chart.bar.doc.horizontal"),
+        .init(tab: .history,  title: "History",  icon: "clock.arrow.circlepath"),
+        .init(tab: .settings, title: "Settings", icon: "gearshape")
+    ]
+
     var body: some View {
-        TabView(selection: $selectedTab) {
-            Tab("Scan", systemImage: "camera.viewfinder", value: AppTab.scan) {
-                scanTab
+        ZStack(alignment: .bottom) {
+            Theme.Palette.surface.ignoresSafeArea()
+
+            ZStack {
+                tabContainer(.scan) { scanTab }
+                tabContainer(.analysis) { analysisTab }
+                tabContainer(.history) { historyTab }
+                tabContainer(.settings) { settingsTab }
             }
-            Tab("Analysis", systemImage: "chart.bar.doc.horizontal", value: AppTab.analysis) {
-                analysisTab
-            }
-            Tab("History", systemImage: "clock.arrow.circlepath", value: AppTab.history) {
-                historyTab
-            }
-            Tab("Settings", systemImage: "gearshape", value: AppTab.settings) {
-                settingsTab
-            }
+
+            GlassTabBar(items: items, selection: $selectedTab)
+                .padding(.horizontal, Theme.Space.xl)
+                .padding(.bottom, Theme.Space.xs)
+                .ignoresSafeArea(.keyboard, edges: .bottom)
         }
-        .tabBarMinimizeBehavior(.onScrollDown)
+    }
+
+    @ViewBuilder
+    private func tabContainer<Content: View>(
+        _ tab: AppTab,
+        @ViewBuilder _ content: () -> Content
+    ) -> some View {
+        let isActive = selectedTab == tab
+        content()
+            .opacity(isActive ? 1 : 0)
+            .allowsHitTesting(isActive)
+            .accessibilityHidden(!isActive)
+            .zIndex(isActive ? 1 : 0)
+            .animation(.dsFade, value: selectedTab)
     }
 
     // MARK: - Tabs

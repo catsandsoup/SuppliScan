@@ -1,6 +1,7 @@
 // DemographicPickerView.swift
 // SuppliScan
-// Menu picker for demographic — reused in ReviewView and SettingsView.
+// Demographic selector — reused in ReviewView and SettingsView.
+// Custom trigger over a native Menu (keeps the menu mechanic, restyles the affordance).
 
 import SwiftUI
 
@@ -12,12 +13,31 @@ struct DemographicPickerView: View {
     }
 
     var body: some View {
-        Picker("Profile", selection: $selectedKey) {
+        Menu {
             ForEach(Demographic.all, id: \.key) { demographic in
-                Text(demographic.displayName).tag(demographic.key)
+                Button {
+                    selectedKey = demographic.key
+                } label: {
+                    if demographic.key == selectedKey {
+                        Label(demographic.displayName, systemImage: "checkmark")
+                    } else {
+                        Text(demographic.displayName)
+                    }
+                }
             }
+        } label: {
+            HStack(spacing: Theme.Space.sm) {
+                Text(selectedDemographic.displayName)
+                    .textStyle(.subhead)
+                    .foregroundStyle(.brand)
+                Image(systemName: "chevron.up.chevron.down")
+                    .font(.system(size: Theme.Icon.xs, weight: .semibold))
+                    .foregroundStyle(.brand)
+            }
+            .padding(.vertical, Theme.Space.sm)
+            .padding(.horizontal, Theme.Space.md)
+            .background(.brandMuted, in: Capsule())
         }
-        .pickerStyle(.menu)
         .accessibilityLabel("Demographic profile for reference values")
     }
 }
