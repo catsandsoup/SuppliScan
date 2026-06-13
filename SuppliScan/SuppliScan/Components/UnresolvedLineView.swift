@@ -1,6 +1,6 @@
 // UnresolvedLineView.swift
 // SuppliScan
-// Raw OCR line that could not be analysed — shown in Details tab.
+// Raw OCR line that could not be analysed — shown in the Details tab. Self-contained token row.
 
 import SwiftUI
 
@@ -8,20 +8,24 @@ struct UnresolvedLineView: View {
     let line: RawLine
 
     var body: some View {
-        HStack(alignment: .top, spacing: 10) {
+        HStack(alignment: .top, spacing: Theme.Space.sm) {
             Image(systemName: "questionmark.circle")
-                .foregroundStyle(AppTheme.Color.unresolved)
-                .font(.subheadline)
-            VStack(alignment: .leading, spacing: 2) {
+                .font(.system(size: Theme.Icon.sm, weight: .semibold))
+                .foregroundStyle(.inkTertiary)
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: Theme.Space.xxs) {
                 Text(line.text)
-                    .font(.subheadline)
-                    .foregroundStyle(.primary)
+                    .textStyle(.subhead)
+                    .foregroundStyle(.ink)
                 Text("Could not be analysed")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkTertiary)
             }
+            Spacer(minLength: 0)
         }
-        .padding(.vertical, 4)
-        .listRowBackground(AppTheme.Color.unresolved.opacity(0.08))
+        .padding(Theme.Space.md)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(.surfaceSunken, in: Theme.roundedRect(Theme.Radius.sm))
+        .accessibilityElement(children: .combine)
     }
 }

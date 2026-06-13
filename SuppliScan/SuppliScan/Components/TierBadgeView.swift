@@ -9,9 +9,9 @@ struct TierBadgeView: View {
 
     var body: some View {
         Text(tier.badgeLabel)
-            .font(.caption.weight(.semibold))
-            .padding(.horizontal, 9)
-            .padding(.vertical, 4)
+            .font(.dsCaption.weight(.semibold))
+            .padding(.horizontal, Theme.Space.sm)
+            .padding(.vertical, Theme.Space.xs)
             .background(tier.badgeColor.opacity(0.14), in: Capsule())
             .foregroundStyle(tier.badgeColor)
     }
@@ -40,10 +40,10 @@ extension FormTier {
 
     var badgeColor: Color {
         switch self {
-        case .tier1: AppTheme.Color.tier1
-        case .tier2: AppTheme.Color.tier2
-        case .tier3: AppTheme.Color.tier3
-        case .tier4: AppTheme.Color.tier4
+        case .tier1: Theme.Palette.tier1
+        case .tier2: Theme.Palette.tier2
+        case .tier3: Theme.Palette.tier3
+        case .tier4: Theme.Palette.tier4
         }
     }
 }

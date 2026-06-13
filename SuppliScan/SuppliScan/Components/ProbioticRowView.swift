@@ -1,6 +1,6 @@
 // ProbioticRowView.swift
 // SuppliScan
-// Probiotic strain row — genus species (italic), strain code, CFU.
+// Probiotic strain row — genus species (italic), strain code, CFU. On tokens.
 
 import SwiftUI
 
@@ -8,26 +8,29 @@ struct ProbioticRowView: View {
     let entry: ProbioticEntry
 
     var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            VStack(alignment: .leading, spacing: 2) {
+        HStack(alignment: .firstTextBaseline, spacing: Theme.Space.md) {
+            VStack(alignment: .leading, spacing: Theme.Space.xxs) {
                 Text("\(entry.genus) \(entry.species)")
-                    .font(.subheadline.italic())
+                    .font(.dsSubhead.italic())
+                    .foregroundStyle(.ink)
                 if let strain = entry.strain {
                     Text(strain)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .textStyle(.caption)
+                        .foregroundStyle(.inkTertiary)
                 }
             }
-            Spacer()
+            Spacer(minLength: Theme.Space.sm)
             if let cfu = entry.cfuBillions {
                 Text("\(cfu.formatted()) B CFU")
-                    .font(.subheadline)
+                    .textStyle(.dataLabel)
+                    .foregroundStyle(.ink)
             } else {
                 Text("CFU unknown")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkTertiary)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Theme.Space.xs)
+        .accessibilityElement(children: .combine)
     }
 }

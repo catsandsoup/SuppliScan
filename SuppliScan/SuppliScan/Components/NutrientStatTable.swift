@@ -1,6 +1,6 @@
 // NutrientStatTable.swift
 // SuppliScan
-// Two-column stat rows for NutrientDetailView — label + value.
+// Two-column reference rows for NutrientDetailView — label + value, on the design system.
 
 import SwiftUI
 
@@ -15,23 +15,25 @@ struct NutrientStatTable: View {
     var body: some View {
         VStack(spacing: 0) {
             ForEach(Array(rows.enumerated()), id: \.offset) { index, row in
-                HStack {
+                HStack(spacing: Theme.Space.md) {
                     Text(row.label)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    Spacer()
+                        .textStyle(.subhead)
+                        .foregroundStyle(.inkSecondary)
+                    Spacer(minLength: Theme.Space.sm)
                     Text(row.value)
-                        .font(.subheadline)
-                        .foregroundStyle(.primary)
+                        .textStyle(.dataLabel)
+                        .foregroundStyle(.ink)
+                        .multilineTextAlignment(.trailing)
                 }
-                .padding(.vertical, 10)
-                .padding(.horizontal, 4)
+                .padding(.vertical, Theme.Space.md)
+                .accessibilityElement(children: .combine)
+
                 if index < rows.count - 1 {
-                    Divider()
+                    HairlineDivider()
                 }
             }
         }
-        .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 10))
-        .padding(.horizontal, 1)
+        .padding(.horizontal, Theme.Space.lg)
+        .dsSurface()
     }
 }

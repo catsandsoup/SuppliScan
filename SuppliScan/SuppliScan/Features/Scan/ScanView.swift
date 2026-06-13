@@ -221,7 +221,7 @@ struct ScanView: View {
     private var detectedBadge: some View {
         HStack(spacing: 8) {
             Image(systemName: "checkmark.circle.fill")
-                .foregroundStyle(.green)
+                .foregroundStyle(Theme.Palette.tier1)
             Text("Label detected")
                 .font(.subheadline.weight(.medium))
                 .foregroundStyle(.white)
@@ -246,13 +246,19 @@ struct ScanView: View {
                 .foregroundStyle(.white.opacity(0.65))
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
-            Button("Open Settings") {
+            Button {
                 if let url = URL(string: "app-settings:") {
                     openURL(url)
                 }
+            } label: {
+                Text("Open Settings")
+                    .font(.subheadline.weight(.semibold))
+                    .foregroundStyle(.black)
+                    .padding(.horizontal, Theme.Space.xl)
+                    .padding(.vertical, Theme.Space.md)
+                    .background(.white, in: Capsule())
             }
-            .buttonStyle(.bordered)
-            .tint(.white)
+            .padding(.top, Theme.Space.xs)
         }
     }
 

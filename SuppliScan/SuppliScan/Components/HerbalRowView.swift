@@ -1,6 +1,6 @@
 // HerbalRowView.swift
 // SuppliScan
-// Herbal entry row — latin name, extract type, amount, dry equivalent.
+// Herbal entry row — latin name, common name, extract amount, dry equivalent. On tokens.
 
 import SwiftUI
 
@@ -8,39 +8,43 @@ struct HerbalRowView: View {
     let entry: HerbalEntry
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(alignment: .firstTextBaseline) {
-                VStack(alignment: .leading, spacing: 2) {
+        VStack(alignment: .leading, spacing: Theme.Space.xs) {
+            HStack(alignment: .firstTextBaseline, spacing: Theme.Space.md) {
+                VStack(alignment: .leading, spacing: Theme.Space.xxs) {
                     Text(entry.latinName)
-                        .font(.subheadline.italic())
+                        .font(.dsSubhead.italic())
+                        .foregroundStyle(.ink)
                     if let common = entry.commonName {
                         Text(common)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .textStyle(.caption)
+                            .foregroundStyle(.inkTertiary)
                     }
                 }
-                Spacer()
+                Spacer(minLength: Theme.Space.sm)
                 if let amount = entry.extractAmount, let unit = entry.extractUnit {
                     Text("\(amount.formatted()) \(unit.rawValue)")
-                        .font(.subheadline)
-                        .foregroundStyle(.primary)
+                        .textStyle(.dataLabel)
+                        .foregroundStyle(.ink)
                 } else {
                     Text("Amount unknown")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .textStyle(.caption)
+                        .foregroundStyle(.inkTertiary)
                 }
             }
             if let dryEq = entry.dryEquivalentAmount, let dryUnit = entry.dryEquivalentUnit {
                 Text("Equiv. to \(dryEq.formatted()) \(dryUnit.rawValue) dry herb")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkSecondary)
+                    .monospacedDigit()
             }
             if let std = entry.standardisation {
                 Text("\(std.amount.formatted()) \(std.unit.rawValue) \(std.compound)")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkSecondary)
+                    .monospacedDigit()
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, Theme.Space.xs)
+        .accessibilityElement(children: .combine)
     }
 }

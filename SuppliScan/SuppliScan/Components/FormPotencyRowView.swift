@@ -1,6 +1,6 @@
 // FormPotencyRowView.swift
 // SuppliScan
-// Nutrient row with colored circular avatar, bioavailability tier label, and rationale.
+// Nutrient row with coloured monogram avatar, bioavailability tier label, and rationale.
 
 import SwiftUI
 
@@ -15,21 +15,21 @@ struct FormPotencyRowView: View {
     }
 
     private func content(quality: FormQuality, canonicalName: String) -> some View {
-        HStack(alignment: .center, spacing: 14) {
+        HStack(alignment: .center, spacing: Theme.Space.md) {
             NutrientAvatarView(canonicalName: canonicalName)
 
-            VStack(alignment: .leading, spacing: 5) {
+            VStack(alignment: .leading, spacing: Theme.Space.xxs) {
                 Text(analysis.entry.displayName)
-                    .font(.subheadline.weight(.semibold))
-                    .foregroundStyle(.primary)
+                    .textStyle(.headline)
+                    .foregroundStyle(.ink)
 
                 Text(quality.tier.potencyLabel)
-                    .font(.caption.weight(.semibold))
+                    .textStyle(.caption)
                     .foregroundStyle(quality.tier.badgeColor)
 
                 Text(quality.rationale)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                    .textStyle(.caption)
+                    .foregroundStyle(.inkSecondary)
                     .lineLimit(2)
 
                 if quality.isAIInferred {
@@ -37,11 +37,11 @@ struct FormPotencyRowView: View {
                 }
             }
 
-            Spacer(minLength: 0)
+            Spacer(minLength: Theme.Space.sm)
 
             TierBadgeView(tier: quality.tier)
         }
-        .padding(.vertical, 8)
+        .padding(.vertical, Theme.Space.sm)
     }
 }
 
@@ -65,10 +65,10 @@ struct NutrientAvatarView: View {
                 .fill(bgColor)
                 .frame(width: size, height: size)
             Text(abbreviation)
-                .font(.caption.weight(.bold))
-                .fontDesign(.rounded)
+                .font(.system(size: size * 0.34, weight: .semibold))
                 .minimumScaleFactor(0.65)
                 .foregroundStyle(.white)
         }
+        .accessibilityHidden(true)
     }
 }
