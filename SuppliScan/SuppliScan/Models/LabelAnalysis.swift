@@ -75,25 +75,39 @@ nonisolated extension LabelAnalysis {
         productName.isEmpty ? "Analysis" : productName
     }
 
-    /// Plain-text summary for share sheet.
+    /// Rich text summary for share sheet (Notes, Mail, Reminders, etc.).
     var shareText: String {
         let name = productName.isEmpty ? "Supplement" : productName
         let serving = "\(servingSize.selectedQuantity.formatted()) \(servingSize.unit.pluralised(for: servingSize.selectedQuantity))"
         let nutrientCount = nutrientAnalyses.count
         var lines: [String] = [
-            "\(name) — SuppliScan Analysis",
-            "\(referenceStandard.rawValue) Standard · \(serving)",
+            "\(name) — SuppliScan analysis",
+            "\(referenceStandard.rawValue) standard · \(serving) · \(demographic.displayName)",
             "",
             "\(nutrientCount) nutrient\(nutrientCount == 1 ? "" : "s") identified",
         ]
         if !flags.nutrientsAboveUL.isEmpty {
             let count = flags.nutrientsAboveUL.count
-            lines.append("Warning: \(count) nutrient\(count == 1 ? "" : "s") above Tolerable Upper Intake Level")
+            lines.append("⚠️ \(count) nutrient\(count == 1 ? "" : "s") above the Tolerable Upper Intake Level")
         }
         if !flags.nutrientInteractions.isEmpty || !flags.medicationInteractions.isEmpty {
             let count = flags.nutrientInteractions.count + flags.medicationInteractions.count
-            lines.append("\(count) potential interaction\(count == 1 ? "" : "s") detected")
+            lines.append("\(count) potential interaction\(count == 1 ? "" : "s") flagged")
         }
+
+        let highlights = nutrientAnalyses
+            .filter { $0.rdiPercent != nil }
+            .sorted { ($0.rdiPercent ?? 0) > ($1.rdiPercent ?? 0) }
+            .prefix(5)
+        if !highlights.isEmpty {
+            lines.append("")
+            lines.append("Highlights (% of RDI):")
+            for nutrient in highlights {
+                let percent = Int((nutrient.rdiPercent ?? 0).rounded())
+                lines.append("• \(nutrient.entry.displayName): \(percent)%")
+            }
+        }
+
         lines.append("")
         lines.append(disclaimer)
         return lines.joined(separator: "\n")

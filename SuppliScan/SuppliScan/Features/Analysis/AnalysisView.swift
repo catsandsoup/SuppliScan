@@ -13,6 +13,7 @@ struct AnalysisView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var activeTab: AnalysisTab = .nutrients
     @State private var ulWarningTriggered = false
+    @State private var shareImage: Image?
 
     /// Bottom inset so scrolling content clears the floating glass tab bar.
     static let tabBarClearance: CGFloat = 96
@@ -31,15 +32,11 @@ struct AnalysisView: View {
         .screenBackground()
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                ShareLink(
-                    item: analysis.shareText,
-                    subject: Text(analysis.productName.isEmpty ? "SuppliScan Analysis" : analysis.productName)
-                ) {
-                    Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: Theme.Icon.md, weight: .semibold))
-                        .foregroundStyle(.brand)
-                }
+                shareControl
             }
+        }
+        .task {
+            shareImage = AnalysisShareRenderer.renderCard(for: analysis)
         }
         .toolbarBackground(.hidden, for: .navigationBar)
         .navigationTitle("")
@@ -51,6 +48,35 @@ struct AnalysisView: View {
                 ulWarningTriggered = true
             }
         }
+    }
+
+    // MARK: - Share
+
+    @ViewBuilder
+    private var shareControl: some View {
+        if let shareImage {
+            ShareLink(
+                item: AnalysisShareContent(image: shareImage, text: analysis.shareText),
+                subject: Text(analysis.displayTitle),
+                message: Text("My \(analysis.displayTitle) breakdown from SuppliScan"),
+                preview: SharePreview(analysis.displayTitle, image: shareImage)
+            ) {
+                shareIcon
+            }
+        } else {
+            ShareLink(
+                item: analysis.shareText,
+                subject: Text(analysis.displayTitle)
+            ) {
+                shareIcon
+            }
+        }
+    }
+
+    private var shareIcon: some View {
+        Image(systemName: "square.and.arrow.up")
+            .font(.system(size: Theme.Icon.md, weight: .semibold))
+            .foregroundStyle(.brand)
     }
 
     // MARK: - Header
