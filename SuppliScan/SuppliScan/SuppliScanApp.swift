@@ -40,6 +40,7 @@ struct SuppliScanApp: App {
                     seedSampleDataIfRequested()
                     #endif
                     await dependencies.load()
+                    await LibrarySpotlightIndexer.index(dependencies.libraryCatalog)
                 }
         }
         // Inject for @Query reads in Views (HistoryView, HomeView)

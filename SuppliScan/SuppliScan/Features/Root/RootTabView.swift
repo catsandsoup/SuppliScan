@@ -20,6 +20,8 @@ struct RootTabView: View {
     @State private var libraryRouter = NavigationRouter()
     @State private var historyRouter = NavigationRouter()
 
+    private let intentRouter = AppIntentRouter.shared
+
     enum AppTab: Hashable {
         case home, scan, library, history, settings
 
@@ -70,6 +72,29 @@ struct RootTabView: View {
                 .animation(.dsPrimary, value: tabBarVisible)
                 .ignoresSafeArea(.keyboard, edges: .bottom)
         }
+        .onChange(of: intentRouter.request) { _, request in
+            handleIntent(request)
+        }
+        .task {
+            // Handle a request that arrived during a cold launch, before this view appeared.
+            handleIntent(intentRouter.request)
+        }
+    }
+
+    /// Performs (and consumes) a pending App Intent / Shortcut / Spotlight navigation request.
+    private func handleIntent(_ request: AppIntentRequest?) {
+        guard let request else { return }
+        switch request {
+        case .scan:
+            selectedTab = .scan
+        case .libraryEntry(let id):
+            selectedTab = .library
+            if let entry = dependencies.libraryCatalog.entries.first(where: { $0.id == id }) {
+                libraryRouter.popToRoot()
+                libraryRouter.navigate(to: .libraryEntry(entry))
+            }
+        }
+        intentRouter.request = nil
     }
 
     /// The tab bar hides while the active tab has pushed a detail screen (report, review,
