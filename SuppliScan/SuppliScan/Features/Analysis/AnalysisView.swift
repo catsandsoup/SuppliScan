@@ -57,7 +57,7 @@ struct AnalysisView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: Theme.Space.xs) {
-            Text("Analysis")
+            Text("Scanned \(analysis.createdAt.formatted(.relative(presentation: .named)))")
                 .textStyle(.eyebrow)
                 .foregroundStyle(.brand)
             Text(analysis.displayTitle)

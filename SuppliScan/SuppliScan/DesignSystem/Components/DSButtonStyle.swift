@@ -71,6 +71,20 @@ extension ButtonStyle where Self == DSButtonStyle {
     static var dsDestructive: DSButtonStyle { .init(kind: .destructive) }
 }
 
+/// Press feedback for custom-content buttons (cards, rows): scales without restyling.
+struct PressableScaleStyle: ButtonStyle {
+    var scale: CGFloat = 0.97
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? scale : 1)
+            .animation(.dsMicro, value: configuration.isPressed)
+    }
+}
+
+extension ButtonStyle where Self == PressableScaleStyle {
+    static var pressable: PressableScaleStyle { .init() }
+}
+
 /// Label that swaps to an inline progress indicator while loading, holding width
 /// so the button doesn't resize. Use inside a Button's label.
 struct DSLoadingLabel: View {

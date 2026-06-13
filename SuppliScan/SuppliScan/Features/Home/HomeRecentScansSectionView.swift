@@ -1,5 +1,6 @@
 // HomeRecentScansSectionView.swift
 // SuppliScan
+// Recent reports list with a "See all" affordance.
 
 import SwiftUI
 
@@ -10,16 +11,17 @@ struct HomeRecentScansSectionView: View {
     let seeAll: () -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("Recent Scans")
-                    .font(.headline)
-                Spacer()
-                Button("See All", action: seeAll)
-                    .font(.subheadline)
+        VStack(alignment: .leading, spacing: Theme.Space.md) {
+            SectionHeader(title: "Recent") {
+                Button(action: seeAll) {
+                    Text("See all")
+                        .textStyle(.subhead)
+                        .foregroundStyle(.brand)
+                }
+                .buttonStyle(.plain)
             }
 
-            VStack(spacing: 0) {
+            LazyVStack(spacing: 0) {
                 ForEach(records) { record in
                     ScanHistoryRowView(
                         record: record,
@@ -29,10 +31,11 @@ struct HomeRecentScansSectionView: View {
                     }
 
                     if record.id != records.last?.id {
-                        Divider()
+                        HairlineDivider(leadingInset: Theme.Space.lg)
                     }
                 }
             }
+            .dsSurface()
         }
     }
 }
