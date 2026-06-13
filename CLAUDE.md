@@ -3,6 +3,13 @@
 This file is loaded automatically by Claude Code at session start.
 Read this before touching any code. Then read AGENTS.md for full rules.
 
+## ⚠️ ACTIVE WORK IN PROGRESS — READ `docs/RESUME.md` FIRST
+A premium UI/UX redesign is underway on branch `redesign/premium-ui`. **If context was just
+compacted or cleared, STOP and read `docs/RESUME.md` before editing anything** — it carries the
+prioritised (P0–P3) design-system API names, build/verify commands, hard rules, and the exact
+in-flight task. Do NOT resume coding from memory/summary alone, or you'll produce half-baked edits
+against the wrong API. (`docs/PROGRESS.md` = narrative; `docs/RESUME.md` = operational cheat-sheet.)
+
 ## Core Design Tenents - Apple HIG
 A symbol of three concentric circles. The symbol is tinted green to subtly reflect the green in the original six-color Apple logo.
 Purpose
