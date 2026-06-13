@@ -164,6 +164,9 @@ extension ReviewFlag {
         case .canonicalNameInferred: "Check the nutrient name against the label."
         case .unitUnexpected: "The unit is unusual for this nutrient. Please verify."
         case .unitImplausible: "The unit is clinically unlikely for this nutrient. Please verify."
+        case .ocrUncertain: "OCR evidence for this row was weak or reconstructed."
+        case .ocrConflict: "Multiple OCR passes disagreed. Check this row against the label."
+        case .ocrSinglePassEvidence: "Only one OCR pass supported this row. Please verify."
         }
     }
 }

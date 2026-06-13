@@ -297,14 +297,14 @@ extension View {
 // MARK: - Colour construction helpers
 
 /// Dynamic light/dark colour from two hex literals.
-private func dyn(_ light: UInt32, _ dark: UInt32) -> Color {
+nonisolated private func dyn(_ light: UInt32, _ dark: UInt32) -> Color {
     Color(uiColor: UIColor { tc in
         tc.userInterfaceStyle == .dark ? UIColor(rgb: dark) : UIColor(rgb: light)
     })
 }
 
 /// Dynamic colour with explicit high-contrast variants.
-private func dynC(_ light: UInt32, _ dark: UInt32, hcLight: UInt32, hcDark: UInt32) -> Color {
+nonisolated private func dynC(_ light: UInt32, _ dark: UInt32, hcLight: UInt32, hcDark: UInt32) -> Color {
     Color(uiColor: UIColor { tc in
         let high = tc.accessibilityContrast == .high
         switch (tc.userInterfaceStyle, high) {
@@ -317,7 +317,7 @@ private func dynC(_ light: UInt32, _ dark: UInt32, hcLight: UInt32, hcDark: UInt
 }
 
 /// Dynamic colour with per-mode alpha (for tinted fills).
-private func dyn4(_ light: UInt32, _ la: CGFloat, _ dark: UInt32, _ da: CGFloat) -> Color {
+nonisolated private func dyn4(_ light: UInt32, _ la: CGFloat, _ dark: UInt32, _ da: CGFloat) -> Color {
     Color(uiColor: UIColor { tc in
         tc.userInterfaceStyle == .dark
             ? UIColor(rgb: dark).withAlphaComponent(da)
@@ -326,7 +326,7 @@ private func dyn4(_ light: UInt32, _ la: CGFloat, _ dark: UInt32, _ da: CGFloat)
 }
 
 private extension UIColor {
-    convenience init(rgb hex: UInt32) {
+    nonisolated convenience init(rgb hex: UInt32) {
         self.init(
             red:   CGFloat((hex >> 16) & 0xFF) / 255,
             green: CGFloat((hex >> 8) & 0xFF) / 255,

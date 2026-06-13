@@ -1,0 +1,730 @@
+{
+  "allRecognizedText" : "Taurine\nEach level metric teaspoon (5g dose) contains:\nMagnesium amino acid chelate\n1000mg\n(providing elemental magnesium 350mg)\n1750mg\nMagnesium ascorbate\n(providing elemental magnesium 13mg)\n210mg\nMagnesium glycinate dihydrate\n(providing elemental magnesium 12.2mg)\n104mg\nMagnesium phosphate pentahydrate\n400mg\n(providing elemental magnesium 24.8mg)\n120mg\nmagnesium\nelemental\nZinc (as amino acid chelate)\ntotal elemental magnesium 400mg\nin 0 tsp\nAlSo contains malic acid, acacia, stevia, natural lemon flavour and\n5mg\nnatural lime flavour. Contains no gluten, wheat, dairy products,\nyeast, artificial colours or flavours. Contains sulftes and galactose.\nHealth Direction Pty Ltd\nTel: 02 4655 8711 | www.cabothealth.com.au\n5\/48 Anderson Rd, Smeaton Grange, 2567 Australia",
+  "capturedAt" : "2026-06-09T23:08:40Z",
+  "mergedRows" : [
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Taurine"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 3,
+      "text" : "Magnesium amino acid chelate Each level metric teaspoon (5g dose) contains: 1000mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 3,
+      "text" : "Magnesium ascorbate (providing elemental magnesium 350mg) 1750mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 3,
+      "text" : "Magnesium glycinate dihydrate (providing elemental magnesium 13mg) 210mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 4,
+      "text" : "Magnesium phosphate pentahydrate (providing elemental magnesium 12.2mg) 104mg 400mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 3,
+      "text" : "(providing elemental magnesium 24.8mg) 120mg magnesium"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "elemental"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 2,
+      "text" : "Zinc (as amino acid chelate) total elemental magnesium 400mg"
+    },
+    {
+      "confidence" : 0.5,
+      "mergedFromCount" : 1,
+      "text" : "in 0 tsp"
+    },
+    {
+      "confidence" : 0.8333333,
+      "mergedFromCount" : 3,
+      "text" : "natural lime flavour. Contains no gluten, wheat, dairy products, AlSo contains malic acid, acacia, stevia, natural lemon flavour and 5mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "yeast, artificial colours or flavours. Contains sulftes and galactose."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Health Direction Pty Ltd"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Tel: 02 4655 8711 | www.cabothealth.com.au"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "5\/48 Anderson Rd, Smeaton Grange, 2567 Australia"
+    }
+  ],
+  "parserDecisions" : [
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Taurine",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "serving",
+      "rawRow" : "Magnesium amino acid chelate Each level metric teaspoon (5g dose) contains: 1000mg",
+      "reason" : "matches serving-only pattern"
+    },
+    {
+      "amount" : 350,
+      "decision" : "nutrient",
+      "extractedName" : "Magnesium",
+      "rawRow" : "Magnesium ascorbate (providing elemental magnesium 350mg) 1750mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 13,
+      "decision" : "nutrient",
+      "extractedName" : "Magnesium",
+      "rawRow" : "Magnesium glycinate dihydrate (providing elemental magnesium 13mg) 210mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 24.8,
+      "decision" : "nutrient",
+      "extractedName" : "Magnesium",
+      "rawRow" : "Magnesium phosphate pentahydrate (providing elemental magnesium 12.2mg) 104mg 400mg (providing elemental magnesium 24.8mg) 120mg magnesium",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "elemental",
+      "reason" : "no amount found"
+    },
+    {
+      "amount" : 400,
+      "decision" : "nutrient",
+      "extractedName" : "Zinc Magnesium",
+      "rawRow" : "Zinc (as amino acid chelate) total elemental magnesium 400mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "amount" : 0,
+      "decision" : "nutrient",
+      "extractedName" : "In",
+      "rawRow" : "in 0 tsp",
+      "reason" : "amount match accepted",
+      "unit" : "unknown"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "natural lime flavour. Contains no gluten, wheat, dairy products, AlSo contains malic acid, acacia, stevia, natural lemon flavour and 5mg",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "yeast, artificial colours or flavours. Contains sulftes and galactose.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Health Direction Pty Ltd",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Tel: 02 4655 8711 | www.cabothealth.com.au",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "5\/48 Anderson Rd, Smeaton Grange, 2567 Australia",
+      "reason" : "matches non-ingredient skip rule"
+    }
+  ],
+  "quality" : {
+    "averageConfidence" : 0.96428573,
+    "hasLowConfidenceText" : true,
+    "hasSupplementLabelSignals" : true,
+    "parseReadyLineCount" : 14,
+    "recognizedLineCount" : 28,
+    "rejectedLowConfidenceLineCount" : 0
+  },
+  "rawObservations" : [
+    {
+      "alternatives" : [
+        {
+          "confidence" : 0.5,
+          "text" : "Taurin"
+        },
+        {
+          "confidence" : 0.5,
+          "text" : "Taurie"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401812,
+        "minX" : 0.3333333347991391,
+        "minY" : 0.5857558138615394,
+        "width" : 0.036821703592936184
+      },
+      "confidence" : 1,
+      "text" : "Taurine"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Each level metric teaspoon (5g dose) contains:"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Each level metric teaspoon (5g dose) contains"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.011709302425384482,
+        "minX" : 0.3333333391575066,
+        "minY" : 0.6002906977994696,
+        "width" : 0.2577519327799479
+      },
+      "confidence" : 1,
+      "text" : "Each level metric teaspoon (5g dose) contains:"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Magnesium mino acid chelate"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Magnesium amino acid cheate"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.010186046600341725,
+        "minX" : 0.3333333386345914,
+        "minY" : 0.5683139536205025,
+        "width" : 0.16860464477539067
+      },
+      "confidence" : 1,
+      "text" : "Magnesium amino acid chelate"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 0.5,
+          "text" : "1000mg"
+        },
+        {
+          "confidence" : 0.5,
+          "text" : "1000mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.013081395149230901,
+        "minX" : 0.5949612403327478,
+        "minY" : 0.5828488373610158,
+        "width" : 0.04457364400227859
+      },
+      "confidence" : 1,
+      "text" : "1000mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "(providing elemental magnesium 350mg)"
+        },
+        {
+          "confidence" : 1,
+          "text" : "providing elemental magnesium 350mg)"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.013220930576324452,
+        "minX" : 0.3352713219271085,
+        "minY" : 0.5537790696492217,
+        "width" : 0.21511627197265626
+      },
+      "confidence" : 1,
+      "text" : "(providing elemental magnesium 350mg)"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 0.5,
+          "text" : "1750mg"
+        },
+        {
+          "confidence" : 0.5,
+          "text" : "1750mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.013081395149230901,
+        "minX" : 0.5949612403327478,
+        "minY" : 0.5654069768958995,
+        "width" : 0.04457364400227859
+      },
+      "confidence" : 1,
+      "text" : "1750mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Magnesium ascorbat"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Magnesium ascorate"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.010499999999999954,
+        "minX" : 0.3333333347133145,
+        "minY" : 0.5419999998107308,
+        "width" : 0.11434108479817706
+      },
+      "confidence" : 1,
+      "text" : "Magnesium ascorbate"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "(providing elemental magnesium 13mg)"
+        },
+        {
+          "confidence" : 1,
+          "text" : "(providing elemental magnesium 13mg)"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.013197674274444626,
+        "minX" : 0.33527131737070015,
+        "minY" : 0.5275000001533685,
+        "width" : 0.20736433919270836
+      },
+      "confidence" : 1,
+      "text" : "(providing elemental magnesium 13mg)"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 0.3,
+          "text" : "210mg"
+        },
+        {
+          "confidence" : 0.3,
+          "text" : "210mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.011627906799316468,
+        "minX" : 0.6007751944817594,
+        "minY" : 0.539244186193365,
+        "width" : 0.03875968933105478
+      },
+      "confidence" : 1,
+      "text" : "210mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Magnesium glycinate dihydrat"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Magnesium glycinate dhydrate"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.014662790775299084,
+        "minX" : 0.3313953528929718,
+        "minY" : 0.5114999998599327,
+        "width" : 0.1744185994466146
+      },
+      "confidence" : 1,
+      "text" : "Magnesium glycinate dihydrate"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "(providing elemental magnesium 12.2mg)"
+        },
+        {
+          "confidence" : 1,
+          "text" : "(providing elemental magnesium 12.2mg)"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.016634880065917956,
+        "minX" : 0.33491265288007316,
+        "minY" : 0.49842549601218755,
+        "width" : 0.21761814371744787
+      },
+      "confidence" : 1,
+      "text" : "(providing elemental magnesium 12.2mg)"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 0.3,
+          "text" : "104mg"
+        },
+        {
+          "confidence" : 0.3,
+          "text" : "104mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401812,
+        "minX" : 0.602713178851413,
+        "minY" : 0.5145348838591169,
+        "width" : 0.03488372039794929
+      },
+      "confidence" : 1,
+      "text" : "104mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Magnesium phosphate petahydrate"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Magnesium phosphate pentaydrate"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.01616897869110101,
+        "minX" : 0.3329970700641666,
+        "minY" : 0.48403062967740473,
+        "width" : 0.20601647949218754
+      },
+      "confidence" : 1,
+      "text" : "Magnesium phosphate pentahydrate"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "400mg"
+        },
+        {
+          "confidence" : 0.5,
+          "text" : "400mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.014534883499145446,
+        "minX" : 0.6724806206527355,
+        "minY" : 0.5029069766733925,
+        "width" : 0.027131782531738313
+      },
+      "confidence" : 1,
+      "text" : "400mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "(providing elemental magnesium 24.8mg)"
+        },
+        {
+          "confidence" : 1,
+          "text" : "(providing elemental magnesium 24.8mg)"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.014662790775299084,
+        "minX" : 0.33527131868905957,
+        "minY" : 0.47383720941321794,
+        "width" : 0.21511627197265626
+      },
+      "confidence" : 1,
+      "text" : "(providing elemental magnesium 24.8mg)"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 0.3,
+          "text" : "120mg"
+        },
+        {
+          "confidence" : 0.3,
+          "text" : "120mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401812,
+        "minX" : 0.6007751942548885,
+        "minY" : 0.48837209304637463,
+        "width" : 0.03682170359293624
+      },
+      "confidence" : 1,
+      "text" : "120mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "magnesum"
+        },
+        {
+          "confidence" : 1,
+          "text" : "magnesun"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.020348836898803735,
+        "minX" : 0.6608527135008505,
+        "minY" : 0.47093023288296243,
+        "width" : 0.04651162719726554
+      },
+      "confidence" : 1,
+      "text" : "magnesium"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "elementad"
+        },
+        {
+          "confidence" : 1,
+          "text" : "elementa"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.020348836898803735,
+        "minX" : 0.6627906979221835,
+        "minY" : 0.4883720933819935,
+        "width" : 0.04263565826416005
+      },
+      "confidence" : 1,
+      "text" : "elemental"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Zinc (as amino acid chelate"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Zinc (as mino acid chelate)"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.01745311927795412,
+        "minX" : 0.3344453287953686,
+        "minY" : 0.43790863150170867,
+        "width" : 0.14684015909830728
+      },
+      "confidence" : 1,
+      "text" : "Zinc (as amino acid chelate)"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Total elemental magnesium 400mg"
+        },
+        {
+          "confidence" : 1,
+          "text" : "total elemental magnesium 400mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.016058139324188203,
+        "minX" : 0.33527131991316933,
+        "minY" : 0.45494186057256303,
+        "width" : 0.19379844156901044
+      },
+      "confidence" : 1,
+      "text" : "total elemental magnesium 400mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 0.5,
+          "text" : "in 0 sp"
+        },
+        {
+          "confidence" : 0.5,
+          "text" : "in tsp"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.019104650497436593,
+        "minX" : 0.66860465200148,
+        "minY" : 0.4563953493007452,
+        "width" : 0.03294573465983075
+      },
+      "confidence" : 0.5,
+      "text" : "in 0 tsp"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Also contains malic acid, acacia, stevia, natural lemon flavour and"
+        },
+        {
+          "confidence" : 1,
+          "text" : "AlSo contains malic acid, acacia, stevia natural lemon flavour and"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.014581395149230958,
+        "minX" : 0.3352713176473928,
+        "minY" : 0.42441860479839233,
+        "width" : 0.29844960530598963
+      },
+      "confidence" : 1,
+      "text" : "AlSo contains malic acid, acacia, stevia, natural lemon flavour and"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 0.3,
+          "text" : "5mg"
+        },
+        {
+          "confidence" : 0.3,
+          "text" : "5mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487378,
+        "minX" : 0.6124031011832936,
+        "minY" : 0.44331395350645786,
+        "width" : 0.02519379679361977
+      },
+      "confidence" : 0.5,
+      "text" : "5mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "natural lime flavour. Contain no gluten, wheat, dairy products,"
+        },
+        {
+          "confidence" : 1,
+          "text" : "natural lime flavour. Contains no gluten, wheat, dairy product,"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.01470930194854736,
+        "minX" : 0.3333333313595165,
+        "minY" : 0.41279069788221023,
+        "width" : 0.2887596842447917
+      },
+      "confidence" : 1,
+      "text" : "natural lime flavour. Contains no gluten, wheat, dairy products,"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "yeast, artificial colours or flavours. Contains suftes and galactose."
+        },
+        {
+          "confidence" : 1,
+          "text" : "yeast, artificial colours or flavours. Contains sufftes and galactose."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.016151162624359117,
+        "minX" : 0.33333334326928904,
+        "minY" : 0.40099999977788414,
+        "width" : 0.30232556152343754
+      },
+      "confidence" : 1,
+      "text" : "yeast, artificial colours or flavours. Contains sulftes and galactose."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Healt Direction Pty Ltd"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Health Direction Pt Ltd"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.03927325439453133,
+        "minX" : 0.3409302416371376,
+        "minY" : 0.3373837211604942,
+        "width" : 0.17120153808593752
+      },
+      "confidence" : 1,
+      "text" : "Health Direction Pty Ltd"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Tel: 02 4655 8711| www.cabothealth.com.au"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Tel: 02 46558711 | www.cabothealth.com.au"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.02766279029846186,
+        "minX" : 0.3430232606910884,
+        "minY" : 0.31100000005688344,
+        "width" : 0.3139534708658855
+      },
+      "confidence" : 1,
+      "text" : "Tel: 02 4655 8711 | www.cabothealth.com.au"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "5148 Anderson Rd, Smeaton Grange, 2567 Australia"
+        },
+        {
+          "confidence" : 1,
+          "text" : "5\/48 Anderson Rd, Smeaton Grange, 2567 Australia,"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.026162790298461913,
+        "minX" : 0.3430232621184592,
+        "minY" : 0.3299418608827458,
+        "width" : 0.3294573567708334
+      },
+      "confidence" : 1,
+      "text" : "5\/48 Anderson Rd, Smeaton Grange, 2567 Australia"
+    }
+  ],
+  "rawText" : "Taurine\nMagnesium amino acid chelate Each level metric teaspoon (5g dose) contains: 1000mg\nMagnesium ascorbate (providing elemental magnesium 350mg) 1750mg\nMagnesium glycinate dihydrate (providing elemental magnesium 13mg) 210mg\nMagnesium phosphate pentahydrate (providing elemental magnesium 12.2mg) 104mg 400mg\n(providing elemental magnesium 24.8mg) 120mg magnesium\nelemental\nZinc (as amino acid chelate) total elemental magnesium 400mg\nin 0 tsp\nnatural lime flavour. Contains no gluten, wheat, dairy products, AlSo contains malic acid, acacia, stevia, natural lemon flavour and 5mg\nyeast, artificial colours or flavours. Contains sulftes and galactose.\nHealth Direction Pty Ltd\nTel: 02 4655 8711 | www.cabothealth.com.au\n5\/48 Anderson Rd, Smeaton Grange, 2567 Australia",
+  "scanID" : "D11F3066-8B28-4992-83AE-AC0BF80A60C0"
+}

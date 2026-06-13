@@ -1,0 +1,34 @@
+{
+  "screenshots": [
+    {
+      "order": 1,
+      "caption": "Scan Supplement Labels",
+      "raw": "01-home.png",
+      "framed": "01-scan-supplement-labels.png"
+    },
+    {
+      "order": 2,
+      "caption": "Spot Upper-Limit Risks",
+      "raw": "05-report.png",
+      "framed": "02-spot-upper-limit-risks.png"
+    },
+    {
+      "order": 3,
+      "caption": "Review Interaction Flags",
+      "raw": "06-interactions.png",
+      "framed": "03-review-interaction-flags.png"
+    },
+    {
+      "order": 4,
+      "caption": "Track Saved Reports",
+      "raw": "03-history.png",
+      "framed": "04-track-saved-reports.png"
+    },
+    {
+      "order": 5,
+      "caption": "Set Clinical Standards",
+      "raw": "04-settings.png",
+      "framed": "05-set-clinical-standards.png"
+    }
+  ]
+}

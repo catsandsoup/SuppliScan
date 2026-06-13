@@ -21,7 +21,7 @@ final class ScanViewModel {
 
     init(
         ocrService: OCRService = OCRService(),
-        parser: ParserService = ParserService()
+        parser: ParserService = (try? ParserService.makeDefault()) ?? ParserService()
     ) {
         self.ocrService = ocrService
         self.parser = parser
@@ -43,7 +43,7 @@ final class ScanViewModel {
                 let result = try await ocrService.recognizeText(in: data)
                 try Task.checkCancellation()
 
-                let parseResult = parser.parse(result.rawText)
+                let parseResult = parser.parse(result)
                 self?.rawText = result.rawText
                 self?.parseResult = parseResult
                 self?.reviewWarning = result.hasLowConfidenceText
@@ -56,21 +56,39 @@ final class ScanViewModel {
                 let decisions = parser.debugDecisions(for: result.rawText)
                 let bundle = OCRDebugBundle(
                     scanID: scanID,
-                    capturedAt: ISO8601DateFormatter().string(from: Date()),
+                    capturedAt: Date().formatted(.iso8601),
                     rawText: result.rawText,
                     allRecognizedText: result.allRecognizedText,
                     quality: OCRDebugQuality(
                         recognizedLineCount: result.quality.recognizedLineCount,
                         parseReadyLineCount: result.quality.parseReadyLineCount,
                         rejectedLowConfidenceLineCount: result.quality.rejectedLowConfidenceLineCount,
+                        recognitionPassCount: result.quality.recognitionPassCount,
+                        supportedLineCount: result.quality.supportedLineCount,
+                        singlePassLineCount: result.quality.singlePassLineCount,
+                        conflictingLineCount: result.quality.conflictingLineCount,
+                        uncertainLineCount: result.quality.uncertainLineCount,
+                        averageSupportCount: result.quality.averageSupportCount,
                         averageConfidence: result.quality.averageConfidence,
                         hasLowConfidenceText: result.quality.hasLowConfidenceText,
-                        hasSupplementLabelSignals: result.quality.hasSupplementLabelSignals
+                        hasSupplementLabelSignals: result.quality.hasSupplementLabelSignals,
+                        imageQuality: result.quality.imageQuality.map(OCRDebugImageQuality.init(report:)),
+                        panelConfidence: result.quality.panelConfidence,
+                        primaryPanelLineCount: result.quality.primaryPanelLineCount,
+                        excludedNonPanelLineCount: result.quality.excludedNonPanelLineCount,
+                        hasAmbiguousPanelBoundary: result.quality.hasAmbiguousPanelBoundary
+                    ),
+                    panelReconstruction: OCRDebugPanelReconstruction(
+                        reconstruction: result.panelReconstruction
                     ),
                     rawObservations: result.recognizedLines.map { line in
                         OCRDebugObservation(
                             text: line.text,
                             confidence: line.confidence,
+                            sourceID: line.sourceID,
+                            sourcePassIDs: line.sourcePassIDs,
+                            supportCount: line.supportCount,
+                            qualityFlags: line.qualityFlags.map(\.rawValue).sorted(),
                             boundingBox: OCRDebugBBox(
                                 minX: line.region.minX,
                                 minY: line.region.minY,
@@ -86,7 +104,10 @@ final class ScanViewModel {
                         OCRDebugMergedRow(
                             text: $0.text,
                             confidence: $0.confidence,
-                            mergedFromCount: $0.sourceLineCount
+                            mergedFromCount: $0.sourceLineCount,
+                            sourcePassIDs: $0.sourcePassIDs,
+                            supportCount: $0.supportCount,
+                            qualityFlags: $0.qualityFlags.map(\.rawValue).sorted()
                         )
                     },
                     parserDecisions: decisions

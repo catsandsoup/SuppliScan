@@ -1,0 +1,584 @@
+{
+  "version": "2026.06.13-v1",
+  "source_note": "Curated supplement knowledge for OCR vocabulary and deterministic verification. Dose contexts are interpretation aids for label review, not recommendations. Keep all clinical claims source-linked and uncertainty-preserving.",
+  "sources": [
+    {
+      "id": "ods_factsheets_all",
+      "title": "NIH Office of Dietary Supplements: Dietary Supplement Fact Sheets",
+      "url": "https://ods.od.nih.gov/factsheets/list-all/",
+      "source_type": "federal_reference_index"
+    },
+    {
+      "id": "ods_magnesium_hp",
+      "title": "NIH ODS: Magnesium Fact Sheet for Health Professionals",
+      "url": "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/",
+      "source_type": "federal_health_professional_fact_sheet"
+    },
+    {
+      "id": "ods_vitamin_d_hp",
+      "title": "NIH ODS: Vitamin D Fact Sheet for Health Professionals",
+      "url": "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/",
+      "source_type": "federal_health_professional_fact_sheet"
+    },
+    {
+      "id": "ods_zinc_hp",
+      "title": "NIH ODS: Zinc Fact Sheet for Health Professionals",
+      "url": "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/",
+      "source_type": "federal_health_professional_fact_sheet"
+    },
+    {
+      "id": "ods_selenium_hp",
+      "title": "NIH ODS: Selenium Fact Sheet for Health Professionals",
+      "url": "https://ods.od.nih.gov/factsheets/Selenium-HealthProfessional/",
+      "source_type": "federal_health_professional_fact_sheet"
+    },
+    {
+      "id": "ods_vitamin_c_hp",
+      "title": "NIH ODS: Vitamin C Fact Sheet for Health Professionals",
+      "url": "https://ods.od.nih.gov/factsheets/VitaminC-HealthProfessional/",
+      "source_type": "federal_health_professional_fact_sheet"
+    },
+    {
+      "id": "ods_folate_hp",
+      "title": "NIH ODS: Folate Fact Sheet for Health Professionals",
+      "url": "https://ods.od.nih.gov/factsheets/Folate-HealthProfessional/",
+      "source_type": "federal_health_professional_fact_sheet"
+    },
+    {
+      "id": "ods_b12_hp",
+      "title": "NIH ODS: Vitamin B12 Fact Sheet for Health Professionals",
+      "url": "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/",
+      "source_type": "federal_health_professional_fact_sheet"
+    },
+    {
+      "id": "ods_iron_hp",
+      "title": "NIH ODS: Iron Fact Sheet for Health Professionals",
+      "url": "https://ods.od.nih.gov/factsheets/Iron-HealthProfessional/",
+      "source_type": "federal_health_professional_fact_sheet"
+    },
+    {
+      "id": "ods_calcium_hp",
+      "title": "NIH ODS: Calcium Fact Sheet for Health Professionals",
+      "url": "https://ods.od.nih.gov/factsheets/Calcium-HealthProfessional/",
+      "source_type": "federal_health_professional_fact_sheet"
+    },
+    {
+      "id": "ods_omega3_hp",
+      "title": "NIH ODS: Omega-3 Fatty Acids Fact Sheet for Health Professionals",
+      "url": "https://ods.od.nih.gov/factsheets/Omega3FattyAcids-HealthProfessional/",
+      "source_type": "federal_health_professional_fact_sheet"
+    },
+    {
+      "id": "ods_probiotics_hp",
+      "title": "NIH ODS: Probiotics Fact Sheet for Health Professionals",
+      "url": "https://ods.od.nih.gov/factsheets/Probiotics-HealthProfessional/",
+      "source_type": "federal_health_professional_fact_sheet"
+    },
+    {
+      "id": "nccih_herbs_index",
+      "title": "NIH NCCIH: Herbs at a Glance",
+      "url": "https://www.nccih.nih.gov/health/herbsataglance",
+      "source_type": "federal_botanical_fact_sheet_index"
+    },
+    {
+      "id": "nccih_turmeric",
+      "title": "NIH NCCIH: Turmeric Usefulness and Safety",
+      "url": "https://www.nccih.nih.gov/health/turmeric",
+      "source_type": "federal_botanical_fact_sheet"
+    },
+    {
+      "id": "nccih_milk_thistle",
+      "title": "NIH NCCIH: Milk Thistle Usefulness and Safety",
+      "url": "https://www.nccih.nih.gov/health/milk-thistle",
+      "source_type": "federal_botanical_fact_sheet"
+    },
+    {
+      "id": "nccih_echinacea",
+      "title": "NIH NCCIH: Echinacea Usefulness and Safety",
+      "url": "https://www.nccih.nih.gov/health/echinacea",
+      "source_type": "federal_botanical_fact_sheet"
+    },
+    {
+      "id": "nccih_ashwagandha",
+      "title": "NIH NCCIH: Ashwagandha Usefulness and Safety",
+      "url": "https://www.nccih.nih.gov/health/ashwagandha",
+      "source_type": "federal_botanical_fact_sheet"
+    },
+    {
+      "id": "nccih_probiotics_safety",
+      "title": "NIH NCCIH: Probiotics Usefulness and Safety",
+      "url": "https://www.nccih.nih.gov/health/probiotics-usefulness-and-safety",
+      "source_type": "federal_safety_fact_sheet"
+    }
+  ],
+  "entries": [
+    {
+      "canonical_name": "Magnesium",
+      "category": "mineral",
+      "aliases": ["Elemental magnesium", "Mg"],
+      "forms": ["magnesium glycinate", "magnesium citrate", "magnesium malate", "magnesium taurate", "magnesium threonate", "magnesium oxide", "magnesium amino acid chelate", "magnesium ascorbate", "magnesium phosphate pentahydrate"],
+      "active_compounds": ["elemental magnesium"],
+      "ocr_terms": ["glycinate dihydrate", "amino acid chelate", "elemental"],
+      "outcomes": ["bone", "muscle", "nerve", "energy metabolism"],
+      "dose_contexts": [
+        {
+          "context": "adult dietary requirement range",
+          "lower_bound": 310,
+          "upper_bound": 420,
+          "unit": "mg/day",
+          "population": "adults",
+          "interpretation": "Compare total daily elemental magnesium, not compound weight.",
+          "evidence_level": "official_reference_intake",
+          "source_ids": ["ods_magnesium_hp"]
+        },
+        {
+          "context": "supplemental upper limit",
+          "lower_bound": null,
+          "upper_bound": 350,
+          "unit": "mg/day",
+          "population": "adults",
+          "interpretation": "UL applies to magnesium from supplements or medications, not food magnesium.",
+          "evidence_level": "official_upper_limit",
+          "source_ids": ["ods_magnesium_hp"]
+        }
+      ],
+      "clinical_notes": [
+        {
+          "topic": "form interpretation",
+          "text": "Prefer elemental magnesium amount when a label lists both compound and provided elemental amount.",
+          "evidence_level": "label_reconstruction_rule",
+          "source_ids": ["ods_magnesium_hp"]
+        }
+      ],
+      "source_ids": ["ods_magnesium_hp"]
+    },
+    {
+      "canonical_name": "Vitamin D",
+      "category": "vitamin",
+      "aliases": ["Vitamin D3", "Vitamin D2", "Cholecalciferol", "Ergocalciferol"],
+      "forms": ["cholecalciferol", "ergocalciferol"],
+      "active_compounds": ["25-hydroxyvitamin D"],
+      "ocr_terms": ["IU", "international units", "mcg"],
+      "outcomes": ["bone", "calcium absorption", "immune function"],
+      "dose_contexts": [
+        {
+          "context": "adult dietary requirement",
+          "lower_bound": 15,
+          "upper_bound": 20,
+          "unit": "mcg/day",
+          "population": "adults",
+          "interpretation": "Labels may show IU and mcg; parser should convert to mcg and flag dual units.",
+          "evidence_level": "official_reference_intake",
+          "source_ids": ["ods_vitamin_d_hp"]
+        },
+        {
+          "context": "adult upper limit",
+          "lower_bound": null,
+          "upper_bound": 100,
+          "unit": "mcg/day",
+          "population": "adults",
+          "interpretation": "High-dose labels should be visible for clinical review.",
+          "evidence_level": "official_upper_limit",
+          "source_ids": ["ods_vitamin_d_hp"]
+        }
+      ],
+      "clinical_notes": [],
+      "source_ids": ["ods_vitamin_d_hp"]
+    },
+    {
+      "canonical_name": "Zinc",
+      "category": "mineral",
+      "aliases": ["Elemental zinc", "Zn"],
+      "forms": ["zinc picolinate", "zinc citrate", "zinc gluconate", "zinc acetate", "zinc oxide", "zinc sulfate", "zinc amino acid chelate"],
+      "active_compounds": ["elemental zinc"],
+      "ocr_terms": ["picolinate", "gluconate", "oxide", "amino acid chelate"],
+      "outcomes": ["immune function", "wound healing", "taste and smell"],
+      "dose_contexts": [
+        {
+          "context": "adult dietary requirement range",
+          "lower_bound": 8,
+          "upper_bound": 11,
+          "unit": "mg/day",
+          "population": "adults",
+          "interpretation": "Compare elemental zinc; oxide and sulfate are forms, not the active amount.",
+          "evidence_level": "official_reference_intake",
+          "source_ids": ["ods_zinc_hp"]
+        },
+        {
+          "context": "adult upper limit",
+          "lower_bound": null,
+          "upper_bound": 40,
+          "unit": "mg/day",
+          "population": "adults",
+          "interpretation": "Repeated daily zinc above this level warrants review, especially with copper status.",
+          "evidence_level": "official_upper_limit",
+          "source_ids": ["ods_zinc_hp"]
+        }
+      ],
+      "clinical_notes": [],
+      "source_ids": ["ods_zinc_hp"]
+    },
+    {
+      "canonical_name": "Selenium",
+      "category": "mineral",
+      "aliases": ["Se", "Selenomethionine", "L-selenomethionine"],
+      "forms": ["selenomethionine", "sodium selenite", "selenium yeast"],
+      "active_compounds": ["elemental selenium"],
+      "ocr_terms": ["selenomethionine", "micrograms", "mcg"],
+      "outcomes": ["thyroid hormone metabolism", "antioxidant enzymes"],
+      "dose_contexts": [
+        {
+          "context": "adult dietary requirement",
+          "lower_bound": 55,
+          "upper_bound": 55,
+          "unit": "mcg/day",
+          "population": "adults",
+          "interpretation": "Selenium labels are commonly in mcg; mg should be treated as highly suspicious.",
+          "evidence_level": "official_reference_intake",
+          "source_ids": ["ods_selenium_hp"]
+        },
+        {
+          "context": "adult upper limit",
+          "lower_bound": null,
+          "upper_bound": 400,
+          "unit": "mcg/day",
+          "population": "adults",
+          "interpretation": "Values near the upper limit require prominent review.",
+          "evidence_level": "official_upper_limit",
+          "source_ids": ["ods_selenium_hp"]
+        }
+      ],
+      "clinical_notes": [],
+      "source_ids": ["ods_selenium_hp"]
+    },
+    {
+      "canonical_name": "Vitamin C",
+      "category": "vitamin",
+      "aliases": ["Ascorbic acid", "Ascorbate"],
+      "forms": ["ascorbic acid", "calcium ascorbate", "sodium ascorbate", "magnesium ascorbate"],
+      "active_compounds": ["ascorbic acid"],
+      "ocr_terms": ["bioflavonoids", "ascorbate dihydrate"],
+      "outcomes": ["antioxidant", "collagen synthesis", "iron absorption"],
+      "dose_contexts": [
+        {
+          "context": "adult dietary requirement range",
+          "lower_bound": 75,
+          "upper_bound": 90,
+          "unit": "mg/day",
+          "population": "adults",
+          "interpretation": "Buffered ascorbate forms may list compound amounts plus equivalent ascorbic acid.",
+          "evidence_level": "official_reference_intake",
+          "source_ids": ["ods_vitamin_c_hp"]
+        },
+        {
+          "context": "adult upper limit",
+          "lower_bound": null,
+          "upper_bound": 2000,
+          "unit": "mg/day",
+          "population": "adults",
+          "interpretation": "Very high dose labels should be explicit but not hidden.",
+          "evidence_level": "official_upper_limit",
+          "source_ids": ["ods_vitamin_c_hp"]
+        }
+      ],
+      "clinical_notes": [],
+      "source_ids": ["ods_vitamin_c_hp"]
+    },
+    {
+      "canonical_name": "Vitamin B9",
+      "category": "vitamin",
+      "aliases": ["Folate", "Folic acid", "Levomefolic acid", "L-methylfolate", "5-MTHF", "Quatrefolic"],
+      "forms": ["folic acid", "l-methylfolate", "levomefolate", "calcium folinate"],
+      "active_compounds": ["dietary folate equivalents", "DFE"],
+      "ocr_terms": ["mcg DFE", "micrograms DFE"],
+      "outcomes": ["red blood cell formation", "neural tube development"],
+      "dose_contexts": [
+        {
+          "context": "adult dietary requirement",
+          "lower_bound": 400,
+          "upper_bound": 400,
+          "unit": "mcg DFE/day",
+          "population": "adults",
+          "interpretation": "Labels may use folic acid, folate, or DFE; preserve the stated unit.",
+          "evidence_level": "official_reference_intake",
+          "source_ids": ["ods_folate_hp"]
+        }
+      ],
+      "clinical_notes": [],
+      "source_ids": ["ods_folate_hp"]
+    },
+    {
+      "canonical_name": "Vitamin B12",
+      "category": "vitamin",
+      "aliases": ["Cobalamin", "Methylcobalamin", "Mecobalamin", "Cyanocobalamin", "Hydroxocobalamin", "Adenosylcobalamin"],
+      "forms": ["methylcobalamin", "cyanocobalamin", "hydroxocobalamin", "adenosylcobalamin"],
+      "active_compounds": ["cobalamin"],
+      "ocr_terms": ["mecobalamin", "mcg"],
+      "outcomes": ["red blood cell formation", "neurologic function"],
+      "dose_contexts": [
+        {
+          "context": "adult dietary requirement",
+          "lower_bound": 2.4,
+          "upper_bound": 2.4,
+          "unit": "mcg/day",
+          "population": "adults",
+          "interpretation": "Vitamin B12 supplement labels often exceed the dietary requirement; display dose rather than implying harm.",
+          "evidence_level": "official_reference_intake",
+          "source_ids": ["ods_b12_hp"]
+        }
+      ],
+      "clinical_notes": [],
+      "source_ids": ["ods_b12_hp"]
+    },
+    {
+      "canonical_name": "Iron",
+      "category": "mineral",
+      "aliases": ["Elemental iron", "Fe"],
+      "forms": ["ferrous sulfate", "ferrous fumarate", "ferrous gluconate", "iron bisglycinate", "ferric pyrophosphate"],
+      "active_compounds": ["elemental iron"],
+      "ocr_terms": ["ferrous", "ferric", "bisglycinate"],
+      "outcomes": ["oxygen transport", "iron deficiency"],
+      "dose_contexts": [
+        {
+          "context": "adult dietary requirement range",
+          "lower_bound": 8,
+          "upper_bound": 18,
+          "unit": "mg/day",
+          "population": "adults",
+          "interpretation": "Sex, age, pregnancy, and deficiency status heavily affect clinical interpretation.",
+          "evidence_level": "official_reference_intake",
+          "source_ids": ["ods_iron_hp"]
+        },
+        {
+          "context": "adult upper limit",
+          "lower_bound": null,
+          "upper_bound": 45,
+          "unit": "mg/day",
+          "population": "adults",
+          "interpretation": "Iron above the upper limit should be surfaced clearly for clinician review.",
+          "evidence_level": "official_upper_limit",
+          "source_ids": ["ods_iron_hp"]
+        }
+      ],
+      "clinical_notes": [],
+      "source_ids": ["ods_iron_hp"]
+    },
+    {
+      "canonical_name": "Calcium",
+      "category": "mineral",
+      "aliases": ["Elemental calcium", "Ca"],
+      "forms": ["calcium citrate", "calcium carbonate", "calcium phosphate", "calcium ascorbate", "calcium pantothenate"],
+      "active_compounds": ["elemental calcium"],
+      "ocr_terms": ["carbonate", "citrate", "pantothenate"],
+      "outcomes": ["bone", "muscle contraction", "nerve signaling"],
+      "dose_contexts": [
+        {
+          "context": "adult dietary requirement range",
+          "lower_bound": 1000,
+          "upper_bound": 1200,
+          "unit": "mg/day",
+          "population": "adults",
+          "interpretation": "Compare elemental calcium, not compound mass.",
+          "evidence_level": "official_reference_intake",
+          "source_ids": ["ods_calcium_hp"]
+        }
+      ],
+      "clinical_notes": [],
+      "source_ids": ["ods_calcium_hp"]
+    },
+    {
+      "canonical_name": "Omega-3 Fatty Acids",
+      "category": "fatty_acid",
+      "aliases": ["Fish oil", "EPA", "DHA", "Eicosapentaenoic acid", "Docosahexaenoic acid", "ALA", "Alpha-linolenic acid"],
+      "forms": ["triglyceride fish oil", "ethyl ester fish oil", "algal oil", "krill oil"],
+      "active_compounds": ["EPA", "DHA", "ALA"],
+      "ocr_terms": ["eicosapentaenoic", "docosahexaenoic", "fish oil concentrate"],
+      "outcomes": ["cardiometabolic", "triglycerides", "pregnancy DHA context"],
+      "dose_contexts": [
+        {
+          "context": "label interpretation",
+          "lower_bound": null,
+          "upper_bound": null,
+          "unit": "mg/day",
+          "population": "adults",
+          "interpretation": "Fish oil mass is not equivalent to EPA plus DHA; reconstruct EPA and DHA separately when listed.",
+          "evidence_level": "label_reconstruction_rule",
+          "source_ids": ["ods_omega3_hp"]
+        }
+      ],
+      "clinical_notes": [],
+      "source_ids": ["ods_omega3_hp"]
+    },
+    {
+      "canonical_name": "Probiotics",
+      "category": "probiotic",
+      "aliases": ["Probiotic blend", "Live cultures", "CFU"],
+      "forms": ["capsule", "powder", "sachet"],
+      "active_compounds": ["colony forming units"],
+      "ocr_terms": ["billion CFU", "million CFU", "Lactobacillus", "Bifidobacterium", "Bacillus", "Saccharomyces", "Streptococcus", "Enterococcus"],
+      "outcomes": ["digestive health", "strain-specific effects"],
+      "dose_contexts": [
+        {
+          "context": "strain-specific interpretation",
+          "lower_bound": null,
+          "upper_bound": null,
+          "unit": "CFU/day",
+          "population": null,
+          "interpretation": "There is no universal probiotic dose. Reconstruct genus, species, strain, total CFU, and per-strain CFU when available.",
+          "evidence_level": "federal_health_professional_fact_sheet",
+          "source_ids": ["ods_probiotics_hp", "nccih_probiotics_safety"]
+        }
+      ],
+      "clinical_notes": [
+        {
+          "topic": "safety",
+          "text": "Probiotic risk depends on host status and product/strain; do not infer safety from CFU count alone.",
+          "evidence_level": "federal_safety_fact_sheet",
+          "source_ids": ["nccih_probiotics_safety"]
+        }
+      ],
+      "source_ids": ["ods_probiotics_hp", "nccih_probiotics_safety"]
+    },
+    {
+      "canonical_name": "Lactobacillus rhamnosus",
+      "category": "probiotic",
+      "aliases": ["L. rhamnosus"],
+      "forms": ["GG", "HN001"],
+      "active_compounds": ["colony forming units"],
+      "ocr_terms": ["rhamnosus", "GG", "HN001"],
+      "outcomes": ["strain-specific probiotic context"],
+      "dose_contexts": [],
+      "clinical_notes": [
+        {
+          "topic": "identity",
+          "text": "Strain code matters; do not collapse strain-labelled products into only genus/species when the label shows a strain.",
+          "evidence_level": "label_reconstruction_rule",
+          "source_ids": ["ods_probiotics_hp"]
+        }
+      ],
+      "source_ids": ["ods_probiotics_hp"]
+    },
+    {
+      "canonical_name": "Bifidobacterium lactis",
+      "category": "probiotic",
+      "aliases": ["B. lactis"],
+      "forms": ["BL-04", "HN019", "BB-12"],
+      "active_compounds": ["colony forming units"],
+      "ocr_terms": ["BL-04", "HN019", "BB-12"],
+      "outcomes": ["strain-specific probiotic context"],
+      "dose_contexts": [],
+      "clinical_notes": [],
+      "source_ids": ["ods_probiotics_hp"]
+    },
+    {
+      "canonical_name": "Curcuma longa",
+      "category": "botanical",
+      "aliases": ["Turmeric", "Curcumin"],
+      "forms": ["turmeric extract", "curcumin extract", "standardized curcuminoids"],
+      "active_compounds": ["curcuminoids", "curcumin"],
+      "ocr_terms": ["curcuminoids", "standardized to curcuminoids"],
+      "outcomes": ["inflammation context", "joint symptom context"],
+      "dose_contexts": [
+        {
+          "context": "botanical evidence context",
+          "lower_bound": null,
+          "upper_bound": null,
+          "unit": "mg/day",
+          "population": null,
+          "interpretation": "Record extract amount and curcuminoid standardisation separately; evidence varies by formulation and indication.",
+          "evidence_level": "federal_botanical_fact_sheet",
+          "source_ids": ["nccih_turmeric"]
+        }
+      ],
+      "clinical_notes": [
+        {
+          "topic": "uncertainty",
+          "text": "Do not treat marketing claims about inflammation or liver support as established facts without indication-specific evidence.",
+          "evidence_level": "federal_botanical_fact_sheet",
+          "source_ids": ["nccih_turmeric"]
+        }
+      ],
+      "source_ids": ["nccih_turmeric"]
+    },
+    {
+      "canonical_name": "Silybum marianum",
+      "category": "botanical",
+      "aliases": ["Milk thistle", "Silymarin"],
+      "forms": ["milk thistle extract", "silymarin extract"],
+      "active_compounds": ["silymarin", "silybin", "flavanolignans"],
+      "ocr_terms": ["standardised to silymarin", "calculated as silybin", "flavanolignans"],
+      "outcomes": ["liver health marketing context"],
+      "dose_contexts": [],
+      "clinical_notes": [
+        {
+          "topic": "marketing claim handling",
+          "text": "Capture liver-health claims as claims, not conclusions; federal summaries note mixed or negative condition-specific evidence in some contexts.",
+          "evidence_level": "federal_botanical_fact_sheet",
+          "source_ids": ["nccih_milk_thistle"]
+        }
+      ],
+      "source_ids": ["nccih_milk_thistle"]
+    },
+    {
+      "canonical_name": "Withania somnifera",
+      "category": "botanical",
+      "aliases": ["Ashwagandha", "Withania"],
+      "forms": ["root extract", "KSM-66", "Sensoril"],
+      "active_compounds": ["withanolides"],
+      "ocr_terms": ["withanolides", "standardized to withanolides"],
+      "outcomes": ["stress marketing context", "sleep marketing context"],
+      "dose_contexts": [],
+      "clinical_notes": [
+        {
+          "topic": "safety",
+          "text": "Preserve sedative/stress claims as claims and keep safety review visible; interactions and cautions can be clinically important.",
+          "evidence_level": "federal_botanical_fact_sheet",
+          "source_ids": ["nccih_ashwagandha"]
+        }
+      ],
+      "source_ids": ["nccih_ashwagandha"]
+    },
+    {
+      "canonical_name": "Echinacea purpurea",
+      "category": "botanical",
+      "aliases": ["Echinacea", "Purple coneflower"],
+      "forms": ["aerial parts extract", "root extract"],
+      "active_compounds": ["alkylamides", "cichoric acid"],
+      "ocr_terms": ["E. purpurea", "standardized to alkylamides"],
+      "outcomes": ["common cold marketing context", "immune marketing context"],
+      "dose_contexts": [],
+      "clinical_notes": [
+        {
+          "topic": "evidence quality",
+          "text": "Immune or cold claims should stay separate from observed ingredient facts because evidence is preparation-specific and uncertain.",
+          "evidence_level": "federal_botanical_fact_sheet",
+          "source_ids": ["nccih_echinacea"]
+        }
+      ],
+      "source_ids": ["nccih_echinacea"]
+    },
+    {
+      "canonical_name": "Equisetum arvense",
+      "category": "botanical",
+      "aliases": ["Horsetail", "Equisetum"],
+      "forms": ["dried stem extract", "dry stem extract", "horsetail extract"],
+      "active_compounds": ["silicon", "silica", "orthosilicic acid"],
+      "ocr_terms": ["standardised to contain silicon", "standardized to contain silicon", "silica"],
+      "outcomes": ["hair and nail marketing context", "silicon source context"],
+      "dose_contexts": [
+        {
+          "context": "standardisation reconstruction",
+          "lower_bound": null,
+          "upper_bound": null,
+          "unit": "mg/day",
+          "population": null,
+          "interpretation": "When horsetail is standardised to silicon/silica, preserve both the botanical extract amount and silicon standardisation amount.",
+          "evidence_level": "label_reconstruction_rule",
+          "source_ids": ["nccih_herbs_index"]
+        }
+      ],
+      "clinical_notes": [],
+      "source_ids": ["nccih_herbs_index"]
+    }
+  ]
+}

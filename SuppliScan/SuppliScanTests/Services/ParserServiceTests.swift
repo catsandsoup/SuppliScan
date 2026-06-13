@@ -347,6 +347,182 @@ struct ParserServiceTests {
         #expect(brevis.strain == "Lbr-35")
         #expect(brevis.cfuBillions == 0.25)
     }
+
+    @Test func parsesCommonNameBotanicalWithSiliconStandardisation() throws {
+        let parser = try ParserService.makeDefault()
+        let result = parser.parse("Horsetail dried stem extract 200mg equivalent to dry stem 1000mg standardised to contain silicon 14mg")
+
+        let herbal = try #require(herbalEntries(in: result).first)
+        #expect(herbal.latinName == "Equisetum arvense")
+        #expect(herbal.commonName == "Horsetail")
+        #expect(herbal.extractAmount == 200)
+        #expect(herbal.extractUnit == .mg)
+        #expect(herbal.dryEquivalentAmount == 1000)
+        #expect(herbal.standardisation?.compound == "silicon")
+        #expect(herbal.standardisation?.amount == 14)
+        #expect(herbal.reviewFlags.contains(.canonicalNameInferred))
+    }
+
+    @Test func propagatesOCREvidenceFlagsIntoParsedEntries() throws {
+        let parser = ParserService(aliasesByVariant: ["Selenium": "Selenium"])
+        let ocrResult = OCRResult(lines: [
+            OCRRecognizedLine(
+                text: "Supplement Facts",
+                confidence: 0.95,
+                region: OCRTextRegion(minX: 0.1, minY: 0.8, width: 0.5, height: 0.05),
+                sourceID: "vn-original",
+                sourcePassIDs: ["vn-original"]
+            ),
+            OCRRecognizedLine(
+                text: "Selenium 150mcg",
+                confidence: 0.62,
+                region: OCRTextRegion(minX: 0.1, minY: 0.5, width: 0.5, height: 0.05),
+                sourceID: "vn-original",
+                sourcePassIDs: ["vn-original"]
+            ),
+            OCRRecognizedLine(
+                text: "Selenium 150mg",
+                confidence: 0.61,
+                region: OCRTextRegion(minX: 0.102, minY: 0.501, width: 0.5, height: 0.05),
+                sourceID: "vn-contrast",
+                sourcePassIDs: ["vn-contrast"]
+            )
+        ])
+
+        let result = parser.parse(ocrResult)
+        let selenium = try #require(nutrientEntries(in: result).first { $0.canonicalName == "Selenium" })
+        #expect(selenium.reviewFlags.contains(.ocrUncertain))
+        #expect(selenium.reviewFlags.contains(.ocrConflict))
+    }
+
+    @Test func parsesPanelReconstructionWithoutMarketingDirectionsOrCompanyRows() throws {
+        let parser = ParserService(aliasesByVariant: [
+            "Vitamin C": "Vitamin C",
+            "Zinc": "Zinc"
+        ])
+        let ocrResult = OCRResult(lines: [
+            OCRRecognizedLine(
+                text: "Advanced immune support formula",
+                confidence: 0.96,
+                region: OCRTextRegion(minX: 0.1, minY: 0.88, width: 0.7, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Supplement Facts",
+                confidence: 0.97,
+                region: OCRTextRegion(minX: 0.1, minY: 0.72, width: 0.5, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Vitamin C 500mg",
+                confidence: 0.95,
+                region: OCRTextRegion(minX: 0.1, minY: 0.62, width: 0.5, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Zinc 15mg",
+                confidence: 0.94,
+                region: OCRTextRegion(minX: 0.1, minY: 0.54, width: 0.4, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Directions: take 1 tablet 3 times daily",
+                confidence: 0.96,
+                region: OCRTextRegion(minX: 0.1, minY: 0.34, width: 0.8, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Distributed by Example Health Pty Ltd",
+                confidence: 0.95,
+                region: OCRTextRegion(minX: 0.1, minY: 0.24, width: 0.8, height: 0.05)
+            )
+        ])
+
+        let result = parser.parse(ocrResult)
+        let nutrients = nutrientEntries(in: result)
+
+        #expect(nutrients.map(\.canonicalName).sorted() == ["Vitamin C", "Zinc"])
+        #expect(result.entries.contains { entry in
+            if case .unresolved(let line) = entry {
+                return line.text.contains("Directions") || line.text.contains("Distributed by")
+            }
+            return false
+        } == false)
+        #expect(ocrResult.quality.excludedNonPanelLineCount == 3)
+    }
+
+    @Test func rejectsWarningRowsEvenWhenTheyContainNutrientLikeText() throws {
+        let parser = ParserService(aliasesByVariant: [
+            "Magnesium": "Magnesium",
+            "Vitamin K": "Vitamin K"
+        ])
+        let ocrResult = OCRResult(lines: [
+            OCRRecognizedLine(
+                text: "Supplement Facts",
+                confidence: 0.97,
+                region: OCRTextRegion(minX: 0.1, minY: 0.78, width: 0.5, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Magnesium 300mg",
+                confidence: 0.94,
+                region: OCRTextRegion(minX: 0.1, minY: 0.68, width: 0.6, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Warning: do not take with Vitamin K 100mcg unless advised",
+                confidence: 0.96,
+                region: OCRTextRegion(minX: 0.1, minY: 0.50, width: 0.8, height: 0.05)
+            )
+        ])
+
+        let result = parser.parse(ocrResult)
+        let nutrients = nutrientEntries(in: result)
+
+        #expect(nutrients.map(\.canonicalName) == ["Magnesium"])
+        #expect(ocrResult.rawText.contains("Warning") == false)
+    }
+
+    @Test func evaluatorScoresDifficultHairLabelReconstruction() throws {
+        let parser = try ParserService.makeDefault()
+        let result = parser.parse("""
+            Each tablet contains:
+            Horsetail dried stem extract 200mg equivalent to dry stem 1000mg standardised to contain silicon 14mg
+            Biotin 0,48mg
+            Zinc oxide 12,5mg equivalent to Zinc 10mg
+            Bifidobacterium lactis BL-04 32 billion CFU
+            """)
+
+        let benchmark = LabelReconstructionBenchmark(
+            name: "hair label targeted reconstruction",
+            expectedEntries: [
+                ReconstructedFact(
+                    kind: .herbal,
+                    name: "Equisetum arvense",
+                    amount: 200,
+                    unit: "mg",
+                    form: ExtractType.dryConcExtract.rawValue,
+                    secondaryAmount: 14,
+                    secondaryUnit: "mg",
+                    marker: "silicon"
+                ),
+                ReconstructedFact(kind: .nutrient, name: "Vitamin B7", amount: 0.48, unit: "mg"),
+                ReconstructedFact(
+                    kind: .nutrient,
+                    name: "Zinc",
+                    amount: 10,
+                    unit: "mg",
+                    form: "oxide",
+                    secondaryAmount: 12.5,
+                    secondaryUnit: "mg"
+                ),
+                ReconstructedFact(
+                    kind: .probiotic,
+                    name: "Bifidobacterium lactis",
+                    amount: 32,
+                    unit: "billion CFU",
+                    form: "BL-04"
+                )
+            ]
+        )
+
+        let score = LabelReconstructionEvaluator().evaluate(result, against: benchmark)
+        #expect(score.recall == 1)
+        #expect(score.missing.isEmpty)
+    }
 }
 
 private func nutrientEntries(in result: ParseResult) -> [NutrientEntry] {
@@ -359,6 +535,13 @@ private func nutrientEntries(in result: ParseResult) -> [NutrientEntry] {
 private func probioticEntries(in result: ParseResult) -> [ProbioticEntry] {
     result.entries.compactMap { entry in
         if case .probiotic(let probiotic) = entry { return probiotic }
+        return nil
+    }
+}
+
+private func herbalEntries(in result: ParseResult) -> [HerbalEntry] {
+    result.entries.compactMap { entry in
+        if case .herbal(let herbal) = entry { return herbal }
         return nil
     }
 }

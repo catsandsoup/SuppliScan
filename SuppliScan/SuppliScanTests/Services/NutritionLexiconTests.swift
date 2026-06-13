@@ -78,4 +78,16 @@ struct NutritionLexiconTests {
         #expect(nutrients.contains { $0.canonicalName == "Vitamin D" && $0.amount == 25 && $0.unit == .mcg })
         #expect(nutrients.contains { $0.canonicalName == "Vitamin B2" })
     }
+
+    @Test func supplementKnowledgeLoadsSourceBackedOCRVocabularyAndBotanicals() throws {
+        let knowledge = try SupplementKnowledgeService.load()
+        let words = Set(knowledge.ocrCustomWords.map { $0.lowercased() })
+
+        #expect(words.contains("magnesium glycinate"))
+        #expect(words.contains("standardised to contain silicon"))
+        #expect(words.contains("billion cfu"))
+        #expect(knowledge.botanicalCanonicalByVariant["horsetail"] == "Equisetum arvense")
+        #expect(knowledge.entry(canonicalName: "Magnesium")?.doseContexts.isEmpty == false)
+        #expect(knowledge.database.sources.contains { $0.id == "ods_probiotics_hp" })
+    }
 }

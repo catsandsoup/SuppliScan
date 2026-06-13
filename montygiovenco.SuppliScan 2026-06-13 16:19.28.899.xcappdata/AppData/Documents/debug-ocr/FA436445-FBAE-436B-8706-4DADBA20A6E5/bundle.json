@@ -1,0 +1,816 @@
+{
+  "allRecognizedText" : "\/ Vitamin C supports bone health and healthy blood vessels.\nVitamin C and zinc assist skin health and connective tissue health.\nSupports healthy immune system function.\n\/ Zinc supports prostate and reproductive health in males.\n\/ Zinc supports wound healing.\nAdults and children over 12 years - Take 1 tablet, one to three times a day, with\nfood, or as directed by your health professional.\nDirections for use:\nCalcium ascorbate dihydrate .....\nEach tablet contains:\n.. 605.3mg\nSodium ascorbate ..............\nequiv. ascorbic acid (vitamin C) 500mg\n... 562.4mg\nequiv. ascorbic acid (vitamin C) 500mg\nTOTAL ASCORBIC ACID (VITAMIN C) 1g\nCitrus bioflavonoids extrac..........\nZinc amino acid chelate equiv. zinc.\n50mg\n8mg\nRutoside (rutin)....\n5mg\nHesperidin...\nContains 78mg of sodium per tablet.\n5mg\nIf symptoms persist, talk to your health professional. Vitamin and mineral\nsupplements should not replace a balanced diet.\nDoes not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or artificial\ncolours, flavours or preservatives.\n(B) 240984 EXP 05\/26",
+  "capturedAt" : "2026-06-09T23:09:17Z",
+  "mergedRows" : [
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "\/ Vitamin C supports bone health and healthy blood vessels."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Vitamin C and zinc assist skin health and connective tissue health."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Supports healthy immune system function."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "\/ Zinc supports prostate and reproductive health in males."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "\/ Zinc supports wound healing."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Adults and children over 12 years - Take 1 tablet, one to three times a day, with"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "food, or as directed by your health professional."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Directions for use:"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 3,
+      "text" : "Calcium ascorbate dihydrate Each tablet contains: 605.3mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 5,
+      "text" : "Sodium ascorbate equiv. ascorbic acid (vitamin C) 500mg equiv. ascorbic acid (vitamin C) 500mg TOTAL ASCORBIC ACID (VITAMIN C) 1g 562.4mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Citrus bioflavonoids extrac"
+    },
+    {
+      "confidence" : 0.6666667,
+      "mergedFromCount" : 3,
+      "text" : "Zinc amino acid chelate equiv. zinc 50mg 8mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Rutoside (rutin)"
+    },
+    {
+      "confidence" : 0.75,
+      "mergedFromCount" : 4,
+      "text" : "Hesperidin Contains 78mg of sodium per tablet 5mg 5mg"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "If symptoms persist, talk to your health professional. Vitamin and mineral"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "supplements should not replace a balanced diet."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "Does not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or artificial"
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "colours, flavours or preservatives."
+    },
+    {
+      "confidence" : 1,
+      "mergedFromCount" : 1,
+      "text" : "(B) 240984 EXP 05\/26"
+    }
+  ],
+  "parserDecisions" : [
+    {
+      "decision" : "unresolved",
+      "rawRow" : "\/ Vitamin C supports bone health and healthy blood vessels.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Vitamin C and zinc assist skin health and connective tissue health.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Supports healthy immune system function.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "\/ Zinc supports prostate and reproductive health in males.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "\/ Zinc supports wound healing.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Adults and children over 12 years - Take 1 tablet, one to three times a day, with",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "food, or as directed by your health professional.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Directions for use:",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Calcium ascorbate dihydrate Each tablet contains: 605.3mg",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "amount" : 500,
+      "decision" : "nutrient",
+      "extractedName" : "Ascorbic Acid",
+      "rawRow" : "Sodium ascorbate equiv. ascorbic acid (vitamin C) 500mg equiv. ascorbic acid (vitamin C) 500mg TOTAL ASCORBIC ACID (VITAMIN C) 1g 562.4mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Citrus bioflavonoids extrac",
+      "reason" : "no amount found"
+    },
+    {
+      "amount" : 50,
+      "decision" : "nutrient",
+      "extractedName" : "Zinc",
+      "rawRow" : "Zinc amino acid chelate equiv. zinc 50mg 8mg",
+      "reason" : "amount match accepted",
+      "unit" : "mg"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "Rutoside (rutin)",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Hesperidin Contains 78mg of sodium per tablet 5mg 5mg",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "If symptoms persist, talk to your health professional. Vitamin and mineral",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "supplements should not replace a balanced diet.",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "Does not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or artificial",
+      "reason" : "matches non-ingredient skip rule"
+    },
+    {
+      "decision" : "unresolved",
+      "rawRow" : "colours, flavours or preservatives.",
+      "reason" : "no amount found"
+    },
+    {
+      "decision" : "skipped",
+      "rawRow" : "(B) 240984 EXP 05\/26",
+      "reason" : "matches non-ingredient skip rule"
+    }
+  ],
+  "quality" : {
+    "averageConfidence" : 0.93333334,
+    "hasLowConfidenceText" : true,
+    "hasSupplementLabelSignals" : true,
+    "parseReadyLineCount" : 19,
+    "recognizedLineCount" : 30,
+    "rejectedLowConfidenceLineCount" : 0
+  },
+  "rawObservations" : [
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Vitamin C supports bone health and healthy blood vessels."
+        },
+        {
+          "confidence" : 1,
+          "text" : "\/Vitamin C supports bone health and healthy blood vessels."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.017004761695861847,
+        "minX" : 0.2884910971954443,
+        "minY" : 0.5755047764712365,
+        "width" : 0.3203305867513021
+      },
+      "confidence" : 1,
+      "text" : "\/ Vitamin C supports bone health and healthy blood vessels."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Vitamin C and zin assist skin health and connective tissue health."
+        },
+        {
+          "confidence" : 1,
+          "text" : "Vitamin Cand zinc assist skin health and connective tissue health."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.01855975246429442,
+        "minX" : 0.3000626578199062,
+        "minY" : 0.5833549407729599,
+        "width" : 0.3436392008463542
+      },
+      "confidence" : 1,
+      "text" : "Vitamin C and zinc assist skin health and connective tissue health."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Support healthy immune system function."
+        },
+        {
+          "confidence" : 1,
+          "text" : "Supports healthy immune system function"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.01338542747497562,
+        "minX" : 0.3040253255653184,
+        "minY" : 0.5904269791131598,
+        "width" : 0.21561409505208334
+      },
+      "confidence" : 1,
+      "text" : "Supports healthy immune system function."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "\/ Zin supports prostate and reproductive health in males."
+        },
+        {
+          "confidence" : 1,
+          "text" : "\/ Zinc supports prostate and reproductive health in males."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.014674418449401871,
+        "minX" : 0.28294574911163084,
+        "minY" : 0.5580000001897057,
+        "width" : 0.31395347086588543
+      },
+      "confidence" : 1,
+      "text" : "\/ Zinc supports prostate and reproductive health in males."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "\/Zinc supports wound healing."
+        },
+        {
+          "confidence" : 1,
+          "text" : "\/ Zinc supports wound healing"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.0101860461235046,
+        "minX" : 0.28488372301356585,
+        "minY" : 0.5683139536568398,
+        "width" : 0.16666666666666669
+      },
+      "confidence" : 1,
+      "text" : "\/ Zinc supports wound healing."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Adults and children over 12 years -Take 1 tablet, one to three times a day, with"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Adults and children over 12 years- Take 1 tablet, one to three times a day, with"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.02238169384002675,
+        "minX" : 0.278626346296676,
+        "minY" : 0.5321463233536119,
+        "width" : 0.4466457926432292
+      },
+      "confidence" : 1,
+      "text" : "Adults and children over 12 years - Take 1 tablet, one to three times a day, with"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "food, or as directed by your health professiona."
+        },
+        {
+          "confidence" : 1,
+          "text" : "food, or as directed by your health professional"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.014744185924529973,
+        "minX" : 0.27906977247973686,
+        "minY" : 0.5232558142097296,
+        "width" : 0.2596899210611979
+      },
+      "confidence" : 1,
+      "text" : "food, or as directed by your health professional."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Directions for use"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Direction for use:"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.010232558250427237,
+        "minX" : 0.28100775104299147,
+        "minY" : 0.5449999999386632,
+        "width" : 0.11046511840820311
+      },
+      "confidence" : 1,
+      "text" : "Directions for use:"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Calcium ascorbate dihydrate....."
+        },
+        {
+          "confidence" : 1,
+          "text" : "Calcium ascorbate dihydrate ....."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.013220930099487327,
+        "minX" : 0.2771317847344607,
+        "minY" : 0.4955000001059421,
+        "width" : 0.17829457600911458
+      },
+      "confidence" : 1,
+      "text" : "Calcium ascorbate dihydrate ....."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Each tablet contains"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Each table contains:"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.010232558250427237,
+        "minX" : 0.27906976813897255,
+        "minY" : 0.5072674419017527,
+        "width" : 0.12403100585937499
+      },
+      "confidence" : 1,
+      "text" : "Each tablet contains:"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "..605.3mg"
+        },
+        {
+          "confidence" : 1,
+          "text" : ".. 605.3mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.013627936363220239,
+        "minX" : 0.6781908243011366,
+        "minY" : 0.5040871946649048,
+        "width" : 0.06028501892089844
+      },
+      "confidence" : 1,
+      "text" : ".. 605.3mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Sodium ascorbate ..............."
+        },
+        {
+          "confidence" : 1,
+          "text" : "Sodium ascorbate.............."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.013139409065246577,
+        "minX" : 0.27877885082923,
+        "minY" : 0.47211131011119345,
+        "width" : 0.1535346272786458
+      },
+      "confidence" : 1,
+      "text" : "Sodium ascorbate .............."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "equiv. ascorbic acid vitamin C) 500mg"
+        },
+        {
+          "confidence" : 1,
+          "text" : "equiv. ascorbic acid (vitamin C) 500mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.01754651165008536,
+        "minX" : 0.29263565829358956,
+        "minY" : 0.48099999962672746,
+        "width" : 0.21705426025390623
+      },
+      "confidence" : 1,
+      "text" : "equiv. ascorbic acid (vitamin C) 500mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : ".. 562.4mg"
+        },
+        {
+          "confidence" : 1,
+          "text" : "...562.4mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.013186046600341728,
+        "minX" : 0.6782945745595195,
+        "minY" : 0.48099999986339337,
+        "width" : 0.062015502929687494
+      },
+      "confidence" : 1,
+      "text" : "... 562.4mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "equiv. ascorbic acid vitamin C) 500mg"
+        },
+        {
+          "confidence" : 1,
+          "text" : "equiv. ascorbic acid (vitamin C) 500mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.0176511631011963,
+        "minX" : 0.2945736451570828,
+        "minY" : 0.45784883716795455,
+        "width" : 0.2151162719726562
+      },
+      "confidence" : 1,
+      "text" : "equiv. ascorbic acid (vitamin C) 500mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "TOTAL ASCORIC ACID (VITAMIN C) 1g"
+        },
+        {
+          "confidence" : 1,
+          "text" : "TOTAL ASCORBIC ACID (VITAMIN C 1g"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.018275279998779315,
+        "minX" : 0.39687161675800864,
+        "minY" : 0.4505823024573785,
+        "width" : 0.2333606974283854
+      },
+      "confidence" : 1,
+      "text" : "TOTAL ASCORBIC ACID (VITAMIN C) 1g"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Citrus bioflavonoids extrac.........."
+        },
+        {
+          "confidence" : 1,
+          "text" : "Citrus bioflavonoids extrac.........."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.011627906799316468,
+        "minX" : 0.2810077620389716,
+        "minY" : 0.4389534885577061,
+        "width" : 0.18023254394531246
+      },
+      "confidence" : 1,
+      "text" : "Citrus bioflavonoids extrac.........."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Zinc amino acid chelate equiv. zinc"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Zin amino acid chelate equiv. zinc."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.018595293045043926,
+        "minX" : 0.28243382637255005,
+        "minY" : 0.42650446576199263,
+        "width" : 0.19271221923828125
+      },
+      "confidence" : 1,
+      "text" : "Zinc amino acid chelate equiv. zinc."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 0.3,
+          "text" : "50mg"
+        },
+        {
+          "confidence" : 0.3,
+          "text" : "50mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.011627906799316357,
+        "minX" : 0.7054263565645912,
+        "minY" : 0.4476744186449154,
+        "width" : 0.03488372039794929
+      },
+      "confidence" : 0.5,
+      "text" : "50mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 0.3,
+          "text" : "8mg"
+        },
+        {
+          "confidence" : 0.3,
+          "text" : "8mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401812,
+        "minX" : 0.7131782944899447,
+        "minY" : 0.43750000020480495,
+        "width" : 0.027131782531738313
+      },
+      "confidence" : 0.5,
+      "text" : "8mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Rutoside (rutin)...."
+        },
+        {
+          "confidence" : 1,
+          "text" : "Rutside (rutin)...."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.010499999999999954,
+        "minX" : 0.2829457381996805,
+        "minY" : 0.4169999998398005,
+        "width" : 0.09883720906575522
+      },
+      "confidence" : 1,
+      "text" : "Rutoside (rutin)...."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 0.3,
+          "text" : "5mg"
+        },
+        {
+          "confidence" : 0.3,
+          "text" : "5mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401812,
+        "minX" : 0.7131782944899447,
+        "minY" : 0.42732558160015366,
+        "width" : 0.027131782531738313
+      },
+      "confidence" : 0.5,
+      "text" : "5mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Hesperidin..."
+        },
+        {
+          "confidence" : 1,
+          "text" : "Hesperidin..."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.010736898422241237,
+        "minX" : 0.2848146739070899,
+        "minY" : 0.406695504444026,
+        "width" : 0.07184352111816406
+      },
+      "confidence" : 1,
+      "text" : "Hesperidin..."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Contains 78mg of sodium per tablet."
+        },
+        {
+          "confidence" : 1,
+          "text" : "Contains 78mg of sodium per tablet."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.016145100593566886,
+        "minX" : 0.2883675120104956,
+        "minY" : 0.39395546330611164,
+        "width" : 0.19643204752604165
+      },
+      "confidence" : 1,
+      "text" : "Contains 78mg of sodium per tablet."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 0.3,
+          "text" : "5mg"
+        },
+        {
+          "confidence" : 0.3,
+          "text" : "5mg"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.010174418449401923,
+        "minX" : 0.7131782956535776,
+        "minY" : 0.417151162911927,
+        "width" : 0.02519379679361977
+      },
+      "confidence" : 0.5,
+      "text" : "5mg"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "if symptoms persist, talk to your health professional. Vitamin and mineral"
+        },
+        {
+          "confidence" : 1,
+          "text" : "If symptoms persist, talk to your health professional Vitamin and mineral"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.020607917785644525,
+        "minX" : 0.2903444847012508,
+        "minY" : 0.3838943224882153,
+        "width" : 0.38834448242187497
+      },
+      "confidence" : 1,
+      "text" : "If symptoms persist, talk to your health professional. Vitamin and mineral"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "supplements should not replace a balanced diet"
+        },
+        {
+          "confidence" : 1,
+          "text" : "supplement should not replace a balanced diet."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.015269626617431697,
+        "minX" : 0.29233807742695156,
+        "minY" : 0.37719447478824664,
+        "width" : 0.2564392903645833
+      },
+      "confidence" : 1,
+      "text" : "supplements should not replace a balanced diet."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "Does not contain egg, milk, peanut, soy, tree nuts animal products, gluten, lactose or artificial"
+        },
+        {
+          "confidence" : 1,
+          "text" : "Does not contain egg, milk, peanut soy, tree nuts, animal products, gluten, lactose or artificial"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.01803926277160639,
+        "minX" : 0.2962085684172413,
+        "minY" : 0.3695090902554039,
+        "width" : 0.41528515625000006
+      },
+      "confidence" : 1,
+      "text" : "Does not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or artificial"
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "colours, flavours or preservatives"
+        },
+        {
+          "confidence" : 1,
+          "text" : "colours, flavour or preservatives."
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.008720930099487267,
+        "minX" : 0.2984496166644586,
+        "minY" : 0.36482558155878353,
+        "width" : 0.14922480265299481
+      },
+      "confidence" : 1,
+      "text" : "colours, flavours or preservatives."
+    },
+    {
+      "alternatives" : [
+        {
+          "confidence" : 1,
+          "text" : "(B)240984 EXP 05\/26"
+        },
+        {
+          "confidence" : 1,
+          "text" : "(B) EXP 05\/26"
+        }
+      ],
+      "boundingBox" : {
+        "height" : 0.011147136688232417,
+        "minX" : 0.45521558831051806,
+        "minY" : 0.35678329010671883,
+        "width" : 0.15354339599609373
+      },
+      "confidence" : 1,
+      "text" : "(B) 240984 EXP 05\/26"
+    }
+  ],
+  "rawText" : "\/ Vitamin C supports bone health and healthy blood vessels.\nVitamin C and zinc assist skin health and connective tissue health.\nSupports healthy immune system function.\n\/ Zinc supports prostate and reproductive health in males.\n\/ Zinc supports wound healing.\nAdults and children over 12 years - Take 1 tablet, one to three times a day, with\nfood, or as directed by your health professional.\nDirections for use:\nCalcium ascorbate dihydrate Each tablet contains: 605.3mg\nSodium ascorbate equiv. ascorbic acid (vitamin C) 500mg equiv. ascorbic acid (vitamin C) 500mg TOTAL ASCORBIC ACID (VITAMIN C) 1g 562.4mg\nCitrus bioflavonoids extrac\nZinc amino acid chelate equiv. zinc 50mg 8mg\nRutoside (rutin)\nHesperidin Contains 78mg of sodium per tablet 5mg 5mg\nIf symptoms persist, talk to your health professional. Vitamin and mineral\nsupplements should not replace a balanced diet.\nDoes not contain egg, milk, peanut, soy, tree nuts, animal products, gluten, lactose or artificial\ncolours, flavours or preservatives.\n(B) 240984 EXP 05\/26",
+  "scanID" : "FA436445-FBAE-436B-8706-4DADBA20A6E5"
+}

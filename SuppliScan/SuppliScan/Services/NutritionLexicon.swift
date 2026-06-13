@@ -60,6 +60,16 @@ nonisolated struct NutritionLexicon: Decodable, Hashable, Sendable {
         }
     }
 
+    var botanicalAliasesByVariant: [String: String] {
+        entries.reduce(into: [:]) { result, entry in
+            guard entry.category == .botanical else { return }
+            result[Self.normalizedKey(entry.canonical)] = entry.canonical
+            for variant in entry.aliases {
+                result[Self.normalizedKey(variant)] = entry.canonical
+            }
+        }
+    }
+
     private static func cleanVocabularyTerm(_ value: String) -> String {
         value
             .precomposedStringWithCanonicalMapping

@@ -1,0 +1,71 @@
+{
+  "version": 1,
+  "skills": {
+    "app-intents": {
+      "source": "n0an/App-Intents-Agent-Skill",
+      "sourceType": "github",
+      "skillPath": "app-intents/SKILL.md",
+      "computedHash": "a1e08c3796a8a519ef289a11fb5fa004d55521909a672f685415b3ba62a6fbea"
+    },
+    "appkit-accessibility-auditor": {
+      "source": "rgmez/apple-accessibility-skills",
+      "sourceType": "github",
+      "skillPath": "skills/appkit-accessibility-auditor/SKILL.md",
+      "computedHash": "8397cb2ef51f73bca668d1b9a632be9fd66a28e8f0d0678aff49a9765ceaa581"
+    },
+    "core-data-expert": {
+      "source": "avdlee/core-data-agent-skill",
+      "sourceType": "github",
+      "skillPath": "core-data-expert/SKILL.md",
+      "computedHash": "b8d2829005b1f2fefbaa8af2ea7d7d64e2fbeca2f2172033176ad0780edc3970"
+    },
+    "ios-code-audit": {
+      "source": "jazzychad/ios-code-audit",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "d8191834ebb34c0e15e67a6d8f4e375afb598a11423164444921ac9375c4f0b1"
+    },
+    "swift-architecture-skill": {
+      "source": "efremidze/swift-architecture-skill",
+      "sourceType": "github",
+      "skillPath": "swift-architecture-skill/SKILL.md",
+      "computedHash": "bebf1084cb85399edd2a98b957d6d2c40252ba3c5ee686f3231cdeecf7ad0251"
+    },
+    "swift-testing": {
+      "source": "bocato/swift-testing-agent-skill",
+      "sourceType": "github",
+      "skillPath": "swift-testing/SKILL.md",
+      "computedHash": "7527cbdcc065008285c6b2a179cd5be573532bd5779ca96311612882c7d16bb0"
+    },
+    "swiftdata-expert-skill": {
+      "source": "vanab/SwiftData-agent-skill",
+      "sourceType": "github",
+      "skillPath": "swiftdata-expert-skill/SKILL.md",
+      "computedHash": "192d63ca5892fe1081c0fce088f05913602b3158139903c6167fa8fa8b668908"
+    },
+    "swiftdata-pro": {
+      "source": "twostraws/swiftdata-agent-skill",
+      "sourceType": "github",
+      "skillPath": "swiftdata-pro/SKILL.md",
+      "computedHash": "2f979bad98ea3a6744084c5f93e27897f02e8d0ffe15dd03042e88aaae4da14c"
+    },
+    "swiftui-accessibility-auditor": {
+      "source": "rgmez/apple-accessibility-skills",
+      "sourceType": "github",
+      "skillPath": "skills/swiftui-accessibility-auditor/SKILL.md",
+      "computedHash": "a69ea029a49c78d73ff17fbbf15255358cf11629930f1999a251d7d21b925f74"
+    },
+    "swiftui-design-principles": {
+      "source": "arjitj2/swiftui-design-principles",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "2692dc771633b2915c1b75000009c1a9198af3e3f994ae46d175b48e008edc57"
+    },
+    "uikit-accessibility-auditor": {
+      "source": "rgmez/apple-accessibility-skills",
+      "sourceType": "github",
+      "skillPath": "skills/uikit-accessibility-auditor/SKILL.md",
+      "computedHash": "87adf6bb1a248e312b94cb4ffc0f12c4fb92beab322780e561ca00ec46258f46"
+    }
+  }
+}

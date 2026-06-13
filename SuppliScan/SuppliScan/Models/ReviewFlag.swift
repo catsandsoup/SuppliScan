@@ -25,6 +25,9 @@ nonisolated enum ReviewFlag: String, Codable, Hashable, CaseIterable, Sendable {
     case canonicalNameInferred   // name matched via alias, not exact match
     case unitUnexpected          // unit is unusual for the canonical nutrient
     case unitImplausible         // unit is clinically unlikely for the canonical nutrient
+    case ocrUncertain            // OCR evidence was weak or reconstructed
+    case ocrConflict             // multiple OCR passes disagreed
+    case ocrSinglePassEvidence   // only one recognition pass supported this row
 }
 
 nonisolated extension ReviewFlag {
@@ -37,16 +40,19 @@ nonisolated extension ReviewFlag {
         case .rangeAmount:            "Range — lower used"
         case .traceAmount:            "Trace amount"
         case .subOneAmount:           "<1 — set to 0.5"
-        case .extractEquivalent:      "Extract equivalent"
+        case .extractEquivalent:      "Active amount listed"
         case .proprietaryBlend:       "Blend — amounts unknown"
         case .totalLineAmbiguous:     "Confirm total line"
         case .iuConversionAssumed:    "IU conversion assumed"
         case .iuConversionInvalid:    "IU invalid for this nutrient"
         case .decimalCommaNormalised: "Decimal comma normalised"
         case .servingMultiplied:      "Serving adjusted"
-        case .canonicalNameInferred:  "Name inferred via alias"
+        case .canonicalNameInferred:  "Name needs check"
         case .unitUnexpected:         "Unit needs review"
         case .unitImplausible:        "Unit likely wrong"
+        case .ocrUncertain:           "OCR uncertain"
+        case .ocrConflict:            "OCR conflict"
+        case .ocrSinglePassEvidence:  "Single OCR pass"
         }
     }
 }

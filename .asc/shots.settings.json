@@ -1,0 +1,22 @@
+{
+  "app": {
+    "name": "SuppliScan",
+    "bundleID": "montygiovenco.SuppliScan",
+    "scheme": "SuppliScan",
+    "project": "SuppliScan/SuppliScan.xcodeproj"
+  },
+  "primaryLocale": "en-US",
+  "requiredDeviceSets": [
+    {
+      "name": "iPhone 6.9-inch",
+      "simulator": "iPhone 17 Pro Max",
+      "orientation": "portrait",
+      "width": 1290,
+      "height": 2796,
+      "output": "Marketing/AppStore/Screenshots/framed/6.9-inch"
+    }
+  ],
+  "rawOutput": "Marketing/AppStore/Screenshots/raw/6.9-inch",
+  "framedOutput": "Marketing/AppStore/Screenshots/framed/6.9-inch"
+}
+

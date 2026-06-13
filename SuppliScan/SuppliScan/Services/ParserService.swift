@@ -10,11 +10,13 @@ nonisolated struct ParserService: Sendable {
     private let aliasesByVariant: [String: String]
     private let formsByVariant: [String: String]
     private let semanticProfilesByCanonical: [String: NutritionSemanticProfile]
+    private let botanicalCanonicalByVariant: [String: String]
 
     init(
         aliasesByVariant: [String: String] = [:],
         formsByVariant: [String: String] = [:],
-        semanticProfilesByCanonical: [String: NutritionSemanticProfile] = [:]
+        semanticProfilesByCanonical: [String: NutritionSemanticProfile] = [:],
+        botanicalCanonicalByVariant: [String: String] = [:]
     ) {
         self.aliasesByVariant = aliasesByVariant.reduce(into: [:]) { result, pair in
             result[Self.normalizedKey(pair.key)] = pair.value
@@ -23,6 +25,9 @@ nonisolated struct ParserService: Sendable {
             result[Self.normalizedKey(pair.key)] = pair.value
         }
         self.semanticProfilesByCanonical = semanticProfilesByCanonical.reduce(into: [:]) { result, pair in
+            result[Self.normalizedKey(pair.key)] = pair.value
+        }
+        self.botanicalCanonicalByVariant = botanicalCanonicalByVariant.reduce(into: [:]) { result, pair in
             result[Self.normalizedKey(pair.key)] = pair.value
         }
     }
@@ -41,24 +46,49 @@ nonisolated struct ParserService: Sendable {
 
         var forms: [String: String] = [:]
         var semanticProfiles: [String: NutritionSemanticProfile] = [:]
+        var botanicalAliases: [String: String] = [:]
 
         if let lexicon = try? NutritionLexicon.load(bundle: bundle) {
             for (variant, canonical) in lexicon.aliasesByVariant {
                 aliases[variant] = canonical
             }
+            for (variant, canonical) in lexicon.botanicalAliasesByVariant {
+                botanicalAliases[variant] = canonical
+            }
             forms = lexicon.formsByVariant
             semanticProfiles = lexicon.semanticProfilesByCanonical
+        }
+
+        if let knowledge = try? SupplementKnowledgeService.load(bundle: bundle) {
+            for (variant, canonical) in knowledge.botanicalCanonicalByVariant {
+                botanicalAliases[variant] = canonical
+            }
         }
 
         return ParserService(
             aliasesByVariant: aliases,
             formsByVariant: forms,
-            semanticProfilesByCanonical: semanticProfiles
+            semanticProfilesByCanonical: semanticProfiles,
+            botanicalCanonicalByVariant: botanicalAliases
         )
     }
 
     /// Parses raw OCR text into typed label entries and an optional serving size.
     func parse(_ rawText: String) -> ParseResult {
+        parse(rawText, reviewFlagsByLine: [:])
+    }
+
+    /// Parses OCR output while propagating uncertainty from the recognition layer.
+    func parse(_ ocrResult: OCRResult) -> ParseResult {
+        let reviewFlags = ocrResult.lines.reduce(into: [String: [ReviewFlag]]()) { result, line in
+            let key = Self.normalizedKey(line.text)
+            guard !key.isEmpty else { return }
+            result[key] = appended(Self.reviewFlags(from: line.qualityFlags), to: result[key] ?? [])
+        }
+        return parse(ocrResult.rawText, reviewFlagsByLine: reviewFlags)
+    }
+
+    private func parse(_ rawText: String, reviewFlagsByLine: [String: [ReviewFlag]]) -> ParseResult {
         var entries: [LabelEntry] = []
         var extractedServing: ServingSize?
 
@@ -89,19 +119,67 @@ nonisolated struct ParserService: Sendable {
             }
 
             guard !shouldSkip(line) else { continue }
+            let ocrFlags = reviewFlags(for: line, in: reviewFlagsByLine)
 
             if let probiotic = probioticEntry(from: line) {
-                entries.append(.probiotic(probiotic))
+                entries.append(appendingReviewFlags(ocrFlags, to: .probiotic(probiotic)))
             } else if let herbal = herbalEntry(from: line) {
-                entries.append(.herbal(herbal))
+                entries.append(appendingReviewFlags(ocrFlags, to: .herbal(herbal)))
             } else if let nutrient = nutrientEntry(from: line) {
-                entries.append(.nutrient(UnitConversionService.convertIfNeeded(nutrient)))
+                entries.append(appendingReviewFlags(ocrFlags, to: .nutrient(UnitConversionService.convertIfNeeded(nutrient))))
             } else {
                 entries.append(.unresolved(RawLine(text: line, lineNumber: index + 1)))
             }
         }
 
         return ParseResult(entries: entries, extractedServing: extractedServing)
+    }
+
+    private func reviewFlags(for line: String, in reviewFlagsByLine: [String: [ReviewFlag]]) -> [ReviewFlag] {
+        let key = Self.normalizedKey(line)
+        if let exact = reviewFlagsByLine[key] {
+            return exact
+        }
+
+        return reviewFlagsByLine.reduce(into: []) { result, pair in
+            guard !pair.key.isEmpty else { return }
+            if key.contains(pair.key) || pair.key.contains(key) {
+                result = appended(pair.value, to: result)
+            }
+        }
+    }
+
+    private static func reviewFlags(from ocrFlags: Set<OCRLineQualityFlag>) -> [ReviewFlag] {
+        var flags: [ReviewFlag] = []
+        if ocrFlags.contains(.lowConfidence)
+            || ocrFlags.contains(.lowConfidenceAccepted)
+            || ocrFlags.contains(.reconstructedFromMultipleFragments) {
+            flags.append(.ocrUncertain)
+        }
+        if ocrFlags.contains(.conflictingCandidates) {
+            flags.append(.ocrConflict)
+        }
+        if ocrFlags.contains(.singlePassEvidence) {
+            flags.append(.ocrSinglePassEvidence)
+        }
+        return flags
+    }
+
+    private func appendingReviewFlags(_ flags: [ReviewFlag], to entry: LabelEntry) -> LabelEntry {
+        guard !flags.isEmpty else { return entry }
+        switch entry {
+        case .nutrient(var nutrient):
+            nutrient.reviewFlags = appended(flags, to: nutrient.reviewFlags)
+            return .nutrient(nutrient)
+        case .herbal(var herbal):
+            herbal.reviewFlags = appended(flags, to: herbal.reviewFlags)
+            return .herbal(herbal)
+        case .probiotic(var probiotic):
+            probiotic.reviewFlags = appended(flags, to: probiotic.reviewFlags)
+            return .probiotic(probiotic)
+        case .unresolved:
+            return entry
+        }
     }
 
     /// Prepares OCR lines for deterministic parsing while preserving visible label order.
@@ -174,6 +252,13 @@ nonisolated struct ParserService: Sendable {
             || lower.hasPrefix("standardized to")   // US spelling
             || lower.hasPrefix("calc. as")
             || lower.hasPrefix("calculated as")
+    }
+
+    private func isStandaloneHerbalNoteLine(_ line: String) -> Bool {
+        let lower = line.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return isStandardisationLine(line)
+            || lower.hasPrefix("dry equivalent")
+            || lower.hasPrefix("fresh equivalent")
     }
 
     /// True when a line is a pure elemental/equiv continuation with no embedded compound name.
@@ -275,18 +360,10 @@ nonisolated struct ParserService: Sendable {
         let herbalKeywords = ["extract", "concentrate", "tincture", "dried herb", "dry herb"]
         guard herbalKeywords.contains(where: { lower.contains($0) }) else { return nil }
 
-        // Latin binomial: capitalised genus (3+ chars) + lowercase species
-        guard let nameMatch = firstMatch(
-            in: line,
-            pattern: #"^([A-Z][a-z]{2,}\s+[a-z][a-z-]+(?:\s+ssp\.\s+[a-z]+)?)(?:\s+\(([^)]+)\))?"#
-        ) else { return nil }
-
-        let latinName = nameMatch.captures[0]
-        let commonName = nameMatch.captures.count > 1 && !nameMatch.captures[1].isEmpty
-            ? nameMatch.captures[1] : nil
+        guard let identity = botanicalIdentity(from: line) ?? latinIdentity(from: line) else { return nil }
 
         // Reject nutrient compounds that start with a capitalised word (Calcium citrate etc.)
-        let genus = latinName.split(separator: " ").first.map(String.init) ?? ""
+        let genus = identity.latinName.split(separator: " ").first.map(String.init) ?? ""
         let knownNutrientPrefixes: Set<String> = [
             "Calcium", "Magnesium", "Zinc", "Iron", "Copper", "Sodium", "Potassium",
             "Riboflavin", "Thiamine", "Pyridoxal", "Levomefolate", "Mecobalamin",
@@ -346,15 +423,53 @@ nonisolated struct ParserService: Sendable {
         guard extractAmount != nil else { return nil }
 
         return HerbalEntry(
-            latinName: latinName,
-            commonName: commonName,
+            latinName: identity.latinName,
+            commonName: identity.commonName,
             extractType: extractType,
             extractAmount: extractAmount,
             extractUnit: extractUnit,
             dryEquivalentAmount: dryEquivalentAmount,
             dryEquivalentUnit: dryEquivalentUnit,
-            standardisation: parseStandardisation(from: line)
+            standardisation: parseStandardisation(from: line),
+            reviewFlags: identity.inferred ? [.canonicalNameInferred] : []
         )
+    }
+
+    private func botanicalIdentity(from line: String) -> (latinName: String, commonName: String?, inferred: Bool)? {
+        let lineKey = Self.normalizedKey(line)
+        let nonIdentityFragments = ["standardised", "standardized", "equivalent", "calculated", "contain silicon"]
+        let matches = botanicalCanonicalByVariant.compactMap { variantKey, canonical -> (String, String)? in
+            guard !variantKey.isEmpty else { return nil }
+            guard nonIdentityFragments.contains(where: { variantKey.contains($0) }) == false else { return nil }
+            guard lineKey == variantKey || lineKey.contains(variantKey) else { return nil }
+            return (variantKey, canonical)
+        }
+
+        guard let match = matches.max(by: { $0.0.count < $1.0.count }) else { return nil }
+        let commonName = match.0 == Self.normalizedKey(match.1) ? nil : titleCased(match.0)
+        return (latinName: match.1, commonName: commonName, inferred: commonName != nil)
+    }
+
+    private func latinIdentity(from line: String) -> (latinName: String, commonName: String?, inferred: Bool)? {
+        guard let match = firstMatch(
+            in: line,
+            pattern: #"^([A-Z][a-z]{2,})\s+([a-z][a-z-]+)(?:\s+ssp\.\s+([a-z]+))?(?:\s+\(([^)]+)\))?"#
+        ) else { return nil }
+
+        let species = match.captures[1].lowercased()
+        let rejectedSpeciesWords: Set<String> = [
+            "aerial", "berry", "bulb", "concentrate", "dry", "dried", "extract",
+            "flower", "fruit", "herb", "leaf", "liquid", "powder", "rhizome",
+            "root", "seed", "soft", "stem", "whole"
+        ]
+        guard !rejectedSpeciesWords.contains(species) else { return nil }
+
+        var latinName = "\(match.captures[0]) \(match.captures[1])"
+        if match.captures.count > 2, !match.captures[2].isEmpty {
+            latinName += " ssp. \(match.captures[2])"
+        }
+        let commonName = match.captures.count > 3 && !match.captures[3].isEmpty ? match.captures[3] : nil
+        return (latinName: latinName, commonName: commonName, inferred: false)
     }
 
     /// Parses a HerbalStandardisation from a line that contains a standardisation clause.
@@ -802,6 +917,10 @@ nonisolated struct ParserService: Sendable {
             return true
         }
 
+        if isStandaloneHerbalNoteLine(trimmed) {
+            return true
+        }
+
         let alwaysSkippedHeaders = [
             "supplement facts", "nutrition information", "active ingredients",
             "amount per serve", "amount per serving", "amount per capsule",
@@ -847,9 +966,6 @@ nonisolated struct ParserService: Sendable {
             "not manufactured with", "suitable for vegans", "suitable for vegetarians",
             "100% money back", "money back guarantee", "no added", "no artificial",
             "designed and packed", "packed in australia",
-            // Herbal standardisation notes — captured in HerbalEntry or discarded (not ingredients)
-            "standardised to", "standardized to", "calc. as", "calculated as",
-            "dry equivalent", "fresh equivalent",
         ]
         if nonIngredientPhrases.contains(where: { lower.contains($0) }) {
             return true

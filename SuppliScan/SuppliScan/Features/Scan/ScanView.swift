@@ -6,6 +6,7 @@
 // CameraPreviewView — necessary because AVCaptureVideoPreviewLayer requires UIView.
 
 import AVFoundation
+import OSLog
 import PhotosUI
 import SwiftUI
 
@@ -32,7 +33,7 @@ struct ScanView: View {
         .sensoryFeedback(.impact(flexibility: .rigid), trigger: captureTriggered)
         .task {
             guard let dependencies else {
-                print("[SuppliScan] DIAGNOSTIC: ScanView AppDependencies missing from environment")
+                Logger.navigation.error("ScanView AppDependencies missing from environment")
                 return
             }
             viewModel.configure(
