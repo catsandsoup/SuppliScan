@@ -1,6 +1,8 @@
 // HistoryView.swift
 // SuppliScan
-// Searchable list of past scans with swipe-to-delete.
+// Searchable list of past reports with swipe-to-delete. Design-system styled:
+// List/searchable/EditButton/onDelete mechanics preserved; content is carded cells on
+// the warm surface with custom empty states.
 
 import SwiftUI
 import SwiftData
@@ -25,13 +27,17 @@ struct HistoryView: View {
 
         Group {
             if records.isEmpty {
-                ContentUnavailableView(
-                    "No Scans Yet",
-                    systemImage: "camera.viewfinder",
-                    description: Text("Scan a supplement label to get started.")
+                HistoryEmptyState(
+                    icon: "clock.arrow.circlepath",
+                    title: "No reports yet",
+                    message: "Scan a supplement label to start building your history."
                 )
             } else if filteredRecords.isEmpty && !searchText.isEmpty {
-                ContentUnavailableView.search(text: searchText)
+                HistoryEmptyState(
+                    icon: "magnifyingglass",
+                    title: "No matches",
+                    message: "No saved reports match “\(searchText)”."
+                )
             } else {
                 List {
                     ForEach(filteredRecords) { record in
@@ -41,6 +47,12 @@ struct HistoryView: View {
                         ) {
                             viewModel.openRecord(id: record.id)
                         }
+                        .listRowSeparator(.hidden)
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(
+                            top: Theme.Space.xs, leading: Theme.Space.screen,
+                            bottom: Theme.Space.xs, trailing: Theme.Space.screen
+                        ))
                     }
                     .onDelete { offsets in
                         deleteCount += 1
@@ -53,24 +65,29 @@ struct HistoryView: View {
                     }
                 }
                 .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                .contentMargins(.top, Theme.Space.sm, for: .scrollContent)
+                .contentMargins(.bottom, 96, for: .scrollContent)
             }
         }
+        .background(Theme.Palette.surface.ignoresSafeArea())
         .navigationTitle("History")
         .navigationBarTitleDisplayMode(.large)
         .searchable(text: $searchText, placement: .navigationBarDrawer(displayMode: .always))
         .searchToolbarBehavior(.minimize)
+        .tint(Theme.Palette.brand)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 if !records.isEmpty { EditButton() }
             }
         }
         .alert(
-            "Couldn't Load Report",
+            "Couldn’t Load Report",
             isPresented: $viewModel.isShowingLoadError
         ) {
             Button("OK", role: .cancel) { }
         } message: {
-            Text("The saved scan could not be opened.")
+            Text("The saved report could not be opened.")
         }
         .sensoryFeedback(.impact(weight: .medium), trigger: deleteCount)
         .onAppear {
@@ -85,6 +102,8 @@ struct HistoryView: View {
     }
 }
 
+// MARK: - Row
+
 private struct HistoryRecordRowView: View {
     let record: HistoryRecordPresentation
     var isLoading = false
@@ -92,52 +111,55 @@ private struct HistoryRecordRowView: View {
 
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 12) {
-                VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: Theme.Space.md) {
+                VStack(alignment: .leading, spacing: Theme.Space.xs) {
                     Text(record.title)
-                        .font(.headline)
-                        .foregroundStyle(.primary)
+                        .textStyle(.headline)
+                        .foregroundStyle(.ink)
+                        .lineLimit(1)
 
                     Text("\(record.referenceStandard) · \(record.createdAt.formatted(date: .abbreviated, time: .omitted))")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .textStyle(.caption)
+                        .foregroundStyle(.inkTertiary)
 
                     if !record.statusBadges.isEmpty {
-                        HStack(spacing: 6) {
+                        HStack(spacing: Theme.Space.xs) {
                             badges
                         }
+                        .padding(.top, Theme.Space.xxs)
                     }
                 }
 
-                Spacer()
+                Spacer(minLength: Theme.Space.sm)
 
                 if isLoading {
                     ProgressView()
                         .controlSize(.small)
+                        .tint(.brand)
                 } else {
                     Image(systemName: "chevron.right")
-                        .font(.subheadline)
-                        .foregroundStyle(.tertiary)
+                        .font(.system(size: Theme.Icon.xs, weight: .semibold))
+                        .foregroundStyle(.inkFaint)
                         .accessibilityHidden(true)
                 }
             }
-            .padding(.vertical, 6)
+            .dsCard()
             .contentShape(.rect)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressable)
         .disabled(isLoading)
         .accessibilityLabel(accessibilityLabel)
-        .accessibilityHint("Opens the saved clinical report")
+        .accessibilityHint("Opens the saved report")
     }
 
     @ViewBuilder
     private var badges: some View {
         ForEach(record.statusBadges, id: \.self) { badge in
             Text(badge)
-                .font(.caption.weight(.semibold))
-                .padding(.horizontal, 8)
-                .padding(.vertical, 3)
-                .background(badgeColor(for: badge).opacity(0.12), in: Capsule())
+                .textStyle(.caption)
+                .padding(.horizontal, Theme.Space.sm)
+                .padding(.vertical, Theme.Space.xxs)
+                .background(badgeColor(for: badge).opacity(0.14), in: Capsule())
                 .foregroundStyle(badgeColor(for: badge))
         }
     }
@@ -151,10 +173,43 @@ private struct HistoryRecordRowView: View {
 
     private func badgeColor(for badge: String) -> Color {
         switch badge {
-        case "Above UL": AppTheme.Color.critical
-        case "Needs review", "Interactions": AppTheme.Color.warning
-        case "Verified": AppTheme.Color.success
-        default: .secondary
+        case "Above UL": Theme.Palette.tier4
+        case "Needs review", "Interactions": Theme.Palette.tier3
+        case "Verified": Theme.Palette.tier1
+        default: Theme.Palette.inkTertiary
         }
+    }
+}
+
+// MARK: - Empty state
+
+private struct HistoryEmptyState: View {
+    let icon: String
+    let title: String
+    let message: String
+
+    var body: some View {
+        VStack(spacing: Theme.Space.lg) {
+            ZStack {
+                Circle()
+                    .fill(.brandMuted)
+                    .frame(width: 84, height: 84)
+                Image(systemName: icon)
+                    .font(.system(size: 32, weight: .light))
+                    .foregroundStyle(.brand)
+            }
+            VStack(spacing: Theme.Space.sm) {
+                Text(title)
+                    .textStyle(.title)
+                    .foregroundStyle(.ink)
+                Text(message)
+                    .textStyle(.callout)
+                    .foregroundStyle(.inkSecondary)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: 300)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(Theme.Space.screen)
     }
 }
