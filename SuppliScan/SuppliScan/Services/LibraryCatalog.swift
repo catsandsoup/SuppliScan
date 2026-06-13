@@ -63,7 +63,8 @@ nonisolated struct LibraryCatalog: Sendable {
     // MARK: - Merge
 
     /// Curated quality rows first (best tier → worst), then any remaining knowledge-only forms.
-    private static func mergeForms(
+    /// Internal (not private) so the merge logic — the one piece of genuinely new logic — is unit-testable.
+    static func mergeForms(
         knowledgeForms: [String],
         qualityRows: [LibraryFormQualityRow]
     ) -> [LibraryForm] {
@@ -112,7 +113,8 @@ nonisolated private struct LibraryFormQualityFile: Decodable {
     let forms: [LibraryFormQualityRow]
 }
 
-nonisolated private struct LibraryFormQualityRow: Decodable {
+/// Internal (memberwise-constructible) so `mergeForms` can be exercised in unit tests.
+nonisolated struct LibraryFormQualityRow: Decodable {
     let nutrient: String
     let form: String
     let tier: Int

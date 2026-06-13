@@ -186,7 +186,7 @@ struct LibraryView: View {
 
 // MARK: - Category filter
 
-enum LibraryCategoryFilter: String, CaseIterable, Identifiable, Hashable {
+nonisolated enum LibraryCategoryFilter: String, CaseIterable, Identifiable, Hashable {
     case all, vitamins, minerals, botanicals, probiotics, other
 
     var id: String { rawValue }
