@@ -28,7 +28,7 @@ struct SettingsView: View {
             } header: {
                 Text("Review & OCR")
             } footer: {
-                Text("Review settings affect how parsed label rows are shown before clinical analysis.")
+                Text("Control the review step and what's shown before analysis.")
             }
 
             Section("Data") {
@@ -51,7 +51,7 @@ struct SettingsView: View {
 
             Section("About") {
                 LabeledContent("Version", value: Bundle.main.appVersionString)
-                LabeledContent("NRV sources", value: "NHMRC 2023 · NIH/FDA · EFSA")
+                LabeledContent("NRV sources", value: "NHMRC 2006 (rev. 2017) · NIH/FDA · EFSA")
                 LabeledContent("Clinical use", value: "Practitioner reference")
                 Text(LabelAnalysis.disclaimer)
                     .font(.caption)

@@ -130,7 +130,7 @@ struct ReviewView: View {
             StandardPickerView(selection: $viewModel.selectedStandard)
             DemographicPickerView(selectedKey: $viewModel.selectedDemographicKey)
             if viewModel.blockingReviewCount > 0 {
-                Label("\(viewModel.blockingReviewCount) row\(viewModel.blockingReviewCount == 1 ? "" : "s") need review", systemImage: "questionmark.circle.fill")
+                Label(viewModel.blockingReviewCount == 1 ? "1 row needs review" : "\(viewModel.blockingReviewCount) rows need review", systemImage: "questionmark.circle.fill")
                     .font(.caption)
                     .foregroundStyle(AppTheme.Color.warning)
                     .frame(maxWidth: .infinity, alignment: .leading)

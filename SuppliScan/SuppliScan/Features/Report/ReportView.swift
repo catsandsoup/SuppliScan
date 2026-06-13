@@ -10,9 +10,9 @@ struct ReportView: View {
 
     var body: some View {
         ContentUnavailableView(
-            "Report Coming Soon",
+            "Report Unavailable",
             systemImage: "doc.text.magnifyingglass",
-            description: Text("Clinical report rendering will be implemented in the next layer.")
+            description: Text("This report can't be displayed yet. Open the scan from your history to view its analysis.")
         )
         .navigationTitle(analysis.productName.isEmpty ? "Report" : analysis.productName)
         .navigationBarTitleDisplayMode(.inline)
