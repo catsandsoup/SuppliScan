@@ -84,7 +84,7 @@ struct ReviewView: View {
                 productNameField
 
                 if !viewModel.entries.isEmpty {
-                    LabelRecognisedBannerView(standard: viewModel.selectedStandard)
+                    ReviewSummaryBannerView(entries: viewModel.entries, standard: viewModel.selectedStandard)
                         .padding(.horizontal, Theme.Space.screen)
                 }
 

@@ -12,6 +12,10 @@ struct SupplementFactsCardView: View {
     let onConfirm: (UUID) -> Void
     let onDelete: (UUID) -> Void
 
+    /// Non-nutrient label text (warnings, marketing, lot numbers) is collapsed by default
+    /// so it never buries the actual facts.
+    @State private var showOtherText = false
+
     private var presentations: [ReviewEntryPresentation] {
         ReviewEntryClassifier.presentations(for: entries)
     }
@@ -51,18 +55,29 @@ struct SupplementFactsCardView: View {
             ForEach(ReviewEntryStatus.allCases, id: \.self) { status in
                 let rows = presentations.filter { $0.status == status }
                 if !rows.isEmpty {
-                    ReviewSectionHeader(status: status, count: rows.count)
-                        .padding(.top, status == .confirmed ? Theme.Space.sm : Theme.Space.lg)
+                    if status == .otherLabelText {
+                        Button {
+                            withAnimation(.dsSnappy) { showOtherText.toggle() }
+                        } label: {
+                            ReviewSectionHeader(status: status, count: rows.count, isExpanded: showOtherText)
+                                .padding(.top, Theme.Space.lg)
+                                .contentShape(.rect)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityHint(showOtherText ? "Collapse other label text" : "Expand other label text")
 
-                    ForEach(rows) { presentation in
-                        ReviewEntryRowView(
-                            presentation: presentation,
-                            isEditing: isEditing,
-                            onOpenDetails: { selectedEntryID = presentation.id },
-                            onConfirm: { onConfirm(presentation.id) },
-                            onDelete: { onDelete(presentation.id) }
-                        )
-                        HairlineDivider()
+                        if showOtherText {
+                            ForEach(rows) { presentation in
+                                row(for: presentation)
+                            }
+                        }
+                    } else {
+                        ReviewSectionHeader(status: status, count: rows.count)
+                            .padding(.top, status == .confirmed ? Theme.Space.sm : Theme.Space.lg)
+
+                        ForEach(rows) { presentation in
+                            row(for: presentation)
+                        }
                     }
                 }
             }
@@ -82,6 +97,18 @@ struct SupplementFactsCardView: View {
         }
     }
 
+    @ViewBuilder
+    private func row(for presentation: ReviewEntryPresentation) -> some View {
+        ReviewEntryRowView(
+            presentation: presentation,
+            isEditing: isEditing,
+            onOpenDetails: { selectedEntryID = presentation.id },
+            onConfirm: { onConfirm(presentation.id) },
+            onDelete: { onDelete(presentation.id) }
+        )
+        HairlineDivider()
+    }
+
     private var selectedPresentationBinding: Binding<ReviewEntryPresentation?> {
         Binding {
             presentations.first { $0.id == selectedEntryID }
@@ -94,6 +121,7 @@ struct SupplementFactsCardView: View {
 private struct ReviewSectionHeader: View {
     let status: ReviewEntryStatus
     let count: Int
+    var isExpanded: Bool? = nil
 
     var body: some View {
         HStack(spacing: Theme.Space.sm) {
@@ -107,6 +135,13 @@ private struct ReviewSectionHeader: View {
             Text(count.formatted())
                 .textStyle(.dataLabel)
                 .foregroundStyle(.inkSecondary)
+            if let isExpanded {
+                Image(systemName: "chevron.down")
+                    .font(.system(size: Theme.Icon.xs, weight: .semibold))
+                    .foregroundStyle(.inkTertiary)
+                    .rotationEffect(.degrees(isExpanded ? 0 : -90))
+                    .accessibilityHidden(true)
+            }
         }
         .accessibilityElement(children: .combine)
     }

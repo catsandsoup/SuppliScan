@@ -240,5 +240,50 @@ enum SampleData {
             createdAt: Date()
         )
     }()
+
+    // MARK: - Sample Review entries
+    //
+    // Models the hardest label in the training corpus (multi-form magnesium powder with
+    // a horsetail extract) plus typical non-nutrient label text, so the Review display can
+    // be verified deterministically across every state: ready, needs-review, and other text.
+
+    static let reviewEntries: [LabelEntry] = [
+        // Ready to analyse
+        .nutrient(NutrientEntry(canonicalName: "Taurine", displayName: "Taurine", amount: 1000, unit: .mg)),
+        .nutrient(NutrientEntry(
+            canonicalName: "Magnesium", displayName: "Magnesium amino acid chelate",
+            form: "amino acid chelate", amount: 350, unit: .mg,
+            isElemental: true, compoundAmount: 1750, compoundUnit: .mg
+        )),
+        .nutrient(NutrientEntry(
+            canonicalName: "Magnesium", displayName: "Magnesium glycinate dihydrate",
+            form: "glycinate", amount: 12.2, unit: .mg,
+            isElemental: true, compoundAmount: 104, compoundUnit: .mg
+        )),
+        .nutrient(NutrientEntry(canonicalName: "Zinc", displayName: "Zinc", form: "amino acid chelate", amount: 5, unit: .mg)),
+        .herbal(HerbalEntry(
+            latinName: "Equisetum arvense", commonName: "Horsetail",
+            extractType: .dryConcExtract, extractAmount: 250, extractUnit: .mg,
+            dryEquivalentAmount: 1000, dryEquivalentUnit: .mg,
+            standardisation: HerbalStandardisation(compound: "silicon", calculatedAs: nil, amount: 14, unit: .mg)
+        )),
+
+        // Needs review
+        .nutrient(NutrientEntry(
+            canonicalName: "Magnesium", displayName: "Magnesium phosphate pentahydrate",
+            form: "phosphate", amount: 24.8, unit: .mg,
+            isElemental: true, compoundAmount: 120, compoundUnit: .mg,
+            reviewFlags: [.extractEquivalent]
+        )),
+        .nutrient(NutrientEntry(canonicalName: "Selenium", displayName: "Selenomethionine", amount: nil, unit: .mcg, reviewFlags: [.amountNotFound])),
+        .unresolved(RawLine(text: "Calcium pantothenate 30 mg", lineNumber: 12)),
+
+        // Other label text (collapsed by default)
+        .unresolved(RawLine(text: "Supports healthy hair, skin and nails", lineNumber: 1)),
+        .unresolved(RawLine(text: "Take one tablet daily with a meal", lineNumber: 20)),
+        .unresolved(RawLine(text: "Do not exceed the stated dose", lineNumber: 21)),
+        .unresolved(RawLine(text: "Store below 25°C in a dry place", lineNumber: 22)),
+        .unresolved(RawLine(text: "Imported and distributed by New Nordic Pty Ltd", lineNumber: 23)),
+    ]
 }
 #endif

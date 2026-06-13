@@ -78,8 +78,24 @@ struct RootTabView: View {
         .task {
             // Handle a request that arrived during a cold launch, before this view appeared.
             handleIntent(intentRouter.request)
+            #if DEBUG
+            handlePreviewLaunchIfRequested()
+            #endif
         }
     }
+
+    #if DEBUG
+    /// DEBUG: `-previewReview` pushes the Review screen with a realistic hard-label entry set,
+    /// so the OCR-results display can be verified deterministically in the simulator.
+    private func handlePreviewLaunchIfRequested() {
+        guard ProcessInfo.processInfo.arguments.contains("-previewReview") else { return }
+        selectedTab = .scan
+        scanRouter.navigate(to: .review(
+            entries: SampleData.reviewEntries,
+            serving: ServingSize(quantity: 5, unit: .gram)
+        ))
+    }
+    #endif
 
     /// Performs (and consumes) a pending App Intent / Shortcut / Spotlight navigation request.
     private func handleIntent(_ request: AppIntentRequest?) {
