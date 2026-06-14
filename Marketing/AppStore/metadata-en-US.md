@@ -3,10 +3,10 @@
 ## Product Page Fields
 
 App name:
-SuppliScan
+SuppliScan: Supplements
 
 Subtitle:
-Supplement Dose Reports
+Dose & Interaction Reports
 
 Primary category:
 Health & Fitness
@@ -15,36 +15,36 @@ Secondary category:
 Medical
 
 Keyword field:
-vitamin,mineral,nutrition,dietitian,nutritionist,labels,ocr,healthcare,RDI,UL,practitioner
+vitamin,mineral,nutrition,dietitian,nutritionist,label,ocr,RDI,UL,clinical,healthcare
 
 Promotional text:
-Turn supplement labels into clear dose, upper-limit, and form-quality reports for practitioner review. Built for transparent, on-device analysis.
+Turn a supplement label into a practitioner-ready dose report: RDI context, upper-limit risk, form notes, and interaction flags, reviewed on device.
 
 ## Description
 
-SuppliScan helps practitioners turn supplement labels into structured, reviewable reports. Scan a Supplement Facts panel, review the extracted rows, and compare label amounts against reference values, upper limits, form quality, and interaction notes.
+Most supplement apps stop at ingredient lists. SuppliScan focuses on dose relevance: what the label lists, how much it provides, whether it approaches an upper limit, and which interaction flags deserve review.
 
-Designed for dietitians, nutritionists, clinicians, researchers, and careful supplement users, SuppliScan focuses on transparency: every result stays tied to the label text and every report includes a clear disclaimer.
+Scan a Supplement Facts panel, review the extracted rows, then turn the label into a structured report for practitioner review. SuppliScan is built for dietitians, nutritionists, clinicians, researchers, and careful supplement users who need more than a generic label scanner.
 
 Key features:
 - Scan supplement labels with on-device text recognition.
 - Review extracted nutrients before analysis.
-- Compare amounts with AU, US, and EU reference standards.
+- Compare amounts against AU, US, and EU reference standards.
 - Flag nutrients near or above upper limits.
-- Surface form-quality context for common supplemental forms.
-- Show nutrient and medication interaction notes where reference data exists.
-- Save reports locally for follow-up review.
+- See form-quality context for common supplemental forms.
+- Review nutrient and medication-class interaction notes where reference data exists.
+- Save local reports for follow-up.
 - Share concise report text with a practitioner or client.
 
-SuppliScan is a reference and documentation tool. It does not diagnose, treat, cure, or prevent disease, and it does not replace advice from a qualified healthcare professional.
+SuppliScan keeps results tied to the label text and includes a clear disclaimer on every report. It is a reference and documentation tool. It does not diagnose, treat, cure, or prevent disease, and it does not replace advice from a qualified healthcare professional.
 
 ## Screenshot Captions
 
-1. Scan Supplement Labels
-2. Spot Upper-Limit Risks
+1. Supplement Dose Reports
+2. Catch Upper-Limit Risks
 3. Review Interaction Flags
-4. Track Saved Reports
-5. Set Clinical Standards
+4. Save Practitioner Reports
+5. Choose RDI/UL Standards
 
 ## App Preview Direction
 

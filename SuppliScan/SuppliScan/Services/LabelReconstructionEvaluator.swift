@@ -24,8 +24,8 @@ nonisolated struct LabelReconstructionEvaluator: Sendable {
             }
         }
 
-        let precision = observed.isEmpty ? 0 : Double(matched.count) / Double(observed.count)
-        let recall = expected.isEmpty ? 0 : Double(matched.count) / Double(expected.count)
+        let precision = observed.isEmpty ? (expected.isEmpty ? 1 : 0) : Double(matched.count) / Double(observed.count)
+        let recall = expected.isEmpty ? 1 : Double(matched.count) / Double(expected.count)
         let f1 = precision + recall == 0 ? 0 : 2 * precision * recall / (precision + recall)
 
         return LabelReconstructionScore(
@@ -46,7 +46,7 @@ nonisolated struct LabelReconstructionEvaluator: Sendable {
     }
 }
 
-nonisolated struct LabelReconstructionBenchmark: Hashable, Sendable {
+nonisolated struct LabelReconstructionBenchmark: Codable, Hashable, Sendable {
     let name: String
     let expectedEntries: [ReconstructedFact]
 
@@ -68,13 +68,30 @@ nonisolated struct LabelReconstructionScore: Hashable, Sendable {
     let recall: Double
     let f1: Double
 
+    var missingCount: Int { missing.count }
+    var unexpectedCount: Int { unexpected.count }
+
+    var unresolvedRate: Double {
+        guard observedCount + unresolvedLineCount > 0 else { return 0 }
+        return Double(unresolvedLineCount) / Double(observedCount + unresolvedLineCount)
+    }
+
+    var flaggedEntryRate: Double {
+        guard observedCount > 0 else { return 0 }
+        return Double(flaggedEntryCount) / Double(observedCount)
+    }
+
+    var isClinicallyClean: Bool {
+        isComplete && precision == 1 && recall == 1 && flaggedEntryCount == 0
+    }
+
     var isComplete: Bool {
         missing.isEmpty && unexpected.isEmpty && unresolvedLineCount == 0
     }
 }
 
-nonisolated struct ReconstructedFact: Hashable, Sendable {
-    enum Kind: Hashable, Sendable {
+nonisolated struct ReconstructedFact: Codable, Hashable, Sendable {
+    enum Kind: String, Codable, Hashable, Sendable {
         case nutrient
         case herbal
         case probiotic
@@ -150,9 +167,10 @@ nonisolated struct ReconstructedFact: Hashable, Sendable {
     func matches(_ expected: ReconstructedFact) -> Bool {
         kind == expected.kind
             && normalized(name) == normalized(expected.name)
-            && matchesText(form, expected.form)
-            && matchesText(marker, expected.marker)
+            && matchesDescriptor(form, expected.form)
+            && matchesDescriptor(marker, expected.marker)
             && matchesText(unit, expected.unit)
+            && matchesText(secondaryUnit, expected.secondaryUnit)
             && matchesAmount(amount, expected.amount)
             && matchesAmount(secondaryAmount, expected.secondaryAmount)
     }
@@ -162,6 +180,19 @@ nonisolated struct ReconstructedFact: Hashable, Sendable {
             return true
         }
         return normalized(observed ?? "") == normalized(expected)
+    }
+
+    private func matchesDescriptor(_ observed: String?, _ expected: String?) -> Bool {
+        guard let expected else {
+            return true
+        }
+
+        let observedValue = normalized(observed ?? "")
+        let expectedValue = normalized(expected)
+        guard !observedValue.isEmpty else { return false }
+        return observedValue == expectedValue
+            || observedValue.contains(expectedValue)
+            || expectedValue.contains(observedValue)
     }
 
     private func matchesAmount(_ observed: Double?, _ expected: Double?) -> Bool {

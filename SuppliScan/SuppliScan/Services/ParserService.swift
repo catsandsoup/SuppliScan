@@ -152,8 +152,7 @@ nonisolated struct ParserService: Sendable {
     private static func reviewFlags(from ocrFlags: Set<OCRLineQualityFlag>) -> [ReviewFlag] {
         var flags: [ReviewFlag] = []
         if ocrFlags.contains(.lowConfidence)
-            || ocrFlags.contains(.lowConfidenceAccepted)
-            || ocrFlags.contains(.reconstructedFromMultipleFragments) {
+            || ocrFlags.contains(.lowConfidenceAccepted) {
             flags.append(.ocrUncertain)
         }
         if ocrFlags.contains(.conflictingCandidates) {
@@ -184,7 +183,235 @@ nonisolated struct ParserService: Sendable {
 
     /// Prepares OCR lines for deterministic parsing while preserving visible label order.
     private func ingredientCandidateLines(from rawLines: [String]) -> [String] {
-        mergedContinuationLines(mergedTwoColumnLines(rawLines))
+        let reconstructedLines = reconstructedColumnarRows(rawLines)
+        let mergedLines = mergedContinuationLines(
+            deduplicatedAdjacentVariantLines(
+                mergedTwoColumnLines(reconstructedLines)
+            )
+        )
+        return repairedDisplacedCompoundEquivalentRows(mergedLines)
+    }
+
+    /// Repairs common Vision reading-order failures on dense supplement tables where
+    /// the left ingredient column and right amount column are interleaved.
+    private func reconstructedColumnarRows(_ lines: [String]) -> [String] {
+        var result: [String] = []
+        var i = 0
+
+        while i < lines.count {
+            let current = lines[i]
+
+            if i + 4 < lines.count,
+               isKnownNutrientNameOnlyLine(current),
+               isKnownNutrientNameOnlyLine(lines[i + 1]),
+               let firstEquivalent = leadingEquivalentLine(in: lines[i + 2]),
+               equivalentLine(firstEquivalent, targets: current),
+               isAmountOnlyLine(lines[i + 3]),
+               let secondEquivalent = leadingEquivalentLine(in: lines[i + 4]),
+               equivalentLine(secondEquivalent, targets: lines[i + 1]) {
+                result.append(compoundEquivalentRow(compoundName: current, equivalent: firstEquivalent, compoundAmountLine: lines[i + 3]))
+                result.append(compoundEquivalentRow(compoundName: lines[i + 1], equivalent: secondEquivalent, compoundAmountLine: nil))
+                i += 5
+                continue
+            }
+
+            if i + 3 < lines.count,
+               isKnownNutrientNameOnlyLine(current),
+               isKnownNutrientNameOnlyLine(lines[i + 1]),
+               isAmountOnlyLine(lines[i + 2]),
+               let firstEquivalent = leadingEquivalentLine(in: lines[i + 3]),
+               equivalentLine(firstEquivalent, targets: current) {
+                result.append("\(lines[i + 1]) \(lines[i + 2])")
+                result.append(compoundEquivalentRow(compoundName: current, equivalent: firstEquivalent, compoundAmountLine: nil))
+                i += 4
+                continue
+            }
+
+            if i + 2 < lines.count,
+               latinIdentity(from: current) != nil,
+               isStandardisationLine(lines[i + 1]),
+               isExtractEquivalentRowWithoutIdentity(lines[i + 2]) {
+                result.append("\(current) \(lines[i + 2]) \(lines[i + 1])")
+                i += 3
+                continue
+            }
+
+            if i + 1 < lines.count,
+               isExtractEquivalentRowWithoutIdentity(current),
+               latinIdentity(from: lines[i + 1]) != nil {
+                result.append("\(lines[i + 1]) \(current)")
+                i += 2
+                continue
+            }
+
+            if i + 1 < lines.count,
+               latinIdentity(from: current) != nil,
+               isExtractEquivalentRowWithoutIdentity(lines[i + 1]) {
+                result.append("\(current) \(lines[i + 1])")
+                i += 2
+                continue
+            }
+
+            if i + 1 < lines.count,
+               let split = splitKnownNutrientPairWithAmount(current),
+               isAmountOnlyLine(lines[i + 1]) {
+                result.append("\(split.firstName) \(split.firstAmount)")
+                result.append("\(split.secondName) \(lines[i + 1])")
+                i += 2
+                continue
+            }
+
+            result.append(current)
+            i += 1
+        }
+
+        return result
+    }
+
+    private func isExtractEquivalentRowWithoutIdentity(_ line: String) -> Bool {
+        let lower = line.lowercased()
+        guard lower.contains("extract") || lower.contains("concentrate") else { return false }
+        guard lower.contains("equiv") || lower.contains("equivalent") else { return false }
+        return botanicalIdentity(from: line) == nil && latinIdentity(from: line) == nil
+    }
+
+    private func isKnownNutrientNameOnlyLine(_ line: String) -> Bool {
+        guard isNameOnlyLine(line) else { return false }
+        let name = extractNameAndForm(from: line).name
+        return isKnownNutrientName(name)
+    }
+
+    private func splitKnownNutrientPairWithAmount(_ line: String) -> (firstName: String, secondName: String, firstAmount: String)? {
+        guard let amountMatch = amountMatch(in: line) else { return nil }
+        let prefix = String(line[..<amountMatch.range.lowerBound])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let words = Self.normalizedKey(prefix).split(separator: " ").map(String.init)
+        guard words.count >= 2 else { return nil }
+
+        for splitIndex in 1..<words.count {
+            let first = words[..<splitIndex].joined(separator: " ")
+            let second = words[splitIndex...].joined(separator: " ")
+            guard isKnownNutrientName(first), isKnownNutrientName(second) else { continue }
+            return (
+                firstName: canonicalName(for: first),
+                secondName: canonicalName(for: second),
+                firstAmount: String(line[amountMatch.range])
+            )
+        }
+
+        return nil
+    }
+
+    private func leadingEquivalentLine(in line: String) -> LeadingEquivalentLine? {
+        guard let match = firstMatch(
+            in: line,
+            pattern: #"(?i)^\(?\s*(?:equiv\.?|equivalent(?:\s+to)?)\s+(.+?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b(?:\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b)?"#
+        ) else { return nil }
+
+        return LeadingEquivalentLine(
+            activeName: match.captures[0],
+            activeAmountText: match.captures[1],
+            activeUnitText: match.captures[2],
+            compoundAmountText: match.captures.count > 3 && !match.captures[3].isEmpty ? match.captures[3] : nil,
+            compoundUnitText: match.captures.count > 4 && !match.captures[4].isEmpty ? match.captures[4] : nil
+        )
+    }
+
+    private func equivalentLine(_ line: LeadingEquivalentLine, targets compoundName: String) -> Bool {
+        let compoundCandidate = extractNameAndForm(from: compoundName).name
+        return Self.normalizedKey(canonicalName(for: line.activeName))
+            == Self.normalizedKey(canonicalName(for: compoundCandidate))
+    }
+
+    private func compoundEquivalentRow(
+        compoundName: String,
+        equivalent: LeadingEquivalentLine,
+        compoundAmountLine: String?
+    ) -> String {
+        let compoundAmount: String
+        if let compoundAmountLine {
+            compoundAmount = compoundAmountLine
+        } else if let amountText = equivalent.compoundAmountText,
+                  let unitText = equivalent.compoundUnitText {
+            compoundAmount = "\(amountText) \(unitText)"
+        } else {
+            compoundAmount = ""
+        }
+
+        let equivalentText = "equivalent to \(equivalent.activeName) \(equivalent.activeAmountText) \(equivalent.activeUnitText)"
+        return [compoundName, compoundAmount, equivalentText]
+            .filter { !$0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+            .joined(separator: " ")
+    }
+
+    private func repairedDisplacedCompoundEquivalentRows(_ lines: [String]) -> [String] {
+        var result: [String] = []
+        var i = 0
+
+        while i < lines.count {
+            let current = lines[i]
+
+            if i + 2 < lines.count,
+               isKnownNutrientNameOnlyLine(current),
+               let displaced = displacedCompoundEquivalentLine(in: lines[i + 1]),
+               equivalentLine(displaced.equivalent, targets: current),
+               let amountPrefixed = amountPrefixedEquivalentLine(in: lines[i + 2]),
+               equivalentLine(amountPrefixed.equivalent, targets: displaced.compoundName) {
+                result.append(
+                    compoundEquivalentRow(
+                        compoundName: current,
+                        equivalent: displaced.equivalent,
+                        compoundAmountLine: amountPrefixed.compoundAmountLine
+                    )
+                )
+                result.append(
+                    compoundEquivalentRow(
+                        compoundName: displaced.compoundName,
+                        equivalent: amountPrefixed.equivalent,
+                        compoundAmountLine: nil
+                    )
+                )
+                i += 3
+                continue
+            }
+
+            result.append(current)
+            i += 1
+        }
+
+        return result
+    }
+
+    private func displacedCompoundEquivalentLine(
+        in line: String
+    ) -> (compoundName: String, equivalent: LeadingEquivalentLine)? {
+        guard let range = line.range(
+            of: #"(?i)\b(?:equiv\.?|equivalent(?:\s+to)?)\s+"#,
+            options: .regularExpression
+        ) else { return nil }
+
+        let compoundName = String(line[..<range.lowerBound])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        guard isKnownNutrientName(extractNameAndForm(from: compoundName).name),
+              let equivalent = leadingEquivalentLine(in: String(line[range.lowerBound...]))
+        else { return nil }
+
+        return (compoundName, equivalent)
+    }
+
+    private func amountPrefixedEquivalentLine(
+        in line: String
+    ) -> (compoundAmountLine: String, equivalent: LeadingEquivalentLine)? {
+        guard let match = firstMatch(
+            in: line,
+            pattern: #"(?i)^(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b\s+((?:equiv\.?|equivalent(?:\s+to)?).+)$"#
+        ) else { return nil }
+
+        let amountLine = "\(match.captures[0]) \(match.captures[1])"
+        guard let equivalent = leadingEquivalentLine(in: match.captures[2]) else {
+            return nil
+        }
+        return (amountLine, equivalent)
     }
 
     /// Merges consecutive pairs where the first is a name-only line and the second is an amount-only line
@@ -201,7 +428,7 @@ nonisolated struct ParserService: Sendable {
                     i += 2
                     continue
                 }
-                if isNameOnlyLine(current) && isEquivalentContinuation(next) {
+                if isNameOnlyLine(current) && isEquivalentContinuation(next) && !isGenericDerivationLine(current) {
                     result.append(current + " " + next)
                     i += 2
                     continue
@@ -224,7 +451,9 @@ nonisolated struct ParserService: Sendable {
             let current = lines[i]
             if i + 1 < lines.count {
                 let next = lines[i + 1]
-                if amountMatch(in: current) != nil, isPureContinuationLine(next) {
+                if amountMatch(in: current) != nil,
+                   isPureContinuationLine(next),
+                   !shouldKeepEquivalentContinuationSeparate(after: current, next: next) {
                     result.append(current + " " + next)
                     i += 2
                     continue
@@ -232,6 +461,16 @@ nonisolated struct ParserService: Sendable {
                 // Merge "standardised to contain X Ymg" into the preceding ingredient line so
                 // herbalEntry() can capture it as HerbalStandardisation (otherwise shouldSkip drops it).
                 if amountMatch(in: current) != nil, isStandardisationLine(next) {
+                    result.append(current + " " + next)
+                    i += 2
+                    continue
+                }
+                if amountMatch(in: current) != nil, isParentheticalFormLine(next) {
+                    result.append(current + " " + next)
+                    i += 2
+                    continue
+                }
+                if amountMatch(in: current) != nil, isRetinolEquivalentQualifier(next) {
                     result.append(current + " " + next)
                     i += 2
                     continue
@@ -245,9 +484,102 @@ nonisolated struct ParserService: Sendable {
         return result
     }
 
+    private func deduplicatedAdjacentVariantLines(_ lines: [String]) -> [String] {
+        var result: [String] = []
+
+        for line in lines {
+            guard let previous = result.last, areAdjacentOCRVariantDuplicates(previous, line) else {
+                result.append(line)
+                continue
+            }
+
+            result[result.count - 1] = preferredOCRVariantLine(previous, line)
+        }
+
+        return result
+    }
+
+    private func areAdjacentOCRVariantDuplicates(_ lhs: String, _ rhs: String) -> Bool {
+        if ocrVariantKey(lhs) == ocrVariantKey(rhs) {
+            return true
+        }
+        guard let lhsEquivalent = equivalentActiveDuplicateKey(lhs),
+              let rhsEquivalent = equivalentActiveDuplicateKey(rhs) else {
+            return false
+        }
+        return lhsEquivalent == rhsEquivalent
+    }
+
+    private func preferredOCRVariantLine(_ lhs: String, _ rhs: String) -> String {
+        let lhsScore = equivalentActiveObservedNameScore(lhs)
+        let rhsScore = equivalentActiveObservedNameScore(rhs)
+        if lhsScore != rhsScore {
+            return lhsScore > rhsScore ? lhs : rhs
+        }
+
+        let lhsUnit = amountMatch(in: lhs)?.unit
+        let rhsUnit = amountMatch(in: rhs)?.unit
+        if lhsUnit != .unknown, rhsUnit == .unknown { return lhs }
+        if rhsUnit != .unknown, lhsUnit == .unknown { return rhs }
+        return lhs.count >= rhs.count ? lhs : rhs
+    }
+
+    private func ocrVariantKey(_ line: String) -> String {
+        replacing(
+            pattern: #"(?<=\d)l\s*u\b"#,
+            in: Self.normalizedKey(line),
+            with: "iu"
+        )
+    }
+
+    private func equivalentActiveDuplicateKey(_ line: String) -> String? {
+        guard isStandaloneEquivalentActiveLine(line) else { return nil }
+        let cleanedLine = cleanedEquivalentText(line)
+        guard let amountMatch = degradedMilligramAmountMatch(in: cleanedLine) ?? amountMatch(in: cleanedLine),
+              let amount = amountMatch.amount else {
+            return nil
+        }
+
+        let prefix = String(cleanedLine[..<amountMatch.range.lowerBound])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let activeName = equivalentActiveNameAndForm(from: prefix, sourceLine: line).name
+        let roundedAmount = (amount * 1_000).rounded() / 1_000
+        return [
+            Self.normalizedKey(canonicalName(for: activeName)),
+            String(roundedAmount),
+            amountMatch.unit.rawValue,
+        ].joined(separator: "|")
+    }
+
+    private func equivalentActiveObservedNameScore(_ line: String) -> Int {
+        guard isStandaloneEquivalentActiveLine(line) else { return 0 }
+        let cleanedLine = cleanedEquivalentText(line)
+        let amount = degradedMilligramAmountMatch(in: cleanedLine) ?? amountMatch(in: cleanedLine)
+        let prefix = amount.map { String(cleanedLine[..<$0.range.lowerBound]) } ?? cleanedLine
+        let observedName = extractNameAndForm(from: prefix).name
+        let key = Self.normalizedKey(observedName)
+        if aliasesByVariant[key] != nil || formsByVariant[key] != nil {
+            return 2
+        }
+        return key.isEmpty ? 0 : 1
+    }
+
+    private func shouldKeepEquivalentContinuationSeparate(after current: String, next: String) -> Bool {
+        guard isEquivalentContinuation(next) else { return false }
+        if isStandaloneEquivalentActiveLine(current), isStandaloneEquivalentActiveLine(next) {
+            return true
+        }
+        if isGenericDerivationLine(current) {
+            return true
+        }
+        return herbalEntry(from: current) != nil
+    }
+
     /// True when a line is a herbal standardisation note that should be merged into the preceding ingredient line.
     private func isStandardisationLine(_ line: String) -> Bool {
-        let lower = line.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let lower = line
+            .trimmingCharacters(in: CharacterSet(charactersIn: " ()\t\n\r"))
+            .lowercased()
         return lower.hasPrefix("standardised to")   // AU/UK spelling
             || lower.hasPrefix("standardized to")   // US spelling
             || lower.hasPrefix("calc. as")
@@ -259,6 +591,25 @@ nonisolated struct ParserService: Sendable {
         return isStandardisationLine(line)
             || lower.hasPrefix("dry equivalent")
             || lower.hasPrefix("fresh equivalent")
+            || isGenericDerivationLine(line)
+    }
+
+    private func isGenericDerivationLine(_ line: String) -> Bool {
+        let lower = line.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return amountMatch(in: lower) == nil
+            && (lower.hasPrefix("derived from dry") || lower.hasPrefix("derived from fresh"))
+    }
+
+    private func isRetinolEquivalentQualifier(_ line: String) -> Bool {
+        let key = Self.normalizedKey(line)
+        return key == "retinol equivalents" || key == "retinol equivalent"
+    }
+
+    private func isParentheticalFormLine(_ line: String) -> Bool {
+        line.range(
+            of: #"(?i)^\(?\s*(?:as|from)\s+[^)]+\)?$"#,
+            options: .regularExpression
+        ) != nil
     }
 
     /// True when a line is a pure elemental/equiv continuation with no embedded compound name.
@@ -343,7 +694,7 @@ nonisolated struct ParserService: Sendable {
         ]
         guard let match = firstMatch(
             in: text,
-            pattern: #"(?i)\b([A-Za-z])\.\s+([a-z][a-z-]+)\b\s*([\w\s\-]*)"#
+            pattern: #"(?i)\b([A-Za-z])\.\s+([a-z][a-z-]+(?:\s+(?:ssp\.|subsp\.)\s+[a-z][a-z-]+)?)\b\s*([\w\s\-]*)"#
         ) else { return nil }
 
         let abbrev = match.captures[0].lowercased()
@@ -475,15 +826,19 @@ nonisolated struct ParserService: Sendable {
     /// Parses a HerbalStandardisation from a line that contains a standardisation clause.
     /// Handles "standardised/standardized to [contain] COMPOUND AMOUNTunit" and "calc[ulated]. as COMPOUND AMOUNTunit".
     private func parseStandardisation(from line: String) -> HerbalStandardisation? {
-        let lower = line.lowercased()
+        let lower = line
+            .lowercased()
+            .replacingOccurrences(of: "(", with: " ")
+            .replacingOccurrences(of: ")", with: " ")
 
         // "standardised/standardized to [contain] silicon 14mg"
         if let match = firstMatch(
             in: lower,
-            pattern: #"standardi[sz]ed\s+to\s+(?:contain\s+)?([a-z][a-z\s-]*?)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b"#
+            pattern: #"standardi[sz]ed\s+to\s+(?:contain\s+)?([a-z][a-z\s-]*?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b"#
         ), match.captures.count >= 3 {
             let compound = match.captures[0].trimmingCharacters(in: .whitespacesAndNewlines)
-            if let amount = Double(match.captures[1]) {
+            var flags: [ReviewFlag] = []
+            if let amount = decimalAmount(match.captures[1], flags: &flags) {
                 let unit = unit(from: match.captures[2])
                 return HerbalStandardisation(compound: compound, calculatedAs: nil, amount: amount, unit: unit)
             }
@@ -492,10 +847,11 @@ nonisolated struct ParserService: Sendable {
         // "calc. as silybin 140mg" / "calculated as silybin 140mg"
         if let match = firstMatch(
             in: lower,
-            pattern: #"calc(?:ulated)?\.?\s+as\s+([a-z][a-z\s-]*?)\s+(\d+(?:\.\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b"#
+            pattern: #"calc(?:ulated)?\.?\s+as\s+([a-z][a-z\s-]*?)\s+(\d+(?:[\.,]\d+)?)\s*(mg|mcg|micrograms?|μg|µg|ug|g)\b"#
         ), match.captures.count >= 3 {
             let compound = match.captures[0].trimmingCharacters(in: .whitespacesAndNewlines)
-            if let amount = Double(match.captures[1]) {
+            var flags: [ReviewFlag] = []
+            if let amount = decimalAmount(match.captures[1], flags: &flags) {
                 let unit = unit(from: match.captures[2])
                 return HerbalStandardisation(compound: compound, calculatedAs: nil, amount: amount, unit: unit)
             }
@@ -505,6 +861,10 @@ nonisolated struct ParserService: Sendable {
     }
 
     private func nutrientEntry(from line: String) -> NutrientEntry? {
+        if let nutrient = equivalentActiveOnlyEntry(from: line) {
+            return nutrient
+        }
+
         if let nutrient = compoundEquivalentEntry(from: line) {
             return nutrient
         }
@@ -523,12 +883,77 @@ nonisolated struct ParserService: Sendable {
         )
     }
 
+    private func equivalentActiveOnlyEntry(from line: String) -> NutrientEntry? {
+        guard isStandaloneEquivalentActiveLine(line) else { return nil }
+        let cleanedLine = cleanedEquivalentText(line)
+        guard let amountMatch = degradedMilligramAmountMatch(in: cleanedLine) ?? amountMatch(in: cleanedLine) else {
+            return nil
+        }
+
+        let prefix = String(cleanedLine[..<amountMatch.range.lowerBound])
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let activeNameAndForm = equivalentActiveNameAndForm(from: prefix, sourceLine: line)
+        guard !activeNameAndForm.name.isEmpty else { return nil }
+        guard !shouldRejectCandidateName(activeNameAndForm.name, line: line, unit: amountMatch.unit) else {
+            return nil
+        }
+
+        let canonical = canonicalName(for: activeNameAndForm.name)
+        let inferred = canonical != activeNameAndForm.name
+        let flags = appended(
+            semanticFlags(for: canonical, unit: amountMatch.unit),
+            to: appended(
+                inferred ? [.canonicalNameInferred] : [],
+                to: appended(amountMatch.flags, to: [.extractEquivalent])
+            )
+        )
+
+        return NutrientEntry(
+            canonicalName: canonical,
+            displayName: titleCased(activeNameAndForm.displayName),
+            form: activeNameAndForm.form,
+            amount: amountMatch.amount,
+            unit: amountMatch.unit,
+            isElemental: true,
+            reviewFlags: flags
+        )
+    }
+
+    private func equivalentActiveNameAndForm(
+        from prefix: String,
+        sourceLine: String
+    ) -> (name: String, displayName: String, form: String?) {
+        let nameAndForm = extractNameAndForm(from: prefix)
+        let sourceKey = Self.normalizedKey(sourceLine)
+
+        if let parenthetical = nameAndForm.form, isKnownNutrientName(parenthetical) {
+            let form = formName(for: nameAndForm.name) ?? nameAndForm.name.lowercased()
+            return (parenthetical, nameAndForm.name, form)
+        }
+
+        let inferredForm: String?
+        if Self.normalizedKey(nameAndForm.name) == "vitamin a",
+           sourceKey.contains("retinol equivalent") {
+            inferredForm = "retinol equivalents"
+        } else {
+            inferredForm = nameAndForm.form ?? formName(for: nameAndForm.name)
+        }
+
+        return (nameAndForm.name, nameAndForm.name, inferredForm)
+    }
+
+    private func isKnownNutrientName(_ name: String) -> Bool {
+        let key = Self.normalizedKey(name)
+        return aliasesByVariant[key] != nil || key.hasPrefix("vitamin ")
+    }
+
     private func makeNutrientEntry(
         from line: String,
         amountMatch: AmountMatch?,
         extraFlags: [ReviewFlag]
     ) -> NutrientEntry? {
         let prefix = amountMatch.map { String(line[..<$0.range.lowerBound]) } ?? line
+        let suffix = amountMatch.map { String(line[$0.range.upperBound...]) } ?? ""
         let nameAndForm = extractNameAndForm(from: prefix)
         guard !nameAndForm.name.isEmpty else { return nil }
         guard !shouldRejectCandidateName(nameAndForm.name, line: line, unit: amountMatch?.unit) else { return nil }
@@ -536,7 +961,7 @@ nonisolated struct ParserService: Sendable {
         let canonical = canonicalName(for: nameAndForm.name)
         let inferred = canonical != nameAndForm.name
         let unit = amountMatch?.unit ?? .unknown
-        let form = nameAndForm.form ?? formName(for: nameAndForm.name)
+        let form = trailingParentheticalForm(from: suffix) ?? nameAndForm.form ?? formName(for: nameAndForm.name)
         let totalFlags: [ReviewFlag] = isTotalLine(line) ? [.totalLineAmbiguous] : []
         let flags = appended(
             semanticFlags(for: canonical, unit: unit),
@@ -713,6 +1138,15 @@ nonisolated struct ParserService: Sendable {
         return (cleanName(working), form)
     }
 
+    private func trailingParentheticalForm(from text: String) -> String? {
+        guard let match = firstMatch(
+            in: text,
+            pattern: #"(?i)\(\s*(?:as|from)\s+([^)]+)\)"#
+        ) else { return nil }
+
+        return normalizedForm(match.captures[0])
+    }
+
     private func cleanedEquivalentText(_ text: String) -> String {
         replacing(
             pattern: #"(?i)^\s*(?:providing|equiv\.?|equivalent(?:\s+to)?)\s+"#,
@@ -753,7 +1187,12 @@ nonisolated struct ParserService: Sendable {
     }
 
     private func cleanName(_ text: String) -> String {
-        replacing(pattern: #"(?i)\b(total|elemental|contains|per|each|tablet|capsule)\b"#, in: text, with: "")
+        let key = Self.normalizedKey(text)
+        if key == "fat total" || key == "total fat" {
+            return "Total Fat"
+        }
+
+        return replacing(pattern: #"(?i)\b(total|elemental|contains|per|each|tablet|capsule)\b"#, in: text, with: "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
@@ -801,6 +1240,29 @@ nonisolated struct ParserService: Sendable {
         }
 
         return nil
+    }
+
+    private func degradedMilligramAmountMatch(in line: String) -> AmountMatch? {
+        guard let match = firstMatch(
+            in: line,
+            pattern: #"(?i)(\d+(?:[\.,]\d+|\s+\d)?)\s*m\b"#
+        ) else { return nil }
+
+        var flags: [ReviewFlag] = [.unitUnknown, .ocrUncertain]
+        let rawAmount = match.captures[0]
+        let amountText: String
+        if rawAmount.range(of: #"^\d+\s+\d$"#, options: .regularExpression) != nil {
+            amountText = rawAmount.replacingOccurrences(of: " ", with: ".")
+        } else {
+            amountText = rawAmount
+        }
+
+        return AmountMatch(
+            amount: decimalAmount(amountText, flags: &flags),
+            unit: .mg,
+            flags: flags,
+            range: match.range
+        )
     }
 
     private func cfuMatch(in line: String) -> CFUMatch? {
@@ -908,6 +1370,7 @@ nonisolated struct ParserService: Sendable {
     private func shouldSkip(_ line: String) -> Bool {
         let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
         let lower = trimmed.lowercased()
+        let normalizedLine = Self.paddedNormalizedKey(trimmed)
 
         if trimmed.allSatisfy({ $0.isNumber || $0.isWhitespace || $0 == "." || $0 == "," }) {
             return true
@@ -926,7 +1389,7 @@ nonisolated struct ParserService: Sendable {
             "amount per serve", "amount per serving", "amount per capsule",
             "amount per tablet", "% daily value", "% rdi", "% nrv"
         ]
-        if alwaysSkippedHeaders.contains(where: { lower.contains($0) }) {
+        if containsAnyNormalizedPhrase(alwaysSkippedHeaders, in: normalizedLine) {
             return true
         }
 
@@ -937,7 +1400,7 @@ nonisolated struct ParserService: Sendable {
             "each vegetarian capsule", "each veg capsule", "each softgel contains",
             "each softcap contains", "each sachet contains", "each scoop contains",
         ]
-        if ingredientSectionHeaders.contains(where: { lower.contains($0) }) {
+        if containsAnyNormalizedPhrase(ingredientSectionHeaders, in: normalizedLine) {
             return true
         }
 
@@ -967,7 +1430,7 @@ nonisolated struct ParserService: Sendable {
             "100% money back", "money back guarantee", "no added", "no artificial",
             "designed and packed", "packed in australia",
         ]
-        if nonIngredientPhrases.contains(where: { lower.contains($0) }) {
+        if containsAnyNormalizedPhrase(nonIngredientPhrases, in: normalizedLine) {
             return true
         }
 
@@ -979,7 +1442,7 @@ nonisolated struct ParserService: Sendable {
             " nsw ", " vic ", " qld ", " sa ", " wa ", " act ", " tas ", " nt ",
             " usa ", " il ", "bloomingdale", "glen ellyn",
         ]
-        if companyAddressFragments.contains(where: { lower.contains($0) }) {
+        if containsAnyRawFragment(companyAddressFragments, in: lower) {
             return true
         }
 
@@ -992,6 +1455,20 @@ nonisolated struct ParserService: Sendable {
         }
 
         return false
+    }
+
+    private func containsAnyNormalizedPhrase(_ phrases: [String], in paddedNormalizedLine: String) -> Bool {
+        phrases.contains { phrase in
+            let phraseKey = Self.paddedNormalizedKey(phrase)
+            guard phraseKey.trimmingCharacters(in: .whitespaces).isEmpty == false else { return false }
+            return (paddedNormalizedLine as NSString).range(of: phraseKey).location != NSNotFound
+        }
+    }
+
+    private func containsAnyRawFragment(_ fragments: [String], in lowercasedLine: String) -> Bool {
+        fragments.contains { fragment in
+            (lowercasedLine as NSString).range(of: fragment).location != NSNotFound
+        }
     }
 
     private func isBlendLine(_ line: String) -> Bool {
@@ -1015,6 +1492,13 @@ nonisolated struct ParserService: Sendable {
         ) != nil
     }
 
+    private func isStandaloneEquivalentActiveLine(_ line: String) -> Bool {
+        line.range(
+            of: #"(?i)^\(?\s*equiv\.?\s+"#,
+            options: .regularExpression
+        ) != nil
+    }
+
     private func containsProbioticScientificName(_ line: String) -> Bool {
         probioticName(from: line) != nil
     }
@@ -1025,7 +1509,7 @@ nonisolated struct ParserService: Sendable {
 
         guard let match = firstMatch(
             in: cleaned,
-            pattern: #"(?i)\b(bifidobacterium|lactobacillus|lactococcus|bacillus|saccharomyces|streptococcus)\s+([a-z][a-z-]+)\b\s*([^()]*)?"#
+            pattern: #"(?i)\b(bifidobacterium|lactobacillus|lactococcus|bacillus|saccharomyces|streptococcus)\s+([a-z][a-z-]+(?:\s+(?:ssp\.|subsp\.)\s+[a-z][a-z-]+)?)\b\s*([^()]*)?"#
         ) else {
             return nil
         }
@@ -1155,6 +1639,11 @@ nonisolated struct ParserService: Sendable {
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    private static func paddedNormalizedKey(_ value: String) -> String {
+        let key = normalizedKey(value)
+        return key.isEmpty ? "" : " \(key) "
+    }
+
     private func appended(_ newFlags: [ReviewFlag], to existing: [ReviewFlag]) -> [ReviewFlag] {
         newFlags.reduce(existing) { flags, flag in
             flags.contains(flag) ? flags : flags + [flag]
@@ -1197,6 +1686,14 @@ nonisolated private struct CFUMatch {
     let range: Range<String.Index>
 }
 
+nonisolated private struct LeadingEquivalentLine {
+    let activeName: String
+    let activeAmountText: String
+    let activeUnitText: String
+    let compoundAmountText: String?
+    let compoundUnitText: String?
+}
+
 nonisolated private struct RegexMatch {
     let range: Range<String.Index>
     let captures: [String]
@@ -1216,7 +1713,7 @@ nonisolated private struct AliasEntry: Decodable {
 
 extension ParserService {
     /// Returns per-row parse decisions for debug bundle construction.
-    func debugDecisions(for rawText: String) -> [OCRDebugParserDecision] {
+    nonisolated func debugDecisions(for rawText: String) -> [OCRDebugParserDecision] {
         let rawLines = rawText
             .split(whereSeparator: \.isNewline)
             .map { sanitizedLine(String($0)) }

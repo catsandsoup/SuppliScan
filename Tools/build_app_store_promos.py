@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 SETTINGS = ROOT / ".asc" / "shots.settings.json"
@@ -14,7 +14,7 @@ HEIGHT = 2796
 PHONE_W = 1012
 PHONE_H = 2192
 PHONE_X = (WIDTH - PHONE_W) // 2
-PHONE_Y = 458
+PHONE_Y = 476
 RADIUS = 70
 
 
@@ -50,27 +50,43 @@ def rounded_mask(size: tuple[int, int], radius: int) -> Image.Image:
     return mask
 
 
-def compose(raw_path: Path, caption: str, output_path: Path) -> None:
+def compose(raw_path: Path, caption: str, detail: str, output_path: Path) -> None:
     raw = Image.open(raw_path).convert("RGB")
 
-    canvas = Image.new("RGB", (WIDTH, HEIGHT), "#071f19")
+    canvas = Image.new("RGB", (WIDTH, HEIGHT), "#f6f5f2")
     draw = ImageDraw.Draw(canvas)
 
-    # Calm clinical background with a subtle green-to-charcoal sweep.
+    # Editorial clinical canvas: warm surface first, jade/risk accents second.
     for y in range(HEIGHT):
-        green = int(32 + 32 * (1 - y / HEIGHT))
-        blue = int(28 + 22 * (1 - y / HEIGHT))
-        draw.line([(0, y), (WIDTH, y)], fill=(6, green, blue))
+        blend = y / HEIGHT
+        red = int(246 * (1 - blend) + 230 * blend)
+        green = int(245 * (1 - blend) + 244 * blend)
+        blue = int(242 * (1 - blend) + 238 * blend)
+        draw.line([(0, y), (WIDTH, y)], fill=(red, green, blue))
 
-    draw.polygon([(0, 0), (430, 0), (250, HEIGHT), (0, HEIGHT)], fill=(20, 86, 59))
-    draw.polygon([(850, 0), (WIDTH, 0), (WIDTH, HEIGHT), (1030, HEIGHT)], fill=(7, 85, 88))
-    draw.polygon([(0, 0), (WIDTH, 0), (WIDTH, 56), (0, 118)], fill=(8, 50, 42))
-    draw.line([(0, 118), (WIDTH, 56)], fill=(110, 214, 161), width=2)
+    draw.polygon([(0, 1760), (390, 1470), (226, HEIGHT), (0, HEIGHT)], fill=(12, 124, 104))
+    draw.polygon([(934, 0), (WIDTH, 0), (WIDTH, 940), (1056, 1020)], fill=(221, 239, 233))
+    draw.polygon([(0, 0), (226, 0), (148, 830), (0, 960)], fill=(236, 248, 243))
+    draw.line([(112, 350), (696, 292)], fill=(12, 124, 104), width=3)
+    draw.line([(112, 382), (696, 324)], fill=(210, 105, 42), width=2)
+    draw.line([(112, 414), (696, 356)], fill=(204, 70, 59), width=2)
+
+    shadow = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
+    shadow_draw = ImageDraw.Draw(shadow)
+    shadow_draw.rounded_rectangle(
+        (PHONE_X - 24, PHONE_Y - 10, PHONE_X + PHONE_W + 24, PHONE_Y + PHONE_H + 34),
+        radius=RADIUS + 28,
+        fill=(5, 40, 33, 58),
+    )
+    shadow = shadow.filter(ImageFilter.GaussianBlur(26))
+    canvas = Image.alpha_composite(canvas.convert("RGBA"), shadow).convert("RGB")
+    draw = ImageDraw.Draw(canvas)
+
     draw.rounded_rectangle(
         (PHONE_X - 22, PHONE_Y - 22, PHONE_X + PHONE_W + 22, PHONE_Y + PHONE_H + 22),
         radius=RADIUS + 24,
-        fill=(232, 255, 243),
-        outline=(140, 231, 178),
+        fill=(239, 255, 248),
+        outline=(92, 196, 162),
         width=3,
     )
 
@@ -78,16 +94,16 @@ def compose(raw_path: Path, caption: str, output_path: Path) -> None:
     mask = rounded_mask((PHONE_W, PHONE_H), RADIUS)
     canvas.paste(screenshot, (PHONE_X, PHONE_Y), mask)
 
-    title_font = fit_text(draw, caption, WIDTH - 172, 82)
+    title_font = fit_text(draw, caption, WIDTH - 172, 78)
     title_bbox = draw.textbbox((0, 0), caption, font=title_font)
     title_w = title_bbox[2] - title_bbox[0]
-    draw.text(((WIDTH - title_w) / 2, 108), caption, font=title_font, fill=(238, 255, 246))
+    draw.text(((WIDTH - title_w) / 2, 96), caption, font=title_font, fill=(22, 24, 28))
 
-    subtitle = "Supplement analysis for practitioner review"
-    subtitle_font = font(34)
+    subtitle = detail
+    subtitle_font = font(32)
     subtitle_bbox = draw.textbbox((0, 0), subtitle, font=subtitle_font)
     subtitle_w = subtitle_bbox[2] - subtitle_bbox[0]
-    draw.text(((WIDTH - subtitle_w) / 2, 216), subtitle, font=subtitle_font, fill=(178, 221, 200))
+    draw.text(((WIDTH - subtitle_w) / 2, 198), subtitle, font=subtitle_font, fill=(91, 96, 104))
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     canvas.save(output_path, "PNG", optimize=True)
@@ -108,7 +124,7 @@ def main() -> None:
             print(f"Skipping missing raw screenshot: {raw_path}")
             continue
         output_path = framed_dir / item["framed"]
-        compose(raw_path, item["caption"], output_path)
+        compose(raw_path, item["caption"], item.get("detail", ""), output_path)
         print(output_path)
 
 

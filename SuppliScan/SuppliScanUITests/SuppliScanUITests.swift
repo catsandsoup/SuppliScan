@@ -69,6 +69,47 @@ final class SuppliScanUITests: XCTestCase {
     }
 
     @MainActor
+    func testTrainingPhotoScanEvidenceJourney() throws {
+        guard let outputURL = scanEvidenceOutputDirectory() else {
+            throw XCTSkip("Set SCAN_EVIDENCE_DIR to capture OCR scan evidence.")
+        }
+
+        try FileManager.default.createDirectory(at: outputURL, withIntermediateDirectories: true)
+
+        let app = launchApp(startTab: "scan")
+        XCTAssertTrue(app.buttons["Import Label Photo"].waitForExistence(timeout: 5))
+        try saveScreenshot(of: app, named: "scan-01-ready", in: outputURL)
+
+        app.buttons["Import Label Photo"].tap()
+
+        if app.buttons["Close"].waitForExistence(timeout: 2) {
+            app.buttons["Close"].tap()
+        }
+
+        let firstPhotoTile = app.images.matching(identifier: "PXGGridLayout-Info").firstMatch
+        XCTAssertTrue(
+            firstPhotoTile.waitForExistence(timeout: 15),
+            "Photo picker did not expose a selectable training image.\n\(app.debugDescription)"
+        )
+        try saveScreenshot(of: app, named: "scan-02-photo-picker", in: outputURL)
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.17, dy: 0.24)).tap()
+
+        XCTAssertTrue(
+            app.navigationBars["Review"].waitForExistence(timeout: 60),
+            "Review screen did not appear after importing the first training image.\n\(app.debugDescription)"
+        )
+        waitForUIToSettle(seconds: 1.5)
+        try saveScreenshot(of: app, named: "scan-03-review-top", in: outputURL)
+
+        let reviewScrollView = app.scrollViews.firstMatch
+        if reviewScrollView.exists {
+            reviewScrollView.swipeUp()
+            waitForUIToSettle()
+            try saveScreenshot(of: app, named: "scan-04-review-lower", in: outputURL)
+        }
+    }
+
+    @MainActor
     @discardableResult
     private func launchApp(seedSample: Bool = false, startTab: String? = nil) -> XCUIApplication {
         let app = XCUIApplication()
@@ -90,6 +131,26 @@ final class SuppliScanUITests: XCTestCase {
 
         return repositoryRoot
             .appending(path: "Marketing/AppStore/Screenshots/raw/6.9-inch", directoryHint: .isDirectory)
+    }
+
+    private func scanEvidenceOutputDirectory() -> URL? {
+        guard let outputDirectory = ProcessInfo.processInfo.environment["SCAN_EVIDENCE_DIR"],
+              !outputDirectory.isEmpty else {
+            guard let configuredPath = try? String(contentsOf: scanEvidenceCapturePathFile, encoding: .utf8)
+                .trimmingCharacters(in: .whitespacesAndNewlines),
+                  !configuredPath.isEmpty else {
+                return nil
+            }
+
+            return URL(fileURLWithPath: configuredPath, isDirectory: true)
+        }
+
+        return URL(fileURLWithPath: outputDirectory, isDirectory: true)
+    }
+
+    private var scanEvidenceCapturePathFile: URL {
+        repositoryRoot
+            .appending(path: "Artifacts/OCRScanEvidence/capture-path.txt", directoryHint: .notDirectory)
     }
 
     private var shouldCaptureAppStoreScreenshots: Bool {
@@ -126,4 +187,5 @@ final class SuppliScanUITests: XCTestCase {
     private func waitForUIToSettle(seconds: TimeInterval = 0.8) {
         RunLoop.current.run(until: Date().addingTimeInterval(seconds))
     }
+
 }

@@ -6,11 +6,11 @@ Target device set:
 
 For SuppliScan 1.0, submit five iPhone screenshots:
 
-1. Scan Supplement Labels
+1. Supplement Dose Reports
    - Raw source: `01-home.png`
-   - Purpose: front-load the scan workflow.
+   - Purpose: front-load the product promise: supplement labels become dose reports.
 
-2. Spot Upper-Limit Risks
+2. Catch Upper-Limit Risks
    - Raw source: `05-report.png`
    - Purpose: show safety flags and report snapshot.
 
@@ -18,11 +18,11 @@ For SuppliScan 1.0, submit five iPhone screenshots:
    - Raw source: `06-interactions.png`
    - Purpose: show practitioner-facing safety context without making treatment claims.
 
-4. Track Saved Reports
+4. Save Practitioner Reports
    - Raw source: `03-history.png`
    - Purpose: show practitioner workflow.
 
-5. Set Clinical Standards
+5. Choose RDI/UL Standards
    - Raw source: `04-settings.png`
    - Purpose: show AU, US, and EU reference-standard control.
 

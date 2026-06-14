@@ -19,6 +19,7 @@ struct FilterChip: View {
                 .background(isSelected ? Color.brand : Color.surfaceSunken, in: Capsule())
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
         .animation(.dsSnappy, value: isSelected)
     }
 }

@@ -37,6 +37,13 @@
     { "canonical": "Hesperidin",  "variants": ["Hesperidin Methyl Chalcone", "Hesperidin Complex"] },
     { "canonical": "Citrus Bioflavonoids", "variants": ["Citrus Bioflavonoids Extract", "Citrus Bioflavonoid Extract", "Bioflavonoids", "Citrus Bioflavonoids"] },
     { "canonical": "Taurine",     "variants": ["L-Taurine"] },
+    { "canonical": "Cysteine",    "variants": ["L-Cysteine", "Cystine"] },
+    { "canonical": "Methionine",  "variants": ["L-Methionine"] },
+    { "canonical": "Protein",     "variants": ["Protein"] },
+    { "canonical": "Total Fat",   "variants": ["Fat", "Fat Total", "Fat - Total", "Total Fat"] },
+    { "canonical": "Carbohydrate","variants": ["Carbohydrate", "Total Carbohydrate"] },
+    { "canonical": "Chlorophyll", "variants": ["Chlorophyll"] },
+    { "canonical": "Chlorella Growth Factor", "variants": ["CGF", "CGF Chlorella Growth Factor", "Chlorella Growth Factor"] },
     { "canonical": "Lutein",      "variants": ["FloraGLO Lutein"] },
     { "canonical": "Lycopene",    "variants": ["Tomato Lycopene"] }
   ]

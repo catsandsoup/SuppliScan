@@ -2,33 +2,38 @@
   "screenshots": [
     {
       "order": 1,
-      "caption": "Scan Supplement Labels",
+      "caption": "Supplement Dose Reports",
+      "detail": "Scan labels into practitioner-ready review",
       "raw": "01-home.png",
-      "framed": "01-scan-supplement-labels.png"
+      "framed": "01-supplement-dose-reports.png"
     },
     {
       "order": 2,
-      "caption": "Spot Upper-Limit Risks",
+      "caption": "Catch Upper-Limit Risks",
+      "detail": "See RDI, UL, and dose context at a glance",
       "raw": "05-report.png",
-      "framed": "02-spot-upper-limit-risks.png"
+      "framed": "02-catch-upper-limit-risks.png"
     },
     {
       "order": 3,
       "caption": "Review Interaction Flags",
+      "detail": "Surface nutrient and medication-class notes",
       "raw": "06-interactions.png",
       "framed": "03-review-interaction-flags.png"
     },
     {
       "order": 4,
-      "caption": "Track Saved Reports",
+      "caption": "Save Practitioner Reports",
+      "detail": "Keep local records ready for follow-up",
       "raw": "03-history.png",
-      "framed": "04-track-saved-reports.png"
+      "framed": "04-save-practitioner-reports.png"
     },
     {
       "order": 5,
-      "caption": "Set Clinical Standards",
+      "caption": "Choose RDI/UL Standards",
+      "detail": "Switch AU, US, and EU reference sets",
       "raw": "04-settings.png",
-      "framed": "05-set-clinical-standards.png"
+      "framed": "05-choose-rdi-ul-standards.png"
     }
   ]
 }

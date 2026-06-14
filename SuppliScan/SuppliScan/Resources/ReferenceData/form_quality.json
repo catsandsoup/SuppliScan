@@ -1,43 +1,538 @@
 {
-  "version": "1.0",
-  "description": "Curated nutrient form quality tiers. Tier 1 = high bioavailability. Tier 4 = synthetic/problematic.",
+  "version": "2026.06.14-v2",
+  "description": "Curated nutrient form interpretation tiers. Tier 1 = favourable evidence or clinically useful form cue; tier 2 = common acceptable form; tier 3 = lower bioavailability, higher tolerability concern, or high variability; tier 4 = reserved for forms needing strong clinical caution. Tiers are not therapeutic efficacy claims.",
   "forms": [
-    { "nutrient": "Magnesium", "form": "magnesium glycinate",     "tier": 1, "rationale": "Chelated form, superior absorption and GI tolerability.", "references": ["PMID:17172008"] },
-    { "nutrient": "Magnesium", "form": "magnesium bisglycinate",  "tier": 1, "rationale": "Bis-glycinate chelate, equivalent to glycinate in bioavailability.", "references": [] },
-    { "nutrient": "Magnesium", "form": "magnesium malate",        "tier": 1, "rationale": "Malic acid chelate, well-tolerated, good absorption.", "references": [] },
-    { "nutrient": "Magnesium", "form": "magnesium citrate",       "tier": 2, "rationale": "Soluble salt, moderate bioavailability, laxative at high doses.", "references": [] },
-    { "nutrient": "Magnesium", "form": "magnesium threonate",     "tier": 1, "rationale": "Crosses blood-brain barrier, cognitive applications.", "references": ["PMID:26752497"] },
-    { "nutrient": "Magnesium", "form": "magnesium oxide",         "tier": 3, "rationale": "Low bioavailability (~4%), cheap filler form.", "references": ["PMID:11794633"] },
-    { "nutrient": "Zinc",      "form": "zinc picolinate",         "tier": 1, "rationale": "Superior absorption vs inorganic forms.", "references": ["PMID:7618117"] },
-    { "nutrient": "Zinc",      "form": "zinc glycinate",          "tier": 1, "rationale": "Chelated form, good bioavailability and tolerability.", "references": [] },
-    { "nutrient": "Zinc",      "form": "zinc bisglycinate",       "tier": 1, "rationale": "Bis-glycinate chelate, superior to oxide or sulfate.", "references": [] },
-    { "nutrient": "Zinc",      "form": "zinc citrate",            "tier": 2, "rationale": "Good water solubility, moderate absorption.", "references": [] },
-    { "nutrient": "Zinc",      "form": "zinc gluconate",          "tier": 2, "rationale": "Moderate bioavailability, commonly used.", "references": [] },
-    { "nutrient": "Zinc",      "form": "zinc oxide",              "tier": 3, "rationale": "Low bioavailability, cheap filler form.", "references": [] },
-    { "nutrient": "Zinc",      "form": "zinc sulfate",            "tier": 3, "rationale": "Inorganic form, moderate bioavailability but significant GI side effects.", "references": [] },
-    { "nutrient": "Iron",      "form": "ferrous bisglycinate",    "tier": 1, "rationale": "Chelated form, superior absorption and fewer GI side effects.", "references": ["PMID:12589194"] },
-    { "nutrient": "Iron",      "form": "ferrous gluconate",       "tier": 2, "rationale": "Moderate bioavailability, gentler than sulfate.", "references": [] },
-    { "nutrient": "Iron",      "form": "ferrous fumarate",        "tier": 2, "rationale": "Moderate bioavailability, commonly used.", "references": [] },
-    { "nutrient": "Iron",      "form": "ferrous sulfate",         "tier": 3, "rationale": "High GI side effect profile, oxidative stress potential.", "references": [] },
-    { "nutrient": "Calcium",   "form": "calcium citrate",         "tier": 1, "rationale": "Absorbed without food, suitable for low-acid conditions.", "references": [] },
-    { "nutrient": "Calcium",   "form": "calcium carbonate",       "tier": 2, "rationale": "Requires stomach acid for absorption; cheapest form.", "references": [] },
-    { "nutrient": "Calcium",   "form": "calcium phosphate",       "tier": 2, "rationale": "Moderate bioavailability, co-supplement with phosphorus.", "references": [] },
-    { "nutrient": "Vitamin B6","form": "pyridoxal-5-phosphate",   "tier": 1, "rationale": "Active coenzyme form, no conversion required.", "references": [] },
-    { "nutrient": "Vitamin B6","form": "p5p",                     "tier": 1, "rationale": "Pyridoxal-5-phosphate — active form.", "references": [] },
-    { "nutrient": "Vitamin B6","form": "pyridoxine hcl",          "tier": 2, "rationale": "Commonly used precursor, requires conversion to active form.", "references": [] },
-    { "nutrient": "Vitamin B6","form": "pyridoxine",              "tier": 2, "rationale": "Precursor form, requires hepatic conversion.", "references": [] },
-    { "nutrient": "Vitamin B9","form": "l-5-mthf",                "tier": 1, "rationale": "Active methylfolate — bypasses MTHFR polymorphism.", "references": [] },
-    { "nutrient": "Vitamin B9","form": "methylfolate",            "tier": 1, "rationale": "Active form, directly usable without conversion.", "references": [] },
-    { "nutrient": "Vitamin B9","form": "folic acid",              "tier": 2, "rationale": "Synthetic form requiring conversion; reduced efficacy in MTHFR variants.", "references": [] },
-    { "nutrient": "Vitamin B12","form": "methylcobalamin",        "tier": 1, "rationale": "Active methyl form, superior retention.", "references": [] },
-    { "nutrient": "Vitamin B12","form": "adenosylcobalamin",      "tier": 1, "rationale": "Active mitochondrial form.", "references": [] },
-    { "nutrient": "Vitamin B12","form": "hydroxocobalamin",       "tier": 1, "rationale": "Natural form, good retention.", "references": [] },
-    { "nutrient": "Vitamin B12","form": "cyanocobalamin",         "tier": 2, "rationale": "Synthetic form, requires conversion, low-cost.", "references": [] },
-    { "nutrient": "Selenium",  "form": "selenomethionine",        "tier": 1, "rationale": "Organic form, superior bioavailability vs inorganic.", "references": ["PMID:11494848"] },
-    { "nutrient": "Selenium",  "form": "sodium selenite",         "tier": 3, "rationale": "Inorganic form, lower bioavailability and higher toxicity risk.", "references": [] },
-    { "nutrient": "Vitamin D", "form": "cholecalciferol",         "tier": 1, "rationale": "D3 form, superior at raising serum 25(OH)D.", "references": ["PMID:22552031"] },
-    { "nutrient": "Vitamin D", "form": "ergocalciferol",          "tier": 2, "rationale": "D2 form, less potent than D3 at equivalent doses.", "references": [] },
-    { "nutrient": "Vitamin E", "form": "d-alpha-tocopherol",      "tier": 1, "rationale": "Natural form, highest bioavailability.", "references": [] },
-    { "nutrient": "Vitamin E", "form": "dl-alpha-tocopherol",     "tier": 3, "rationale": "Synthetic racemic mixture, lower bioavailability.", "references": [] }
+    {
+      "nutrient": "Magnesium",
+      "form": "magnesium glycinate",
+      "tier": 1,
+      "rationale": "Chelated magnesium form; use as a favourable form cue, while still calculating only elemental magnesium.",
+      "references": [
+        "PMID:17172008",
+        "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Magnesium",
+      "form": "magnesium bisglycinate",
+      "tier": 1,
+      "rationale": "Bisglycinate is a glycinate chelate label variant; calculate elemental magnesium and keep the compound form visible.",
+      "references": [
+        "PMID:17172008",
+        "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Magnesium",
+      "form": "magnesium malate",
+      "tier": 2,
+      "rationale": "Organic salt form used in supplements; evidence is not strong enough to infer superior clinical effect from the label alone.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Magnesium",
+      "form": "magnesium citrate",
+      "tier": 2,
+      "rationale": "Soluble magnesium salt with comparative absorption data; can have laxative effects at higher supplemental doses.",
+      "references": [
+        "PMID:11794633",
+        "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Magnesium",
+      "form": "magnesium threonate",
+      "tier": 2,
+      "rationale": "Specialty magnesium salt; do not infer cognitive benefit from the form name alone.",
+      "references": [
+        "PMID:26752497",
+        "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Magnesium",
+      "form": "magnesium oxide",
+      "tier": 3,
+      "rationale": "Inorganic form with lower comparative bioavailability in human studies; calculate elemental dose and flag as a low-quality form cue.",
+      "references": [
+        "PMID:11794633",
+        "https://ods.od.nih.gov/factsheets/Magnesium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Zinc",
+      "form": "zinc picolinate",
+      "tier": 1,
+      "rationale": "Human comparative data suggest improved zinc absorption versus citrate and gluconate in a small study.",
+      "references": [
+        "PMID:3630857",
+        "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Zinc",
+      "form": "zinc glycinate",
+      "tier": 1,
+      "rationale": "Chelated zinc form; use as a favourable form cue, not as an efficacy claim.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Zinc",
+      "form": "zinc bisglycinate",
+      "tier": 1,
+      "rationale": "Bisglycinate is a chelated label variant; preserve elemental zinc dose separately from compound naming.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Zinc",
+      "form": "zinc citrate",
+      "tier": 2,
+      "rationale": "Zinc citrate is an absorbable supplemental form with human absorption data comparable to gluconate in healthy adults.",
+      "references": [
+        "PMID:24259556",
+        "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Zinc",
+      "form": "zinc gluconate",
+      "tier": 2,
+      "rationale": "Common supplemental form with human absorption data; do not infer superiority over citrate from the label alone.",
+      "references": [
+        "PMID:24259556",
+        "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Zinc",
+      "form": "zinc oxide",
+      "tier": 3,
+      "rationale": "Inorganic form; use as a lower-quality form cue when compared with better-absorbed organic or chelated forms.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Zinc",
+      "form": "zinc sulfate",
+      "tier": 3,
+      "rationale": "Inorganic salt with more gastrointestinal-tolerability concern than chelated forms; still calculate elemental zinc.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Zinc-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Iron",
+      "form": "ferrous bisglycinate",
+      "tier": 1,
+      "rationale": "Chelated iron form with evidence for tolerability and efficacy in supplementation contexts; calculate elemental iron.",
+      "references": [
+        "PMID:12589194",
+        "PMCID:PMC10331582",
+        "https://ods.od.nih.gov/factsheets/Iron-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Iron",
+      "form": "ferrous gluconate",
+      "tier": 2,
+      "rationale": "Common ferrous salt; preserve elemental iron because compound mass and elemental iron differ.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Iron-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Iron",
+      "form": "ferrous fumarate",
+      "tier": 2,
+      "rationale": "Common ferrous salt with high elemental-iron fraction; preserve elemental amount and review tolerability.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Iron-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Iron",
+      "form": "ferrous sulfate",
+      "tier": 3,
+      "rationale": "Common effective ferrous salt with well-documented gastrointestinal side-effect burden.",
+      "references": [
+        "PMID:25700159",
+        "https://ods.od.nih.gov/factsheets/Iron-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Calcium",
+      "form": "calcium citrate",
+      "tier": 1,
+      "rationale": "Citrate can be taken without the same food/acid dependence concerns as carbonate in low-acid contexts.",
+      "references": [
+        "PMID:4000241",
+        "https://ods.od.nih.gov/factsheets/Calcium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Calcium",
+      "form": "calcium carbonate",
+      "tier": 2,
+      "rationale": "High elemental-calcium fraction but absorption can be context-dependent; generally taken with food.",
+      "references": [
+        "PMID:4000241",
+        "PMID:6707197",
+        "https://ods.od.nih.gov/factsheets/Calcium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Calcium",
+      "form": "calcium phosphate",
+      "tier": 2,
+      "rationale": "Common calcium salt; preserve calcium and phosphorus context separately when labels provide both.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Calcium-HealthProfessional/",
+        "https://ods.od.nih.gov/factsheets/Phosphorus-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B6",
+      "form": "pyridoxal-5-phosphate",
+      "tier": 1,
+      "rationale": "Active coenzyme form; do not use form name to bypass B6 upper-limit review.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminB6-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B6",
+      "form": "p5p",
+      "tier": 1,
+      "rationale": "Label shorthand for pyridoxal-5-phosphate; preserve as active-form cue.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminB6-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B6",
+      "form": "pyridoxine hcl",
+      "tier": 2,
+      "rationale": "Common precursor form; upper-limit review still matters for chronic high intake.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminB6-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B6",
+      "form": "pyridoxine",
+      "tier": 2,
+      "rationale": "Common precursor form; calculate as vitamin B6 amount and retain high-dose safety review.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminB6-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B9",
+      "form": "l-5-mthf",
+      "tier": 1,
+      "rationale": "Reduced folate form; preserve form because folic-acid UL interpretation differs from food folate and reduced folates.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Folate-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B9",
+      "form": "methylfolate",
+      "tier": 1,
+      "rationale": "Reduced folate form; avoid implying universal superiority while preserving form for clinical review.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Folate-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B9",
+      "form": "levomefolic acid",
+      "tier": 1,
+      "rationale": "Reduced folate form used on labels; preserve separately from folic acid.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Folate-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B9",
+      "form": "folic acid",
+      "tier": 2,
+      "rationale": "Synthetic folate form; AU/US upper-limit warnings apply specifically to folic acid from supplements or fortified foods.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Folate-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B12",
+      "form": "methylcobalamin",
+      "tier": 1,
+      "rationale": "Bioactive cobalamin form; preserve form but do not infer clinical superiority from label wording alone.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B12",
+      "form": "adenosylcobalamin",
+      "tier": 1,
+      "rationale": "Bioactive cobalamin form; preserve form for review.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B12",
+      "form": "hydroxocobalamin",
+      "tier": 1,
+      "rationale": "Cobalamin form used clinically and in supplements; preserve form for review.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B12",
+      "form": "cyanocobalamin",
+      "tier": 2,
+      "rationale": "Common synthetic cobalamin form; effective labels still need dose and route context.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminB12-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Selenium",
+      "form": "selenomethionine",
+      "tier": 1,
+      "rationale": "Organic selenium form with higher bioavailability than inorganic forms in comparative data.",
+      "references": [
+        "PMID:11494848",
+        "https://ods.od.nih.gov/factsheets/Selenium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Selenium",
+      "form": "selenium yeast",
+      "tier": 1,
+      "rationale": "Selenium-enriched yeast commonly supplies organic selenium forms; preserve source naming.",
+      "references": [
+        "PMID:11494848",
+        "https://ods.od.nih.gov/factsheets/Selenium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Selenium",
+      "form": "sodium selenite",
+      "tier": 3,
+      "rationale": "Inorganic selenium form; keep upper-limit review prominent because the safety window is narrow.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Selenium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin D",
+      "form": "cholecalciferol",
+      "tier": 1,
+      "rationale": "Vitamin D3; meta-analysis supports greater serum 25(OH)D rise than D2 at equivalent dosing in many contexts.",
+      "references": [
+        "PMID:22552031",
+        "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin D",
+      "form": "ergocalciferol",
+      "tier": 2,
+      "rationale": "Vitamin D2; valid vitamin D form but often less potent than D3 for raising serum 25(OH)D.",
+      "references": [
+        "PMID:22552031",
+        "https://ods.od.nih.gov/factsheets/VitaminD-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin E",
+      "form": "d-alpha-tocopherol",
+      "tier": 1,
+      "rationale": "Natural alpha-tocopherol form; preserve natural/synthetic status for IU conversion and alpha-tocopherol interpretation.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminE-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin E",
+      "form": "dl-alpha-tocopherol",
+      "tier": 3,
+      "rationale": "Synthetic racemic alpha-tocopherol form; IU conversion differs from natural d-alpha-tocopherol.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminE-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin A",
+      "form": "retinyl palmitate",
+      "tier": 2,
+      "rationale": "Preformed vitamin A form; counts toward retinol upper-limit review.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminA-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin A",
+      "form": "retinyl acetate",
+      "tier": 2,
+      "rationale": "Preformed vitamin A form; keep pregnancy and retinoid-medication review visible.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminA-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin A",
+      "form": "beta-carotene",
+      "tier": 2,
+      "rationale": "Provitamin A carotenoid; do not apply the preformed-retinol UL as if it were retinol.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminA-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin K",
+      "form": "phylloquinone",
+      "tier": 1,
+      "rationale": "Vitamin K1 form; preserve form and flag warfarin consistency review.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminK-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Vitamin K",
+      "form": "menaquinone-7",
+      "tier": 1,
+      "rationale": "Vitamin K2 MK-7 form; preserve form and flag warfarin consistency review.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/VitaminK-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Iodine",
+      "form": "potassium iodide",
+      "tier": 1,
+      "rationale": "Well-characterised iodide salt; calculate elemental iodine and keep thyroid review visible.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Iodine-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Iodine",
+      "form": "sodium iodide",
+      "tier": 1,
+      "rationale": "Well-characterised iodide salt; calculate elemental iodine and keep thyroid review visible.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Iodine-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Iodine",
+      "form": "kelp",
+      "tier": 3,
+      "rationale": "Kelp-derived iodine can vary by product; preserve source and amount for thyroid review.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Iodine-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Copper",
+      "form": "copper bisglycinate",
+      "tier": 1,
+      "rationale": "Chelated copper form; preserve elemental copper amount.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Copper-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Copper",
+      "form": "copper gluconate",
+      "tier": 2,
+      "rationale": "Common supplemental copper salt; preserve elemental copper amount.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Copper-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Copper",
+      "form": "copper sulfate",
+      "tier": 3,
+      "rationale": "Inorganic copper salt; keep dose and zinc-copper balance review visible.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Copper-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Chromium",
+      "form": "chromium picolinate",
+      "tier": 2,
+      "rationale": "Common trivalent chromium supplement form; keep diabetes-medication review separate from efficacy claims.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Chromium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Chromium",
+      "form": "chromium chloride",
+      "tier": 3,
+      "rationale": "Inorganic trivalent chromium form; preserve dose and medication review context.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Chromium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Potassium",
+      "form": "potassium citrate",
+      "tier": 1,
+      "rationale": "Common supplemental potassium salt; medication and kidney-function context matter more than form tier.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Potassium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Potassium",
+      "form": "potassium chloride",
+      "tier": 1,
+      "rationale": "Common supplemental potassium salt; medication and kidney-function context matter more than form tier.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Potassium-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Choline",
+      "form": "alpha-gpc",
+      "tier": 1,
+      "rationale": "Choline donor form; preserve form but do not infer cognitive efficacy from the label.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Choline-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Choline",
+      "form": "citicoline",
+      "tier": 1,
+      "rationale": "Choline donor form; preserve form but do not infer cognitive efficacy from the label.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Choline-HealthProfessional/"
+      ]
+    },
+    {
+      "nutrient": "Choline",
+      "form": "choline bitartrate",
+      "tier": 2,
+      "rationale": "Common supplemental choline salt; calculate choline context from the label amount.",
+      "references": [
+        "https://ods.od.nih.gov/factsheets/Choline-HealthProfessional/"
+      ]
+    }
   ]
 }

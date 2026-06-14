@@ -395,6 +395,86 @@ struct ParserServiceTests {
         #expect(selenium.reviewFlags.contains(.ocrConflict))
     }
 
+    @Test func doesNotMarkStrongFragmentReconstructionAsOCRUncertain() throws {
+        let parser = ParserService(aliasesByVariant: ["Magnesium": "Magnesium"])
+        let ocrResult = OCRResult(lines: [
+            OCRRecognizedLine(
+                text: "Supplement Facts",
+                confidence: 0.97,
+                region: OCRTextRegion(minX: 0.1, minY: 0.8, width: 0.5, height: 0.05),
+                sourceID: "vn-original",
+                sourcePassIDs: ["vn-original"]
+            ),
+            OCRRecognizedLine(
+                text: "Magnesium",
+                confidence: 0.95,
+                region: OCRTextRegion(minX: 0.1, minY: 0.5, width: 0.42, height: 0.05),
+                sourceID: "vn-original+vn-contrast",
+                sourcePassIDs: ["vn-original", "vn-contrast"],
+                supportCount: 2
+            ),
+            OCRRecognizedLine(
+                text: "300mg",
+                confidence: 0.96,
+                region: OCRTextRegion(minX: 0.78, minY: 0.502, width: 0.12, height: 0.05),
+                sourceID: "vn-original+vn-contrast",
+                sourcePassIDs: ["vn-original", "vn-contrast"],
+                supportCount: 2
+            )
+        ])
+
+        #expect(ocrResult.lines.contains { $0.qualityFlags.contains(.reconstructedFromMultipleFragments) })
+
+        let result = parser.parse(ocrResult)
+        let magnesium = try #require(nutrientEntries(in: result).first { $0.canonicalName == "Magnesium" })
+        #expect(magnesium.amount == 300)
+        #expect(magnesium.reviewFlags.contains(.ocrUncertain) == false)
+    }
+
+    @Test func keepsBotanicalRowsSeparateFromStandaloneEquivalentNutrientRows() throws {
+        let parser = try ParserService.makeDefault()
+        let rawText = """
+            Echinacea purpurea (Echinacea) whole plant extract 53.33mg
+            Calendula officinalis (Marigold) flower extract 50mg
+            Arctium lappa (Burdock) root extract 150mg
+            Rumex crispus (Yellow dock) root extract 75mg
+            equiv. Pvridoxine (vitamin B6) 20,6m
+            equiv. Pyridoxine (vitamin B6) 20 6m
+            Zinc amino acid chelate equiv. zinc
+            derived from dry root...
+            derived from dry flower
+            equiv. vitamin A 1500IU
+            equiv. vitamin A 1500lU
+            *retinol equivalents
+            """
+
+        let result = parser.parse(rawText)
+        let herbals = herbalEntries(in: result)
+        let nutrients = nutrientEntries(in: result)
+
+        #expect(herbals.count == 4)
+        let rumex = try #require(herbals.first { $0.latinName == "Rumex crispus ssp. Yellow dock" })
+        #expect(rumex.extractAmount == 75)
+        #expect(rumex.reviewFlags.isEmpty)
+
+        let vitaminB6Entries = nutrients.filter { $0.canonicalName == "Vitamin B6" }
+        #expect(vitaminB6Entries.count == 1)
+        let vitaminB6 = try #require(vitaminB6Entries.first)
+        #expect(vitaminB6.displayName == "Pyridoxine")
+        #expect(abs((vitaminB6.amount ?? 0) - 20.6) < 0.001)
+        #expect(vitaminB6.unit == .mg)
+        #expect(vitaminB6.reviewFlags.contains(.unitUnknown))
+        #expect(vitaminB6.reviewFlags.contains(.ocrUncertain))
+
+        let vitaminAEntries = nutrients.filter { $0.canonicalName == "Vitamin A" }
+        #expect(vitaminAEntries.count == 1)
+        let vitaminA = try #require(vitaminAEntries.first)
+        #expect(vitaminA.amount == 450)
+        #expect(vitaminA.unit == .mcg)
+        #expect(vitaminA.form == "retinol equivalents")
+        #expect(nutrients.contains { $0.displayName == "Derived" } == false)
+    }
+
     @Test func parsesPanelReconstructionWithoutMarketingDirectionsOrCompanyRows() throws {
         let parser = ParserService(aliasesByVariant: [
             "Vitamin C": "Vitamin C",

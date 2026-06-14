@@ -290,6 +290,221 @@ struct OCRServiceTests {
         #expect(result.lines.filter { $0.sourceLineCount == 2 }.count == 2)
     }
 
+    @Test func doesNotFuseAdjacentIngredientNamesWhenOnlyOneAmountIsOnVisualRow() async throws {
+        let service = OCRService(recognizer: StubRecognizer(lines: [
+            OCRRecognizedLine(
+                text: "Supplement Facts",
+                confidence: 0.95,
+                region: OCRTextRegion(minX: 0.1, minY: 0.8, width: 0.4, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Magnesium",
+                confidence: 0.92,
+                region: OCRTextRegion(minX: 0.08, minY: 0.5, width: 0.20, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Taurine",
+                confidence: 0.91,
+                region: OCRTextRegion(minX: 0.36, minY: 0.502, width: 0.18, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "100mg",
+                confidence: 0.90,
+                region: OCRTextRegion(minX: 0.78, minY: 0.503, width: 0.10, height: 0.05)
+            )
+        ]))
+
+        let result = try await service.recognizeText(in: try makeImage())
+        let parser = ParserService(aliasesByVariant: [
+            "Magnesium": "Magnesium",
+            "Taurine": "Taurine"
+        ])
+        let parseResult = parser.parse(result)
+        let nutrients = parseResult.entries.compactMap { entry -> NutrientEntry? in
+            if case .nutrient(let nutrient) = entry { return nutrient }
+            return nil
+        }
+
+        #expect(result.rawText == """
+            Supplement Facts
+            Magnesium
+            Taurine 100mg
+            """)
+        #expect(nutrients.contains { $0.displayName == "Magnesium Taurine" } == false)
+        let taurine = try #require(nutrients.first { $0.canonicalName == "Taurine" })
+        #expect(taurine.amount == 100)
+    }
+
+    @Test func keepsFormFragmentsWithOwningIngredientWhenSplittingVisualRow() async throws {
+        let service = OCRService(recognizer: StubRecognizer(lines: [
+            OCRRecognizedLine(
+                text: "Supplement Facts",
+                confidence: 0.95,
+                region: OCRTextRegion(minX: 0.1, minY: 0.8, width: 0.4, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Magnesium",
+                confidence: 0.92,
+                region: OCRTextRegion(minX: 0.08, minY: 0.5, width: 0.20, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "glycinate",
+                confidence: 0.91,
+                region: OCRTextRegion(minX: 0.31, minY: 0.502, width: 0.18, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "300mg",
+                confidence: 0.90,
+                region: OCRTextRegion(minX: 0.51, minY: 0.503, width: 0.10, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Zinc",
+                confidence: 0.91,
+                region: OCRTextRegion(minX: 0.66, minY: 0.501, width: 0.10, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "15mg",
+                confidence: 0.90,
+                region: OCRTextRegion(minX: 0.82, minY: 0.503, width: 0.08, height: 0.05)
+            )
+        ]))
+
+        let result = try await service.recognizeText(in: try makeImage())
+
+        #expect(result.rawText == """
+            Supplement Facts
+            Magnesium glycinate 300mg
+            Zinc 15mg
+            """)
+    }
+
+    @Test func splitsMultipleBotanicalLatinEntriesOnSameVisualRow() async throws {
+        let service = OCRService(recognizer: StubRecognizer(lines: [
+            OCRRecognizedLine(
+                text: "Active Ingredients",
+                confidence: 0.95,
+                region: OCRTextRegion(minX: 0.1, minY: 0.8, width: 0.4, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Arctium lappa (Burdock) root extract",
+                confidence: 0.91,
+                region: OCRTextRegion(minX: 0.06, minY: 0.5, width: 0.36, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "150mg",
+                confidence: 0.90,
+                region: OCRTextRegion(minX: 0.43, minY: 0.503, width: 0.08, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Rumex crispus (Yellow dock) root extract",
+                confidence: 0.90,
+                region: OCRTextRegion(minX: 0.55, minY: 0.501, width: 0.32, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "75mg",
+                confidence: 0.89,
+                region: OCRTextRegion(minX: 0.89, minY: 0.503, width: 0.07, height: 0.05)
+            )
+        ]))
+
+        let result = try await service.recognizeText(in: try makeImage())
+
+        #expect(result.rawText == """
+            Active Ingredients
+            Arctium lappa (Burdock) root extract 150mg
+            Rumex crispus (Yellow dock) root extract 75mg
+            """)
+    }
+
+    @Test func splitsFullBotanicalRowsWhenVisionPlacesThemOnSameBand() async throws {
+        let service = OCRService(recognizer: StubRecognizer(lines: [
+            OCRRecognizedLine(
+                text: "Active Ingredients",
+                confidence: 0.95,
+                region: OCRTextRegion(minX: 0.1, minY: 0.8, width: 0.4, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Arctium lappa (Burdock) root extract 150mg",
+                confidence: 0.91,
+                region: OCRTextRegion(minX: 0.06, minY: 0.5, width: 0.38, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Rumex crispus (Yellow dock) root extract 75mg",
+                confidence: 0.90,
+                region: OCRTextRegion(minX: 0.50, minY: 0.501, width: 0.38, height: 0.05)
+            )
+        ]))
+
+        let result = try await service.recognizeText(in: try makeImage())
+
+        #expect(result.rawText == """
+            Active Ingredients
+            Arctium lappa (Burdock) root extract 150mg
+            Rumex crispus (Yellow dock) root extract 75mg
+            """)
+    }
+
+    @Test func reconcilesBotanicalWitnessesByCommonNameWhenLatinOCRDiffers() throws {
+        let result = OCRResult(lines: [
+            OCRRecognizedLine(
+                text: "Active Ingredients",
+                confidence: 0.95,
+                region: OCRTextRegion(minX: 0.1, minY: 0.8, width: 0.4, height: 0.05),
+                sourceID: "vn-original",
+                sourcePassIDs: ["vn-original"]
+            ),
+            OCRRecognizedLine(
+                text: "Rumex crispus (Yellow dock) root extract 75mg",
+                confidence: 0.92,
+                region: OCRTextRegion(minX: 0.1, minY: 0.5, width: 0.55, height: 0.05),
+                sourceID: "vn-original",
+                sourcePassIDs: ["vn-original"]
+            ),
+            OCRRecognizedLine(
+                text: "Rumex crisous (Yellow dock) root extract 75mc",
+                confidence: 0.91,
+                region: OCRTextRegion(minX: 0.102, minY: 0.501, width: 0.55, height: 0.05),
+                sourceID: "vn-contrast",
+                sourcePassIDs: ["vn-contrast"]
+            )
+        ])
+
+        let rumex = try #require(result.lines.first { $0.text.contains("Rumex") })
+        #expect(rumex.text == "Rumex crispus (Yellow dock) root extract 75mg")
+        #expect(rumex.supportCount == 2)
+        #expect(rumex.qualityFlags.contains(.conflictingCandidates))
+        #expect(result.rawText.contains("Rumex crisous") == false)
+    }
+
+    @Test func excludesGenericSentenceWithAmountsFromParserPanel() async throws {
+        let service = OCRService(recognizer: StubRecognizer(lines: [
+            OCRRecognizedLine(
+                text: "Adults take 1 tablet twice daily with food 1.5g 800mg",
+                confidence: 0.90,
+                region: OCRTextRegion(minX: 0.05, minY: 0.72, width: 0.9, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Echinacea purpurea (Echinacea) whole plant extract 53.33mg",
+                confidence: 0.91,
+                region: OCRTextRegion(minX: 0.06, minY: 0.55, width: 0.72, height: 0.05)
+            ),
+            OCRRecognizedLine(
+                text: "Calendula officinalis (Marigold) flower extract 50mg",
+                confidence: 0.91,
+                region: OCRTextRegion(minX: 0.06, minY: 0.46, width: 0.68, height: 0.05)
+            )
+        ]))
+
+        let result = try await service.recognizeText(in: try makeImage())
+
+        #expect(result.rawText == """
+            Echinacea purpurea (Echinacea) whole plant extract 53.33mg
+            Calendula officinalis (Marigold) flower extract 50mg
+            """)
+        #expect(result.allRecognizedText.contains("Adults take 1 tablet"))
+        #expect(result.rawText.contains("Adults take 1 tablet") == false)
+    }
+
     @Test func reconcilesSupportedLinesAcrossMultipleRecognitionPasses() async throws {
         let result = OCRResult(lines: [
             OCRRecognizedLine(
@@ -321,6 +536,45 @@ struct OCRServiceTests {
         #expect(result.quality.supportedLineCount == 1)
         #expect(result.quality.recognitionPassCount == 2)
         #expect(result.rawText.contains("Magnesium glycinate 300mg"))
+    }
+
+    @Test func keepsStrongMultiPassConsensusOutOfLowConfidenceFlags() throws {
+        let result = OCRResult(lines: [
+            OCRRecognizedLine(
+                text: "Supplement Facts",
+                confidence: 0.96,
+                region: OCRTextRegion(minX: 0.1, minY: 0.8, width: 0.5, height: 0.05),
+                sourceID: "vn-original",
+                sourcePassIDs: ["vn-original"]
+            ),
+            OCRRecognizedLine(
+                text: "Echinacea purpurea (Echinacea) whole plant extract 53.33mg",
+                confidence: 0.54,
+                region: OCRTextRegion(minX: 0.1, minY: 0.5, width: 0.72, height: 0.05),
+                sourceID: "vn-original",
+                sourcePassIDs: ["vn-original"]
+            ),
+            OCRRecognizedLine(
+                text: "Echinacea purpurea (Echinacea) whole plant extract 53.33mg",
+                confidence: 0.94,
+                region: OCRTextRegion(minX: 0.102, minY: 0.501, width: 0.72, height: 0.05),
+                sourceID: "vn-contrast",
+                sourcePassIDs: ["vn-contrast"]
+            ),
+            OCRRecognizedLine(
+                text: "Echinacea purpurea (Echinacea) whole plant extract 53.33mg",
+                confidence: 0.93,
+                region: OCRTextRegion(minX: 0.101, minY: 0.499, width: 0.72, height: 0.05),
+                sourceID: "vn-small-text",
+                sourcePassIDs: ["vn-small-text"]
+            )
+        ])
+
+        let echinacea = try #require(result.lines.first { $0.text.contains("Echinacea purpurea") })
+        #expect(echinacea.confidence == 0.94)
+        #expect(echinacea.supportCount == 3)
+        #expect(echinacea.qualityFlags.contains(.lowConfidence) == false)
+        #expect(echinacea.qualityFlags.contains(.lowConfidenceAccepted) == false)
     }
 
     @Test func flagsConflictingOCRWitnessesInsteadOfSilentlyChoosing() throws {

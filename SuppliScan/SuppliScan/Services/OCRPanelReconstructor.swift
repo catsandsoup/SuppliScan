@@ -61,9 +61,14 @@ nonisolated struct OCRPanelReconstructor: Sendable {
 
         let windowIndexes = Set(window)
         var parserIndexes = Set<Int>()
+        let windowHasExplicitPanelHeading = classified[window].contains(where: \.isPanelHeading)
         for index in window {
             let row = classified[index]
-            if row.isParserCandidate || row.isPanelHeading || row.section == .serving {
+            if row.isParserCandidate
+                || row.isPanelHeading
+                || row.section == .serving
+                || (windowHasExplicitPanelHeading && row.section == .unknown)
+                || (row.section == .unknown && row.score > 0 && !row.isHardStop) {
                 parserIndexes.insert(index)
             }
         }
@@ -249,7 +254,7 @@ nonisolated struct OCRPanelReconstructor: Sendable {
             reasons.insert("marketing-signal")
         }
 
-        let ingredientLike = isIngredientLike(lower)
+        let ingredientLike = isIngredientLike(lower, originalText: line.text)
         let section: OCRPanelSection
         if containsPanelHeading(lower) {
             section = .factsPanel
@@ -302,7 +307,7 @@ nonisolated struct OCRPanelReconstructor: Sendable {
         return min(1, max(0, score))
     }
 
-    private func isIngredientLike(_ text: String) -> Bool {
+    private func isIngredientLike(_ text: String, originalText: String) -> Bool {
         if containsProbioticSignal(text) {
             return true
         }
@@ -314,7 +319,7 @@ nonisolated struct OCRPanelReconstructor: Sendable {
         return containsDomainKeyword(text)
             || containsBotanicalSignal(text)
             || containsEquivalentSignal(text)
-            || looksLikeLatinBinomial(text)
+            || (containsBotanicalSignal(text) && looksLikeLatinBinomial(originalText))
     }
 
     private func containsPanelHeading(_ text: String) -> Bool {
@@ -503,7 +508,7 @@ nonisolated struct OCRPanelReconstructor: Sendable {
 
     private func looksLikeLatinBinomial(_ text: String) -> Bool {
         text.range(
-            of: #"\b[a-z][a-z]{3,}\s+[a-z][a-z]{3,}\b"#,
+            of: #"^\s*[A-Z][a-z]{2,}\s+[a-z][a-z-]{2,}\b"#,
             options: .regularExpression
         ) != nil
     }

@@ -1,74 +1,250 @@
 {
-  "version": 1,
+  "version": 2,
   "nutrient_interactions": [
     {
-      "participants": ["Calcium", "Iron"],
+      "participants": [
+        "Calcium",
+        "Iron"
+      ],
       "severity": "moderate",
-      "effect": "Calcium inhibits non-haem iron absorption when taken concurrently at doses above 300 mg calcium.",
-      "recommendation": "Separate calcium and iron supplements by at least 2 hours.",
-      "references": ["Hallberg L et al. Am J Clin Nutr. 1991;53(1):112-119."]
+      "effect": "Calcium can reduce non-heme iron absorption when taken at the same time, especially at higher calcium doses.",
+      "recommendation": "Separate calcium and iron supplements when the goal is iron repletion.",
+      "references": [
+        "PMID:1984334",
+        "NIH ODS Iron Fact Sheet for Health Professionals"
+      ]
     },
     {
-      "participants": ["Zinc", "Copper"],
+      "participants": [
+        "Zinc",
+        "Copper"
+      ],
       "severity": "moderate",
-      "effect": "High-dose zinc supplementation (>50 mg/day) competitively inhibits copper absorption and can cause copper deficiency.",
-      "recommendation": "Ensure copper intake is adequate when supplementing zinc at high doses. A zinc:copper ratio of 8–15:1 is generally considered safe.",
-      "references": ["Fosmire GJ. Am J Clin Nutr. 1990;51(2):225-227."]
+      "effect": "High-dose zinc can reduce copper absorption and contribute to copper deficiency.",
+      "recommendation": "Review copper status or copper co-formulation when zinc is high or chronic.",
+      "references": [
+        "PMID:2407097",
+        "NIH ODS Zinc Fact Sheet for Health Professionals"
+      ]
     },
     {
-      "participants": ["Magnesium", "Calcium"],
+      "participants": [
+        "Magnesium",
+        "Calcium"
+      ],
       "severity": "low",
-      "effect": "Calcium and magnesium compete for the same intestinal absorption pathway. Very high calcium intake may reduce magnesium absorption.",
-      "recommendation": "Take calcium and magnesium supplements at different times of day if doses are high.",
-      "references": ["Hardwick LL et al. Am J Clin Nutr. 1991;53(3):762-766."]
+      "effect": "High supplemental calcium and magnesium can compete in absorption contexts, though routine combined use is common.",
+      "recommendation": "Separate large mineral doses if tolerability or absorption is a concern.",
+      "references": [
+        "PMID:2005330",
+        "NIH ODS Magnesium Fact Sheet for Health Professionals"
+      ]
     },
     {
-      "participants": ["Vitamin D", "Calcium"],
+      "participants": [
+        "Vitamin D",
+        "Calcium"
+      ],
       "severity": "low",
-      "effect": "Vitamin D significantly enhances intestinal calcium absorption. Adequate vitamin D is necessary for calcium to be absorbed effectively.",
-      "recommendation": "Ensure adequate vitamin D when supplementing calcium. This is a beneficial synergistic interaction.",
-      "references": ["Heaney RP. J Steroid Biochem Mol Biol. 2005;97(1-2):13-19."]
+      "effect": "Vitamin D supports calcium absorption, so high-dose calcium plus vitamin D should be interpreted together for hypercalcemia and UL review.",
+      "recommendation": "Review the combined calcium and vitamin D exposure rather than each nutrient in isolation.",
+      "references": [
+        "NIH ODS Vitamin D Fact Sheet for Health Professionals",
+        "NIH ODS Calcium Fact Sheet for Health Professionals"
+      ]
     },
     {
-      "participants": ["Iron", "Vitamin C"],
+      "participants": [
+        "Iron",
+        "Vitamin C"
+      ],
       "severity": "low",
-      "effect": "Vitamin C (ascorbic acid) substantially enhances non-haem iron absorption by reducing ferric iron to the more absorbable ferrous form.",
-      "recommendation": "Taking iron with vitamin C is beneficial and commonly recommended to improve iron absorption.",
-      "references": ["Hallberg L et al. Scand J Gastroenterol Suppl. 1987;129:93-99."]
+      "effect": "Vitamin C can increase non-heme iron absorption.",
+      "recommendation": "Treat this as a beneficial absorption interaction, while still checking iron dose and contraindications.",
+      "references": [
+        "PMID:2824627",
+        "NIH ODS Iron Fact Sheet for Health Professionals"
+      ]
+    },
+    {
+      "participants": [
+        "Vitamin B9",
+        "Vitamin B12"
+      ],
+      "severity": "moderate",
+      "effect": "High supplemental folic acid can mask hematologic signs of vitamin B12 deficiency while neurologic injury progresses.",
+      "recommendation": "Keep B12 status visible when folic acid dose is high.",
+      "references": [
+        "NIH ODS Folate Fact Sheet for Health Professionals",
+        "NIH ODS Vitamin B12 Fact Sheet for Health Professionals"
+      ]
     }
   ],
   "medication_interactions": [
     {
       "nutrient": "Vitamin K",
-      "medication_class": "Anticoagulants (Warfarin)",
+      "medication_class": "Vitamin K antagonists such as warfarin",
       "severity": "high",
-      "effect": "Vitamin K is the direct antagonist of warfarin. Consistent intake is required; sudden changes in vitamin K intake destabilise INR.",
-      "recommendation": "Patients on warfarin must maintain consistent vitamin K intake and inform their prescribing physician of any supplementation.",
-      "references": ["Booth SL. Annu Rev Nutr. 2009;29:229-248."]
+      "effect": "Sudden changes in vitamin K intake can destabilise anticoagulation.",
+      "recommendation": "Patients using warfarin should keep vitamin K intake consistent and discuss supplementation with the prescriber.",
+      "references": [
+        "NIH ODS Vitamin K Fact Sheet for Health Professionals",
+        "Booth SL. Annu Rev Nutr. 2009;29:229-248."
+      ]
     },
     {
       "nutrient": "Calcium",
-      "medication_class": "Thyroid medications (Levothyroxine)",
+      "medication_class": "Levothyroxine, tetracycline or quinolone antibiotics, bisphosphonates",
       "severity": "moderate",
-      "effect": "Calcium supplements can impair levothyroxine absorption when taken concurrently.",
-      "recommendation": "Take levothyroxine at least 4 hours apart from calcium supplements.",
-      "references": ["Zamfirescu I, Carlson HE. Thyroid. 2011;21(10):1161-1163."]
+      "effect": "Calcium can bind or reduce absorption of several medicines when taken concurrently.",
+      "recommendation": "Separate calcium from affected medicines according to the medicine label or prescriber instructions.",
+      "references": [
+        "NIH ODS Calcium Fact Sheet for Health Professionals",
+        "PMID:21910295"
+      ]
     },
     {
       "nutrient": "Iron",
-      "medication_class": "Thyroid medications (Levothyroxine)",
+      "medication_class": "Levothyroxine, tetracycline or quinolone antibiotics, levodopa",
       "severity": "moderate",
-      "effect": "Iron supplements can bind to levothyroxine and reduce its absorption.",
-      "recommendation": "Take levothyroxine at least 4 hours apart from iron supplements.",
-      "references": ["Campbell NR, Hasinoff BB. Ann Pharmacother. 1992;26(12):1565-1566."]
+      "effect": "Iron can bind or reduce absorption of several medicines when taken at the same time.",
+      "recommendation": "Separate iron from affected medicines and review high-dose iron with a clinician.",
+      "references": [
+        "NIH ODS Iron Fact Sheet for Health Professionals",
+        "PMID:14654743"
+      ]
     },
     {
       "nutrient": "Magnesium",
-      "medication_class": "Antibiotics (Fluoroquinolones, Tetracyclines)",
+      "medication_class": "Tetracycline or quinolone antibiotics, bisphosphonates",
       "severity": "moderate",
-      "effect": "Magnesium forms chelation complexes with fluoroquinolone and tetracycline antibiotics, significantly reducing antibiotic absorption.",
-      "recommendation": "Separate magnesium supplementation from fluoroquinolone or tetracycline antibiotics by at least 2 hours.",
-      "references": ["Neuvonen PJ et al. Clin Pharmacol Ther. 1990;47(2):140-146."]
+      "effect": "Magnesium can chelate these medicines and reduce absorption.",
+      "recommendation": "Separate magnesium from affected medicines according to the medicine label or prescriber instructions.",
+      "references": [
+        "NIH ODS Magnesium Fact Sheet for Health Professionals",
+        "PMID:21910295"
+      ]
+    },
+    {
+      "nutrient": "Zinc",
+      "medication_class": "Tetracycline or quinolone antibiotics, penicillamine",
+      "severity": "moderate",
+      "effect": "Zinc can bind selected medicines and reduce absorption; penicillamine can also alter zinc status.",
+      "recommendation": "Separate zinc from affected medicines and review chronic high-dose zinc.",
+      "references": [
+        "NIH ODS Zinc Fact Sheet for Health Professionals"
+      ]
+    },
+    {
+      "nutrient": "Potassium",
+      "medication_class": "ACE inhibitors, ARBs, potassium-sparing diuretics",
+      "severity": "high",
+      "effect": "Potassium supplements can increase hyperkalemia risk when combined with medicines that raise potassium.",
+      "recommendation": "Review potassium supplements with the prescriber, especially with kidney disease or potassium-altering medicines.",
+      "references": [
+        "NIH ODS Potassium Fact Sheet for Health Professionals"
+      ]
+    },
+    {
+      "nutrient": "Vitamin A",
+      "medication_class": "Oral retinoids and pregnancy-relevant medicines",
+      "severity": "high",
+      "effect": "Preformed vitamin A plus retinoid exposure can increase toxicity and teratogenicity concern.",
+      "recommendation": "Treat high preformed vitamin A as a pregnancy and retinoid-medication review flag.",
+      "references": [
+        "NIH ODS Vitamin A Fact Sheet for Health Professionals"
+      ]
+    },
+    {
+      "nutrient": "Vitamin E",
+      "medication_class": "Anticoagulants and antiplatelet medicines",
+      "severity": "moderate",
+      "effect": "High-dose vitamin E may increase bleeding risk in anticoagulant or antiplatelet contexts.",
+      "recommendation": "Review high-dose vitamin E before surgery or with anticoagulant/antiplatelet therapy.",
+      "references": [
+        "NIH ODS Vitamin E Fact Sheet for Health Professionals"
+      ]
+    },
+    {
+      "nutrient": "Iodine",
+      "medication_class": "Antithyroid medicines, thyroid hormone, amiodarone",
+      "severity": "moderate",
+      "effect": "High iodine intake can alter thyroid management and may interact with thyroid-related medicines.",
+      "recommendation": "Review iodine dose, kelp source, and thyroid history with a clinician.",
+      "references": [
+        "NIH ODS Iodine Fact Sheet for Health Professionals"
+      ]
+    },
+    {
+      "nutrient": "Chromium",
+      "medication_class": "Diabetes medicines and levothyroxine",
+      "severity": "moderate",
+      "effect": "Chromium may affect glucose management, and some forms may interfere with levothyroxine absorption timing.",
+      "recommendation": "Review chromium supplementation with diabetes therapy and separate from levothyroxine when relevant.",
+      "references": [
+        "NIH ODS Chromium Fact Sheet for Health Professionals"
+      ]
+    },
+    {
+      "nutrient": "Vitamin B3",
+      "medication_class": "Statins, hepatotoxic medicines, antihypertensives",
+      "severity": "moderate",
+      "effect": "High-dose niacin can add liver, muscle, flushing, and blood-pressure concerns in medication contexts.",
+      "recommendation": "Treat high-dose niacin as clinician-review material, especially when doses exceed nutrition-range intake.",
+      "references": [
+        "NIH ODS Niacin Fact Sheet for Health Professionals"
+      ]
+    },
+    {
+      "nutrient": "Omega-3 Fatty Acids",
+      "medication_class": "Anticoagulants, antiplatelet medicines, surgery context",
+      "severity": "low",
+      "effect": "High-dose EPA/DHA can be relevant to bleeding-risk review, although routine food-level intake differs from concentrated supplementation.",
+      "recommendation": "Review concentrated EPA/DHA doses with anticoagulant/antiplatelet therapy and surgery plans.",
+      "references": [
+        "NIH ODS Omega-3 Fatty Acids Fact Sheet for Health Professionals"
+      ]
+    },
+    {
+      "nutrient": "Hypericum perforatum",
+      "medication_class": "Many prescription medicines including oral contraceptives, cyclosporine, antiretrovirals, digoxin, warfarin, benzodiazepines",
+      "severity": "high",
+      "effect": "St. John's wort induces CYP enzymes and P-glycoprotein and has documented clinically significant interactions.",
+      "recommendation": "Treat as a high-priority medication-review flag for almost any prescription-medication user.",
+      "references": [
+        "NIH NCCIH Clinical Digest: Herb-Drug Interactions"
+      ]
+    },
+    {
+      "nutrient": "Ginkgo biloba",
+      "medication_class": "Warfarin and selected antiretrovirals",
+      "severity": "high",
+      "effect": "Ginkgo with warfarin is associated with increased major bleeding risk; efavirenz co-use is not recommended by NCCIH.",
+      "recommendation": "Flag for medication review when anticoagulants or antiretrovirals are relevant.",
+      "references": [
+        "NIH NCCIH Clinical Digest: Herb-Drug Interactions"
+      ]
+    },
+    {
+      "nutrient": "Camellia sinensis",
+      "medication_class": "Nadolol, atorvastatin, hepatotoxic medicines",
+      "severity": "moderate",
+      "effect": "Green tea at high doses can reduce nadolol exposure, green tea extract can reduce atorvastatin exposure, and concentrated extracts have liver-safety reports.",
+      "recommendation": "Separate beverage use from concentrated extract review and check relevant medicines.",
+      "references": [
+        "NIH NCCIH Clinical Digest: Herb-Drug Interactions"
+      ]
+    },
+    {
+      "nutrient": "Probiotics",
+      "medication_class": "Immunosuppression, critical illness, central venous catheter, premature infant care",
+      "severity": "high",
+      "effect": "Severe and fatal infections have been reported in vulnerable patients given probiotics.",
+      "recommendation": "Use probiotic safety review for vulnerable hosts; do not infer safety from CFU count alone.",
+      "references": [
+        "NIH ODS Probiotics Fact Sheet for Health Professionals",
+        "NIH NCCIH Dietary and Herbal Supplements"
+      ]
     }
   ]
 }

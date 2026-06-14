@@ -293,6 +293,14 @@ nonisolated struct OCRResult: Hashable, Sendable {
                 return true
             }
 
+            if let lineCommonName = parentheticalCommonName(line.text),
+               lineCommonName == parentheticalCommonName(existing.text),
+               amountMagnitudeSignature(line.text) == amountMagnitudeSignature(existing.text),
+               amountMagnitudeSignature(line.text) != nil,
+               similarity >= 0.35 {
+                return true
+            }
+
             return false
         }
     }
@@ -314,14 +322,17 @@ nonisolated struct OCRResult: Hashable, Sendable {
         let passIDs = Array(Set(cluster.flatMap(\.sourcePassIDs))).sorted()
         let sourceIDs = Array(Set(cluster.map(\.sourceID))).sorted()
         let normalizedTexts = Set(cluster.map { normalizedText($0.text) }.filter { !$0.isEmpty })
+        let finalConfidence = cluster.map(\.confidence).max() ?? best.confidence
         var flags = cluster.reduce(into: Set<OCRLineQualityFlag>()) { result, line in
             result.formUnion(line.qualityFlags)
-            if line.confidence < lowConfidenceThreshold {
-                result.insert(.lowConfidence)
-            }
         }
+        flags.remove(.lowConfidence)
+        flags.remove(.lowConfidenceAccepted)
         if passIDs.count <= 1 {
             flags.insert(.singlePassEvidence)
+        }
+        if finalConfidence < lowConfidenceThreshold {
+            flags.insert(.lowConfidence)
         }
         if normalizedTexts.count > 1 {
             flags.insert(.conflictingCandidates)
@@ -330,7 +341,7 @@ nonisolated struct OCRResult: Hashable, Sendable {
 #if DEBUG
         return OCRRecognizedLine(
             text: best.text,
-            confidence: cluster.map(\.confidence).max() ?? best.confidence,
+            confidence: finalConfidence,
             region: unionRegion(for: cluster),
             sourceLineCount: cluster.reduce(0) { $0 + $1.sourceLineCount },
             sourceID: sourceIDs.joined(separator: "+"),
@@ -342,7 +353,7 @@ nonisolated struct OCRResult: Hashable, Sendable {
 #else
         return OCRRecognizedLine(
             text: best.text,
-            confidence: cluster.map(\.confidence).max() ?? best.confidence,
+            confidence: finalConfidence,
             region: unionRegion(for: cluster),
             sourceLineCount: cluster.reduce(0) { $0 + $1.sourceLineCount },
             sourceID: sourceIDs.joined(separator: "+"),
@@ -395,18 +406,23 @@ nonisolated struct OCRResult: Hashable, Sendable {
 
         return rows.flatMap { row in
             let orderedRow = row.sorted { $0.region.minX < $1.region.minX }
-            guard orderedRow.count > 1, orderedRow.contains(where: isAmountOrLeaderFragment) else {
+            guard orderedRow.count > 1 else {
                 return orderedRow
             }
 
-            return splitRowIntoParserRows(orderedRow).map(mergedRow)
+            let splitRows = splitRowIntoParserRows(orderedRow)
+            guard splitRows.count > 1 || orderedRow.contains(where: isAmountOrLeaderFragment) else {
+                return orderedRow
+            }
+
+            return splitRows.map(mergedRow)
         }
     }
 
     private static func isAmountOrLeaderFragment(_ line: OCRRecognizedLine) -> Bool {
         let text = line.text.trimmingCharacters(in: .whitespacesAndNewlines)
         if text.range(
-            of: #"(?i)(?:<\s*)?\d+(?:[\.,]\d+)?\s*((?:billion|million)\s+cfu|cfu|mg|mcg|micrograms?|μg|µg|ug|g|iu)\b"#,
+            of: #"(?i)^(?:<\s*)?\d+(?:[\.,]\d+)?\s*((?:billion|million)\s+cfu|cfu|mg|mcg|micrograms?|μg|µg|ug|g|iu)\s*$"#,
             options: .regularExpression
         ) != nil {
             return true
@@ -543,14 +559,21 @@ nonisolated struct OCRResult: Hashable, Sendable {
     private static func splitRowIntoParserRows(_ orderedRow: [OCRRecognizedLine]) -> [[OCRRecognizedLine]] {
         let nameIndexes = orderedRow.indices.filter { !isAmountOrLeaderFragment(orderedRow[$0]) }
         let amountIndexes = orderedRow.indices.filter { isAmountOrLeaderFragment(orderedRow[$0]) }
+        let independentNameIndexes = nameIndexes.filter {
+            isLikelyIndependentIngredientStart(orderedRow[$0].text)
+        }
+        let hasAmountEvidence = !amountIndexes.isEmpty
+            || independentNameIndexes.contains { containsSupplementAmount(orderedRow[$0].text) }
 
-        guard nameIndexes.count > 1, amountIndexes.count > 1 else {
+        guard independentNameIndexes.count > 1, hasAmountEvidence else {
             return [orderedRow]
         }
 
         var segments: [[OCRRecognizedLine]] = []
-        for (position, nameIndex) in nameIndexes.enumerated() {
-            let nextNameIndex = position + 1 < nameIndexes.count ? nameIndexes[position + 1] : orderedRow.endIndex
+        for (position, nameIndex) in independentNameIndexes.enumerated() {
+            let nextNameIndex = position + 1 < independentNameIndexes.count
+                ? independentNameIndexes[position + 1]
+                : orderedRow.endIndex
             let segment = orderedRow[nameIndex..<nextNameIndex].filter { line in
                 !line.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
             }
@@ -560,6 +583,73 @@ nonisolated struct OCRResult: Hashable, Sendable {
         }
 
         return segments.isEmpty ? [orderedRow] : segments
+    }
+
+    private static func isLikelyIndependentIngredientStart(_ text: String) -> Bool {
+        if looksLikeLatinBinomialStart(text) {
+            return true
+        }
+
+        let normalized = normalizedText(text)
+        guard !normalized.isEmpty else { return false }
+
+        let prefixes = [
+            "vitamin", "magnesium", "zinc", "calcium", "selenium", "iron",
+            "iodine", "chromium", "manganese", "copper", "molybdenum",
+            "phosphorus", "potassium", "sodium", "boron", "silica", "silicon",
+            "taurine", "glycine", "inositol", "choline", "quercetin", "rutin",
+            "rutoside", "hesperidin", "coenzyme", "coq10", "ubiquinol",
+            "n acetyl", "nac", "acetyl", "omega", "epa", "dha", "fish oil",
+            "krill oil", "astaxanthin", "lutein", "lycopene", "biotin",
+            "folate", "folic", "thiamine", "riboflavin", "niacin",
+            "pantothenic", "pyridoxine", "methylcobalamin", "cyanocobalamin",
+            "ascorbic", "retinol", "beta carotene", "citrus",
+            "lactobacillus", "bifidobacterium", "bacillus", "saccharomyces",
+            "streptococcus", "lactococcus", "lacticaseibacillus",
+            "lactiplantibacillus", "silybum", "withania", "curcuma",
+            "equisetum", "bacopa", "ginkgo", "gingko", "echinacea",
+            "horsetail", "milk thistle", "saw palmetto", "ashwagandha",
+            "turmeric"
+        ]
+
+        return prefixes.contains { prefix in
+            normalized == prefix || normalized.hasPrefix(prefix + " ")
+        }
+    }
+
+    private static func looksLikeLatinBinomialStart(_ text: String) -> Bool {
+        text.range(
+            of: #"^\s*[A-Z][a-z]{2,}\s+[a-z][a-z-]{2,}\b"#,
+            options: .regularExpression
+        ) != nil
+    }
+
+    private static func parentheticalCommonName(_ text: String) -> String? {
+        guard let match = text.range(
+            of: #"\([A-Za-z][A-Za-z\s-]{2,}\)"#,
+            options: .regularExpression
+        ) else {
+            return nil
+        }
+
+        return normalizedText(String(text[match]))
+    }
+
+    private static func amountMagnitudeSignature(_ text: String) -> String? {
+        guard let match = text.range(
+            of: #"(?i)(?:<\s*)?\d+(?:[\.,]\d+)?\s*(?:billion\s+cfu|million\s+cfu|cfu|mg|mcg|mc|micrograms?|μg|µg|ug|g|iu)\b"#,
+            options: .regularExpression
+        ) else {
+            return nil
+        }
+
+        return String(text[match])
+            .replacingOccurrences(
+                of: #"(?i)[^\d\.,]+"#,
+                with: "",
+                options: .regularExpression
+            )
+            .replacingOccurrences(of: ",", with: ".")
     }
 
     private static func mergedRow(_ row: [OCRRecognizedLine]) -> OCRRecognizedLine {
