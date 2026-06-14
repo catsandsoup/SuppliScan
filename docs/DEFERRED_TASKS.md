@@ -27,6 +27,15 @@ reflect this with reasons."
 - Ensure each present key has a clear, honest reason string.
 - Confirm no capabilities/entitlements requested beyond what's used.
 
+## D4. Capture & save the product (future) — requested 2026-06-14
+After the facts scan, optionally prompt to photograph the **front brand label**, run OCR/text
+for the product/brand name, and save the product **name + image** alongside the analysis.
+- Surfaces in History as a recognisable product (image + name), not just a generated title.
+- Consider: a second capture step in the scan flow; store the image in the ScanRecord (or a
+  file ref); show it on the report header and History row.
+- Keep optional + skippable; keep on-device (no upload). Heavier model/persistence change —
+  schedule deliberately.
+
 ## D3. Ongoing (every task, not a final step)
 - Monitor performance / lag (frame analysis on transitions), inspect for crashes.
 - Use skills: swift-testing-expert (tests), swift-architecture-skill (structure),

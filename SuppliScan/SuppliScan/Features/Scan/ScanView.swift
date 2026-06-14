@@ -40,6 +40,15 @@ struct ScanView: View {
                 ocrService: dependencies.ocrService,
                 parser: dependencies.parserService
             )
+            #if DEBUG
+            // `-scanImagePath <hostPath>` runs the real OCR pipeline on a saved image and
+            // navigates to Review — for deterministic batch verification of training labels.
+            if let data = Self.debugScanImageData() {
+                viewModel.capturedImageData = data
+                viewModel.processPhotoData(data)
+                return
+            }
+            #endif
             await camera.requestAndStart()
         }
         .onChange(of: selectedItem) { _, newItem in
@@ -285,6 +294,15 @@ struct ScanView: View {
             }
         }
     }
+
+    #if DEBUG
+    /// DEBUG batch-scan hook: returns image data for the `-scanImagePath <hostPath>` argument.
+    private static func debugScanImageData() -> Data? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let index = args.firstIndex(of: "-scanImagePath"), index + 1 < args.count else { return nil }
+        return try? Data(contentsOf: URL(fileURLWithPath: args[index + 1]))
+    }
+    #endif
 }
 
 // MARK: - ViewfinderFrame

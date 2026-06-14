@@ -126,14 +126,9 @@ struct ReviewView: View {
     private var bottomBar: some View {
         VStack(spacing: Theme.Space.md) {
             ServingSizeSelectorView(serving: $viewModel.servingSize)
-            StandardPickerView(selection: $viewModel.selectedStandard)
-            HStack {
-                Text("Profile")
-                    .textStyle(.subhead)
-                    .foregroundStyle(.inkSecondary)
-                Spacer(minLength: Theme.Space.md)
-                DemographicPickerView(selectedKey: $viewModel.selectedDemographicKey)
-            }
+            // Reference standard and demographic profile are set once in Settings and applied
+            // automatically — no need to re-pick them on every scan. The chosen standard is
+            // still shown in the summary banner, and the full context appears on the report.
             if viewModel.blockingReviewCount > 0 {
                 Label(
                     viewModel.blockingReviewCount == 1 ? "1 row needs review" : "\(viewModel.blockingReviewCount) rows need review",
