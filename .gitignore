@@ -35,3 +35,13 @@ fastlane/test_output
 
 # Claude
 .claude/settings.local.json
+
+# Training data, debug output and local capture artifacts — never sync to GitHub.
+# (App source only; these are local-only inputs/outputs.)
+TrainingData/
+Artifacts/
+*.xcresult/
+**/debug-ocr/
+**/Current States Debug/
+*.mov
+livescans/
